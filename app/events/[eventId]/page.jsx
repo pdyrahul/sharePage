@@ -6,6 +6,7 @@ const eventDetail = ({ params }) => {
   console.log(params, "paramData");
   return (
     <>
+    <div class="body-wrapper">
       <div className="event-wrapper">
         <div className="fund-rasing-body">
           <div className="banner">
@@ -237,6 +238,7 @@ const eventDetail = ({ params }) => {
        <Events/>
       </div>
     </div>
+  </div>
   </div>
     </>
 
