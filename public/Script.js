@@ -1,6 +1,6 @@
 const myEventIcon = document.getElementById("my-event-icon");
 const myEventSubMenu = document.getElementById("my-event-sub-menu");
-myEventSubMenu.style.display = "none";
+myEventSubMenu.style.display = "block";
 myEventIcon.addEventListener("click", () => {
   if (myEventSubMenu.style.display == "none") {
     myEventSubMenu.style.display = "block";
@@ -13,7 +13,7 @@ const myEventManagingIcon = document.getElementById("my-event-managing");
 const myEventManagingSubMenu = document.getElementById(
   "my-event-managing-sub-menu"
 );
-myEventManagingSubMenu.style.display = "none";
+myEventManagingSubMenu.style.display = "block";
 myEventManagingIcon.addEventListener("click", () => {
   if (myEventManagingSubMenu.style.display == "none") {
     myEventManagingSubMenu.style.display = "block";
