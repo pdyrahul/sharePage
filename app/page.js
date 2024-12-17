@@ -2,6 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Events from '@/components/Events/page';
+import Link from 'next/link';
 const EventsPage = () => {
   const router = useRouter();
 
@@ -39,7 +40,9 @@ const EventsPage = () => {
           <div className="event-body">
             <div className="top-heading">
               <div className="top-name">Events</div>
+              <Link href="/event_Ticket">
               <button className="top-btn">Dashboard</button>
+              </Link>
             </div>
             <div className="menu-filter">
               {itemContent.map((item, index) => (
