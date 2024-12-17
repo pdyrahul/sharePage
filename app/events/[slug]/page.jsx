@@ -1,9 +1,9 @@
 import React from 'react'
 import Image from 'next/image';
 import BannerImage from '../../../public/images/fund-raising-detail-banner.svg'
-import Events from '@/components/Events/page';
+import Event from "@/components/ui/Events/Event";
 
-const eventDetail = ({params}) => {
+const eventDetail = ({slug}) => {
     return (<div className="event-wrapper">
         <div className="fund-rasing-body">
             <div className="banner">
@@ -232,7 +232,7 @@ const eventDetail = ({params}) => {
                         </div>
                     </div>
                 </div>
-                <Events/>
+                <Event/>
             </div>
         </div>
     </div>)
