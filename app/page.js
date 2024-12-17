@@ -38,19 +38,19 @@ const EventsPage = () => {
         <div className="event-body">
           <div className="top-heading">
             <div className="top-name">Events</div>
-            <Link href="/event-ticket">
+            <Link href="/my-events/ticket-purchased">
               <button className="top-btn">Dashboard</button>
             </Link>
           </div>
           <div className="menu-filter">
             {itemContent.map((item, index) => (
-                <div className="item" key={index} onClick={item.onClick}>
+                <Link href={`/category/${item.label}`} className="item" key={index} onClick={item.onClick}>
                   <div className="img-wrapper">
                     <img src={item.img1} className="img-1" alt={item.label}/>
                     <img src={item.img2} className="img-2" alt={item.label}/>
                   </div>
                   <span>{item.label}</span>
-                </div>
+                </Link>
             ))}
           </div>
           <div className="filters">
