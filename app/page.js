@@ -34,69 +34,64 @@ const EventsPage = () => {
   ];
 
   return (
-    <>
-      <div className="body-wrapper">
-        <div className="event-wrapper">
-          <div className="event-body">
-            <div className="top-heading">
-              <div className="top-name">Events</div>
-              <Link href="/event_Ticket">
+      <div className="event-wrapper">
+        <div className="event-body">
+          <div className="top-heading">
+            <div className="top-name">Events</div>
+            <Link href="/event_Ticket">
               <button className="top-btn">Dashboard</button>
-              </Link>
-            </div>
-            <div className="menu-filter">
-              {itemContent.map((item, index) => (
+            </Link>
+          </div>
+          <div className="menu-filter">
+            {itemContent.map((item, index) => (
                 <div className="item" key={index} onClick={item.onClick}>
                   <div className="img-wrapper">
-                    <img src={item.img1} className="img-1" alt={item.label} />
-                    <img src={item.img2} className="img-2" alt={item.label} />
+                    <img src={item.img1} className="img-1" alt={item.label}/>
+                    <img src={item.img2} className="img-2" alt={item.label}/>
                   </div>
                   <span>{item.label}</span>
                 </div>
-              ))}
-            </div>
-            <div className="filters">
-              <div className="search-box">
-                <input type="text" placeholder="Search Events by keyword" />
-                <div className="search-icon">
-                  <img src="./images/search-3.svg" alt="Search" />
-                </div>
+            ))}
+          </div>
+          <div className="filters">
+            <div className="search-box">
+              <input type="text" placeholder="Search Events by keyword"/>
+              <div className="search-icon">
+                <img src="./images/search-3.svg" alt="Search"/>
               </div>
-              <div className="change-location">
-                <div
+            </div>
+            <div className="change-location">
+              <div
                   className="change-location-btn"
                   data-bs-toggle="modal"
                   data-bs-target="#change-location"
-                >
-                  Change Location
-                </div>
-                <div className="location">Rawalpindi, Punjab, Pakistan</div>
+              >
+                Change Location
               </div>
+              <div className="location">Rawalpindi, Punjab, Pakistan</div>
             </div>
-            <div className="group-navigation">
-              {['All', 'For you', 'Today', 'This Weekend', 'This Month', 'Free', 'Online', 'Favorites'].map((link, index) => (
+          </div>
+          <div className="group-navigation">
+            {['All', 'For you', 'Today', 'This Weekend', 'This Month', 'Free', 'Online', 'Favorites'].map((link, index) => (
                 <div className={`link ${index === 0 ? 'active-link' : ''}`} key={index}>{link}</div>
-              ))}
-            </div>
-            <div className="event-box-wrapper">
-              <div className="main-heading">
-                <div className="heading">Educational</div>
-                <div className="icons">
-                  <div className="arrow" id="prev-btn">
-                    <img src="./images/arrow-left.svg" alt="Previous" />
-                  </div>
-                  <div className="arrow" id="next-btn">
-                    <img src="./images/arrow-right.svg" alt="Next" />
-                  </div>
+            ))}
+          </div>
+          <div className="event-box-wrapper">
+            <div className="main-heading">
+              <div className="heading">Educational</div>
+              <div className="icons">
+                <div className="arrow" id="prev-btn">
+                  <img src="./images/arrow-left.svg" alt="Previous"/>
+                </div>
+                <div className="arrow" id="next-btn">
+                  <img src="./images/arrow-right.svg" alt="Next"/>
                 </div>
               </div>
-          <Events/>
             </div>
+            <Events/>
           </div>
         </div>
       </div>
-
-    </>
   );
 };
 
