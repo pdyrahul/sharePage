@@ -1,6 +1,8 @@
 import * as React from 'react';
 import Link from 'next/link';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import user from '../../../public/images/user-01.svg';
+import Image from 'next/image';
 import {
   Accordion,
   AccordionSummary,
@@ -15,13 +17,13 @@ export function SideBar() {
     <div className="side-bar" id="side-bar">
       <div className="profile-detail">
         <div className="img-wrapper">
-          <img src="./images/profile-user.svg" alt="Profile" />
+          <Image src={user} alt="Profile" />
         </div>
         <div className="name">Amelia Joseph</div>
         <div className="title">Personal Profile</div>
       </div>
-      <ul className="menu">
-        <li className="menu-item">
+      <ul className="menu px-2">
+        <li className="menu-item ">
           <Typography variant="h6">Notes</Typography>
         </li>
         <li className="menu-item">
@@ -32,10 +34,19 @@ export function SideBar() {
         {/* My Events Accordion */}
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h6">My Events</Typography>
+            <Typography sx={{ fontSize: 16 }}>My Events</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <ul className="sub-menu" id="my-event-sub-menu">
+            <ul className="sub-menu" 
+            id="my-event-sub-menu"
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 5,
+              fontSize: 15,
+              padding: '0 0 10px ',
+            }}
+            >
               <li>
                 <Link href="/my-events/ticket-purchased">Tickets purchased</Link>
               </li>
@@ -66,7 +77,7 @@ export function SideBar() {
         {/* Event Managing Accordion */}
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h6">Event Managing</Typography>
+            <Typography sx={{ fontSize: 16 }}>Event Managing</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <ul className="sub-menu" id="my-event-managing-sub-menu">
@@ -103,7 +114,7 @@ export function SideBar() {
         {/* My Fund Raising Accordion */}
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h6">My Fund Raising</Typography>
+            <Typography sx={{ fontSize: 16 }}>My Fund Raising</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <ul className="sub-menu" id="my-fund-raising-sub-menu">
