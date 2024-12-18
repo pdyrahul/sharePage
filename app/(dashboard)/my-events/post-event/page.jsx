@@ -45,7 +45,7 @@ const Page = () => {
 
   return (
     <div className="event-body">
-      <div className="heading">Past Event Attended</div>
+      <div className="heading">Post Event Attended</div>
       <div className="event-page">
         <div className="page-filter">
           <div className="left">
