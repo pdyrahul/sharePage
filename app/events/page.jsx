@@ -1,9 +1,10 @@
 import React from 'react'
-import Events from '@/components/Events/page'
-const page = () => {
-  return (
-    <div className='event-wrapper'><Events/></div>
-  )
+import Event from "@/components/ui/Events/Event";
+
+const EventPage = () => {
+    return (
+        <Event/>
+    )
 }
 
-export default page
+export default EventPage
