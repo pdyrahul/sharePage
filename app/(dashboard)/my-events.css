@@ -308,7 +308,8 @@
     }
   }
   .event-body {
-    width: calc(100% - 260px);
+    /* width: calc(100% - 260px); */
+    width: 100%;
 
     @media (max-width: 800px) {
       width: 100%;

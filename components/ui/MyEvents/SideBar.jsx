@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Link from 'next/link';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   Accordion,
   AccordionSummary,
@@ -36,25 +37,25 @@ export function SideBar() {
           <AccordionDetails>
             <ul className="sub-menu" id="my-event-sub-menu">
               <li>
-                <Link href="/tickets-purchased">Tickets purchased</Link>
+                <Link href="/my-events/ticket-purchased">Tickets purchased</Link>
               </li>
               <li>
-                <Link href="/past-events-attended">Past Events Attended</Link>
+                <Link href="/my-events/post-event">Past Events Attended</Link>
               </li>
               <li>
-                <Link href="/favorite-events">Favorite Events</Link>
+                <Link href="/my-events/favorite-events">Favorite Events</Link>
               </li>
               <li>
-                <Link href="/upcoming-events">Upcoming Events</Link>
+                <Link href="/my-events/upcoming-event">Upcoming Events</Link>
               </li>
               <li>
-                <Link href="/online-events">Online Events</Link>
+                <Link href="/my-events/online-event">Online Events</Link>
               </li>
               <li>
-                <Link href="/from-connections">From Connections</Link>
+                <Link href="/my-events/from-connections">From Connections</Link>
               </li>
               <li>
-                <Link href="/my-interest">My Interest</Link>
+                <Link href="/my-events/my-interest">My Interest</Link>
               </li>
             </ul>
           </AccordionDetails>
@@ -128,8 +129,10 @@ export function SideBar() {
         </Accordion>
       </ul>
       <div className="return">
-        <img src="./images/return.svg" alt="Return" />
+        <Link href="/">
+        <ArrowBackIcon/>
         <span>Return To Home</span>
+        </Link>
       </div>
     </div>
   );
