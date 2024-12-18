@@ -1,7 +1,5 @@
 'use client'
 import React from 'react'
-import './my-events.css'
-
 export default function ticketPurchasedPage() {
     return (
         <div className="event-body">

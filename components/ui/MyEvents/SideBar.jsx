@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 export function SideBar({Props}) {
     return (
         <div className="side-bar" id="side-bar">
