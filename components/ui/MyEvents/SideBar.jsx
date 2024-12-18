@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Link from 'next/link';
 export function SideBar({Props}) {
     return (
         <div className="side-bar" id="side-bar">
