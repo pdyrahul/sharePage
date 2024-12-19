@@ -21,6 +21,7 @@ const styles = {
     border: 'none',
     boxShadow: 'none',
   },
+ 
   subMenu: {
     display: 'flex',
     flexDirection: 'column',
@@ -36,7 +37,9 @@ const styles = {
     cursor: 'pointer',
     '&:hover': {
       backgroundColor: '#c11',
-      color: 'white',
+      '& .MuiTypography-root': {
+        color: 'white',
+      },
     },
   },
   activeItem: {
@@ -72,11 +75,11 @@ export function SideBar() {
         <Divider />
 
         {/* My Events Accordion */}
-        <Accordion>
+        <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
             <Typography sx={styles.menuItem}>My Events</Typography>
           </AccordionSummary>
-          <AccordionDetails>
+          <AccordionDetails sx={{marginTop:-2, padding:0}}>
             <List sx={styles.subMenu}>
               {[
                 { name: 'Tickets purchased', path: '/my-events/ticket-purchased' },
@@ -108,10 +111,10 @@ export function SideBar() {
           <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
             <Typography sx={styles.menuItem}>Event Managing</Typography>
           </AccordionSummary>
-          <AccordionDetails>
+          <AccordionDetails sx={{marginTop:-2, padding:0}}>
             <List sx={styles.subMenu}>
               {[
-                { name: 'Dashboard', path: '/dashboard' },
+                { name: 'Dashboard', path: '/event-managing/event-dashboard' },
                 { name: 'Submit an Event', path: '/event-managing/submit-event' },
                 { name: 'Active Events', path: '/event-managing/active-event' },
                 { name: 'Post Events', path: '/event-managing/post-events' },
@@ -141,7 +144,7 @@ export function SideBar() {
           <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
             <Typography sx={styles.menuItem}>My Fund Raising</Typography>
           </AccordionSummary>
-          <AccordionDetails>
+          <AccordionDetails sx={{marginTop:-2, padding:0}}>
             <List sx={styles.subMenu}>
               {[
                 { name: 'Dashboard', path: '/fund-raising/dashboard' },
