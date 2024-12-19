@@ -85,25 +85,25 @@ export function SideBar() {
                 <Link href="/dashboard">Dashboard</Link>
               </li>
               <li>
-                <Link href="/submit-event">Submit an Event</Link>
+                <Link href="/event-managing/submit-event">Submit an Event</Link>
               </li>
               <li>
-                <Link href="/active-events">Active Events</Link>
+                <Link href="">Active Events</Link>
               </li>
               <li>
-                <Link href="/past-events">Past Events</Link>
+                <Link href="/event-managing/post-events">Post Events</Link>
               </li>
               <li>
-                <Link href="/draft-events">Draft Events</Link>
+                <Link href="/event-managing/draft-events">Draft Events</Link>
               </li>
               <li>
-                <Link href="/sponsors-list">Sponsors List</Link>
+                <Link href="/event-managing/sponsor-list">Sponsors List</Link>
               </li>
               <li>
-                <Link href="/paid-sponsors">Paid Sponsors</Link>
+                <Link href="/event-managing/paid-sponsors">Paid Sponsors</Link>
               </li>
               <li>
-                <Link href="/paid-vendors">Paid Vendors</Link>
+                <Link href="/event-managing/paid-vendors">Paid Vendors</Link>
               </li>
             </ul>
           </AccordionDetails>
@@ -118,7 +118,7 @@ export function SideBar() {
           </AccordionSummary>
           <AccordionDetails>
             <ul className="sub-menu" id="my-fund-raising-sub-menu">
-              <li><Link href="/fundraising-dashboard">Dashboard</Link>
+              <li><Link href="/fund-raising/dashboard">Dashboard</Link>
               </li>
               <li>
                 <Link href="/create-campaign">Create a campaign</Link>
