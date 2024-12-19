@@ -1,5 +1,7 @@
 import React from 'react'
-
+import company from '../../public/images/company-img.svg';
+import Image from 'next/image'
+import { MdKeyboardArrowLeft,MdKeyboardArrowRight } from "react-icons/md";
 const Sponsor = () => {
   return (
     <>
@@ -8,10 +10,10 @@ const Sponsor = () => {
       <div className="heading">Platinum Sponsors</div>
       <div className="icons">
         <div className="arrow" id="prev-btn">
-          <img src="./images/arrow-left.svg" alt="" />
+          <MdKeyboardArrowLeft/>
         </div>
         <div className="arrow" id="next-btn">
-          <img src="./images/arrow-right.svg" alt="" />
+         <MdKeyboardArrowRight/>
         </div>
       </div>
     </div>
@@ -22,7 +24,7 @@ const Sponsor = () => {
       >
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -36,7 +38,7 @@ const Sponsor = () => {
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -50,7 +52,7 @@ const Sponsor = () => {
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -64,7 +66,7 @@ const Sponsor = () => {
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -78,7 +80,7 @@ const Sponsor = () => {
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -92,7 +94,7 @@ const Sponsor = () => {
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -112,10 +114,10 @@ const Sponsor = () => {
       <div className="heading">Gold Sponsors</div>
       <div className="icons">
         <div className="arrow" id="prev-btn">
-          <img src="./images/arrow-left.svg" alt="" />
+          <MdKeyboardArrowLeft/>
         </div>
         <div className="arrow" id="next-btn">
-          <img src="./images/arrow-right.svg" alt="" />
+         <MdKeyboardArrowRight/>
         </div>
       </div>
     </div>
@@ -126,7 +128,7 @@ const Sponsor = () => {
       >
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -140,7 +142,7 @@ const Sponsor = () => {
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -154,7 +156,7 @@ const Sponsor = () => {
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -168,7 +170,7 @@ const Sponsor = () => {
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -182,7 +184,7 @@ const Sponsor = () => {
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -196,7 +198,7 @@ const Sponsor = () => {
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
@@ -216,10 +218,10 @@ const Sponsor = () => {
       <div className="heading">Silver Sponsors</div>
       <div className="icons">
         <div className="arrow" id="prev-btn">
-          <img src="./images/arrow-left.svg" alt="" />
+          <MdKeyboardArrowLeft/>
         </div>
         <div className="arrow" id="next-btn">
-          <img src="./images/arrow-right.svg" alt="" />
+         <MdKeyboardArrowRight/>
         </div>
       </div>
     </div>
@@ -230,85 +232,57 @@ const Sponsor = () => {
       >
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
             <div className="sub-title">123 Follower</div>
             <div className="icons">
-              <img src="./images/add-riend.svg" alt="" />
-              <img src="./images/message-2.svg" alt="" />
-              <img src="./images/like-2.svg" alt="" />
+             <img src="./images/add-riend.svg" alt="" />
+             <img src="./images/message-2.svg" alt="" />
+             <img src="./images/like-2.svg" alt="" />
             </div>
           </div>
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
             <div className="sub-title">123 Follower</div>
             <div className="icons">
-              <img src="./images/add-riend.svg" alt="" />
-              <img src="./images/message-2.svg" alt="" />
-              <img src="./images/like-2.svg" alt="" />
+             <img src="./images/add-riend.svg" alt="" />
+             <img src="./images/message-2.svg" alt="" />
+             <img src="./images/like-2.svg" alt="" />
             </div>
           </div>
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
             <div className="sub-title">123 Follower</div>
             <div className="icons">
-              <img src="./images/add-riend.svg" alt="" />
-              <img src="./images/message-2.svg" alt="" />
-              <img src="./images/like-2.svg" alt="" />
+            <img src="./images/add-riend.svg" alt="" />
+            <img src="./images/message-2.svg" alt="" />
+            <img src="./images/like-2.svg" alt="" />
             </div>
           </div>
         </div>
         <div className="sponsor">
           <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
+            <Image src={company} alt="" />
           </div>
           <div className="sponsor-detail">
             <div className="title">Codegenio</div>
             <div className="sub-title">123 Follower</div>
             <div className="icons">
-              <img src="./images/add-riend.svg" alt="" />
-              <img src="./images/message-2.svg" alt="" />
-              <img src="./images/like-2.svg" alt="" />
-            </div>
-          </div>
-        </div>
-        <div className="sponsor">
-          <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
-          </div>
-          <div className="sponsor-detail">
-            <div className="title">Codegenio</div>
-            <div className="sub-title">123 Follower</div>
-            <div className="icons">
-              <img src="./images/add-riend.svg" alt="" />
-              <img src="./images/message-2.svg" alt="" />
-              <img src="./images/like-2.svg" alt="" />
-            </div>
-          </div>
-        </div>
-        <div className="sponsor">
-          <div className="img-wrapper">
-            <img src="./images/company-img.svg" alt="" />
-          </div>
-          <div className="sponsor-detail">
-            <div className="title">Codegenio</div>
-            <div className="sub-title">123 Follower</div>
-            <div className="icons">
-              <img src="./images/add-riend.svg" alt="" />
-              <img src="./images/message-2.svg" alt="" />
-              <img src="./images/like-2.svg" alt="" />
+             <img src="./images/add-riend.svg" alt="" />
+             <img src="./images/message-2.svg" alt="" />
+             <img src="./images/like-2.svg" alt="" />
             </div>
           </div>
         </div>

@@ -1,19 +1,21 @@
 import React from 'react'
+import Photo from '../public/images/photo.svg'
+import Image from 'next/image'
 
 const PhotosCard = () => {
   return (
     <div className="photos-wrapper">
     <div className="photo" data-bs-toggle="modal" data-bs-target="#view-image">
-      <img src="./images/photo.svg" alt="" />
+      <Image src={Photo} alt="" />
     </div>
     <div className="photo">
-      <img src="./images/photo.svg" alt="" />
+      <Image src={Photo} alt="" />
     </div>
     <div className="photo">
-      <img src="./images/photo.svg" alt="" />
+      <Image src={Photo} alt="" />
     </div>
     <div className="photo">
-      <img src="./images/photo.svg" alt="" />
+      <Image src={Photo} alt="" />
     </div>
  
  

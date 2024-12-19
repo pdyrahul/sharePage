@@ -237,9 +237,7 @@ export default function BasicTabs() {
                 <>
                   <h2>{link.label}</h2>
                   <p>{link.data}</p>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex.</p>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex.</p>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex.</p>
+                 <p>No Data</p>
                 </>
               )}
         </CustomTabPanel>

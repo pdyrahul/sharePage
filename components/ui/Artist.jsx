@@ -1,11 +1,13 @@
 import React from 'react'
-
+import dot from '../../public/images/three-dot-red.svg';
+import user2 from '../../public/images/user-02.svg';
+import Image from 'next/image';
 const Artist = () => {
   return (
     <div className="friend-list-wrapper">
   <div className="friend">
     <div className="img-wrapper">
-      <img src="./images/user-02.svg" alt="" />
+    <Image src={user2}alt="" />
     </div>
     <div className="detail">
       <div className="name">Audrey Alexander</div>
@@ -13,10 +15,9 @@ const Artist = () => {
     </div>
     <div className="icons">
       <div className="three-dot">
-        <img
-          src="./images/three-dot-red.svg"
+       <Image src={dot}
           alt=""
-          onclick="threeDot() "
+          onClick="threeDot() "
           className="option-icon"
         />
         <div
@@ -51,7 +52,7 @@ const Artist = () => {
   </div>
   <div className="friend">
     <div className="img-wrapper">
-      <img src="./images/user-02.svg" alt="" />
+    <Image src={user2}alt="" />
     </div>
     <div className="detail">
       <div className="name">Audrey Alexander</div>
@@ -59,7 +60,7 @@ const Artist = () => {
     </div>
     <div className="icons">
       <div className="three-dot">
-        <img src="./images/three-dot-red.svg" alt="" className="option-icon" />
+     <Image src={dot}alt="" className="option-icon" />
         <div className="three-dot-wrapper" style={{ display: "none" }}>
           <div className="option">
             <span>
@@ -88,7 +89,7 @@ const Artist = () => {
   </div>
   <div className="friend">
     <div className="img-wrapper">
-      <img src="./images/user-02.svg" alt="" />
+    <Image src={user2}alt="" />
     </div>
     <div className="detail">
       <div className="name">Audrey Alexander</div>
@@ -96,7 +97,7 @@ const Artist = () => {
     </div>
     <div className="icons">
       <div className="three-dot">
-        <img src="./images/three-dot-red.svg" alt="" className="option-icon" />
+     <Image src={dot}alt="" className="option-icon" />
         <div className="three-dot-wrapper" style={{ display: "none" }}>
           <div className="option">
             <span>
@@ -125,7 +126,7 @@ const Artist = () => {
   </div>
   <div className="friend">
     <div className="img-wrapper">
-      <img src="./images/user-02.svg" alt="" />
+    <Image src={user2}alt="" />
     </div>
     <div className="detail">
       <div className="name">Audrey Alexander</div>
@@ -133,7 +134,7 @@ const Artist = () => {
     </div>
     <div className="icons">
       <div className="three-dot">
-        <img src="./images/three-dot-red.svg" alt="" className="option-icon" />
+     <Image src={dot}alt="" className="option-icon" />
         <div className="three-dot-wrapper" style={{ display: "none" }}>
           <div className="option">
             <span>
@@ -162,7 +163,7 @@ const Artist = () => {
   </div>
   <div className="friend">
     <div className="img-wrapper">
-      <img src="./images/user-02.svg" alt="" />
+    <Image src={user2}alt="" />
     </div>
     <div className="detail">
       <div className="name">Audrey Alexander</div>
@@ -170,7 +171,7 @@ const Artist = () => {
     </div>
     <div className="icons">
       <div className="three-dot">
-        <img src="./images/three-dot-red.svg" alt="" className="option-icon" />
+     <Image src={dot}alt="" className="option-icon" />
         <div className="three-dot-wrapper" style={{ display: "none" }}>
           <div className="option">
             <span>
