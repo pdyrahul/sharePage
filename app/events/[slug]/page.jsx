@@ -4,7 +4,9 @@ import BannerImage from '../../../public/images/fund-raising-detail-banner.svg'
 import Event from "@/components/ui/Events/Event";
 
 const eventDetail = ({slug}) => {
-    return (<div className="event-wrapper">
+    return (
+        <div className="body-wrapper">
+    <div className="event-wrapper">
         <div className="fund-rasing-body">
             <div className="banner">
                 <div className="banner-img-wrapper">
@@ -235,6 +237,7 @@ const eventDetail = ({slug}) => {
                 <Event/>
             </div>
         </div>
+    </div>
     </div>
     )
 }
