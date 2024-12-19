@@ -124,7 +124,7 @@ const Page = () => {
                       </TableCell>
                       <TableCell>{event.title}</TableCell>
                       <TableCell>
-                        {event.date} <span>Started at {event.time}</span>
+                        {event.date} <p>Started at {event.time}</p>
                       </TableCell>
                       <TableCell>{event.hostedBy}</TableCell>
                       <TableCell>{event.location}</TableCell>
