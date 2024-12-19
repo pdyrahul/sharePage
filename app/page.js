@@ -38,7 +38,7 @@ const EventsPage = () => {
         <div className="event-body">
           <div className="top-heading">
             <div className="top-name">Events</div>
-            <Link href="/my-events/ticket-purchased">
+            <Link href="/my-events">
               <button className="top-btn">Dashboard</button>
             </Link>
           </div>
