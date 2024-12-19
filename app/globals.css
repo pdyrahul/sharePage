@@ -217,7 +217,7 @@ a{text-decoration: none !important; color:#454545 !important;}
     padding: 15px;
     .event-body{
         background-color: white;
-        box-shadow: 1px 1px 7px 0 rgba(0, 0, 0, 0.1);
+        /* box-shadow: 1px 1px 7px 0 rgba(0, 0, 0, 0.1); */
         min-height: 100vh;
         padding: 15px;
         .top-heading{
