@@ -152,7 +152,7 @@ export function SideBar() {
                 { name: 'Active campaigns', path: '/fund-raising/active-campaigns' },
                 { name: 'Post campaigns', path: '/fund-raising/post-campaigns' },
                 { name: 'Draft campaigns', path: '/fund-raising/draft-campaigns' },
-                { name: 'Updates', path: '/fund-raising/updates' },
+                { name: 'Updates', path: '/fund-raising/event-updates' },
               ].map((link, index) => (
                 <ListItem
                   key={index}
