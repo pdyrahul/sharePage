@@ -1,13 +1,15 @@
 'use client'
 import React from 'react';
 import Link from 'next/link';
-
+import event from '../../../public/images/event.svg';
+import Image from 'next/image';
+import { HiOutlineLocationMarker } from "react-icons/hi";
 const EventCard = ({ id, title, date, time, host, location, price }) => {
   return (
     <Link href={`/events/${id}`} style={{ textDecoration: 'none' }}>
       <div className="event">
         <div className="img-wrapper">
-          <img src="./images/event.svg" alt="Event" />
+          <Image src={event} alt="Event" />
         </div>
         <div className="title">{title}</div>
         <div className="date">
@@ -18,7 +20,7 @@ const EventCard = ({ id, title, date, time, host, location, price }) => {
           Hosted by <span>{host}</span>
         </div>
         <div className="location">
-          <img src="./images/location.svg" alt="Location" />
+        <HiOutlineLocationMarker />
           <span className='mx-2'>{location}</span>
         </div>
         <div className="from">From {price}</div>

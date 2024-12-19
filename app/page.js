@@ -78,7 +78,7 @@ const EventsPage = () => {
           </div>
           <div className="event-box-wrapper">
             <div className="main-heading">
-              <div className="heading">Educational</div>
+              <div className="heading text-left">Educational</div>
               <div className="icons">
                 <div className="arrow" id="prev-btn">
                   <img src="./images/arrow-left.svg" alt="Previous"/>
@@ -88,6 +88,7 @@ const EventsPage = () => {
                 </div>
               </div>
             </div>
+            <Event />
             <Event />
           </div>
         </div>
