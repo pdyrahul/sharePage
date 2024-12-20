@@ -12,6 +12,9 @@ a{text-decoration: none !important; color:#454545 !important;}
 }
 
 
+
+
+
 .body-wrapper{
     max-width: 1440px;
     width: 100%;
@@ -253,7 +256,7 @@ a{text-decoration: none !important; color:#454545 !important;}
                 /* margin: 10px 0px; */
                 cursor: pointer;
                 @media(max-width : 555px) {
-                    width: 100%;
+                    /* width: 100%; */
                 }
             }
         }

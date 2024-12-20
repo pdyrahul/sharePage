@@ -14,6 +14,7 @@ import {
   ListItem,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Height } from '@mui/icons-material';
 
 const styles = {
   menuItem: {
@@ -29,8 +30,8 @@ const styles = {
   },
   expandIcon: {
     backgroundColor: '#c11',
-    padding: '5px',
-    borderRadius: '5px',
+    // padding: '5px',
+    // borderRadius: '5px',
     color: 'white',
   },
   subMenuItem: {
@@ -110,7 +111,7 @@ export function SideBar() {
             <List sx={styles.subMenu}>
               {[
                 { name: 'Tickets purchased', path: '/my-events/ticket-purchased' },
-                { name: 'Post Events Attended', path: '/my-events/post-event' },
+                { name: 'Past Events Attended', path: '/my-events/past-event' },
                 { name: 'Favorite Events', path: '/my-events/favorite-events' },
                 { name: 'Upcoming Events', path: '/my-events/upcoming-event' },
                 { name: 'Online Events', path: '/my-events/online-event' },
@@ -166,10 +167,10 @@ export function SideBar() {
 
         <Divider />
 
-        <div className="return">
-          <Link href="/" passHref>
-            <ArrowBackIcon />
-            <span>Return To Home</span>
+        <div className="return my-2" >
+          <Link href="/" passHref style={{ color: '#c11', cursor: 'pointer' }}>
+          <ArrowBackIcon style={{ color: '#c11' }} /> {/* Set color for the icon */}
+          <span style={{ marginLeft: '8px', color: '#c11' }}>Return To Home</span> {/* Set color for the text */}
           </Link>
         </div>
       </ul>
