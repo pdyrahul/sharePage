@@ -4,6 +4,7 @@
   --foreground: #171717;
 }
 a{text-decoration: none !important; color:#454545 !important;}
+li{list-style: none;}
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
