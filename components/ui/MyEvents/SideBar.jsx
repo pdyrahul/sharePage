@@ -73,9 +73,36 @@ export function SideBar() {
           <Typography sx={styles.menuItem}>Reminder</Typography>
         </li>
         <Divider />
-
+    {/* My Fund Raising Accordion */}
+    <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
+            <Typography sx={styles.menuItem}>My Fund Raising</Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{marginTop:-2, padding:0}}>
+            <List sx={styles.subMenu}>
+              {[
+                { name: 'Dashboard', path: '/fund-raising/dashboard' },
+                { name: 'Create a campaign', path: '/fund-raising/create-campaign' },
+                { name: 'Active campaigns', path: '/fund-raising/active-campaigns' },
+                { name: 'Post campaigns', path: '/fund-raising/post-campaigns' },
+                { name: 'Draft campaigns', path: '/fund-raising/draft-campaigns' },
+                { name: 'Updates', path: '/fund-raising/event-updates' },
+              ].map((link, index) => (
+                <ListItem
+                  key={index}
+                  sx={{ ...styles.subMenuItem, ...(activePath === link.path && styles.activeItem) }}
+                  onClick={() => handleItemClick(link.path)}
+                >
+                  <Link href={link.path} passHref>
+                    <Typography>{link.name}</Typography>
+                  </Link>
+                </ListItem>
+              ))}
+            </List>
+          </AccordionDetails>
+        </Accordion>
         {/* My Events Accordion */}
-        <Accordion defaultExpanded>
+        <Accordion >
           <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
             <Typography sx={styles.menuItem}>My Events</Typography>
           </AccordionSummary>
@@ -117,42 +144,11 @@ export function SideBar() {
                 { name: 'Dashboard', path: '/event-managing/event-dashboard' },
                 { name: 'Submit an Event', path: '/event-managing/submit-event' },
                 { name: 'Active Events', path: '/event-managing/active-event' },
-                { name: 'Post Events', path: '/event-managing/post-events' },
+                { name: 'Past Events', path: '/event-managing/past-events' },
                 { name: 'Draft Events', path: '/event-managing/draft-events' },
                 { name: 'Sponsors List', path: '/event-managing/sponsor-list' },
                 { name: 'Paid Sponsors', path: '/event-managing/paid-sponsors' },
                 { name: 'Paid Vendors', path: '/event-managing/paid-vendors' },
-              ].map((link, index) => (
-                <ListItem
-                  key={index}
-                  sx={{ ...styles.subMenuItem, ...(activePath === link.path && styles.activeItem) }}
-                  onClick={() => handleItemClick(link.path)}
-                >
-                  <Link href={link.path} passHref>
-                    <Typography>{link.name}</Typography>
-                  </Link>
-                </ListItem>
-              ))}
-            </List>
-          </AccordionDetails>
-        </Accordion>
-
-        <Divider />
-
-        {/* My Fund Raising Accordion */}
-        <Accordion>
-          <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
-            <Typography sx={styles.menuItem}>My Fund Raising</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{marginTop:-2, padding:0}}>
-            <List sx={styles.subMenu}>
-              {[
-                { name: 'Dashboard', path: '/fund-raising/dashboard' },
-                { name: 'Create a campaign', path: '/fund-raising/create-campaign' },
-                { name: 'Active campaigns', path: '/fund-raising/active-campaigns' },
-                { name: 'Post campaigns', path: '/fund-raising/post-campaigns' },
-                { name: 'Draft campaigns', path: '/fund-raising/draft-campaigns' },
-                { name: 'Updates', path: '/fund-raising/event-updates' },
               ].map((link, index) => (
                 <ListItem
                   key={index}

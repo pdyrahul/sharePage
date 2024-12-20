@@ -44,7 +44,7 @@ const EventsPage = () => {
           </div>
           <div className="menu-filter">
             {itemContent.map((item, index) => (
-                <Link href={`/category/${item.label}`} className="item" key={index} onClick={item.onClick}>
+                <Link href={item.label === 'Fund Raising' ? '/fundraising' : `/category/${item.label}`} className="item" key={index} onClick={item.onClick}>
                   <div className="img-wrapper">
                     <img src={item.img1} className="img-1" alt={item.label}/>
                     <img src={item.img2} className="img-2" alt={item.label}/>
