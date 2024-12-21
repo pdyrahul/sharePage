@@ -11,7 +11,8 @@ const eventDetail = ({ slug }) => {
             <div className="event-wrapper">
                 <div className="event-body">
                     <div className="banner-img">
-                        <Image src={banner} alt="" />
+                        <Image src={banner} alt=""  className='potraitImg'/>
+                        <Image src={vericle} alt="" className='verticleImg d-none' />
                     </div>
                     <div className="event-detail">
                         <div className="detail-wrapper">

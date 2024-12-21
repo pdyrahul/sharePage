@@ -218,7 +218,7 @@ li{list-style: none;}
 }
 .event-wrapper{
     width: 100%;
-    padding: 15px;
+    /* padding: 15px; */
     .event-body{
         background-color: white;
         /* box-shadow: 1px 1px 7px 0 rgba(0, 0, 0, 0.1); */
@@ -654,6 +654,12 @@ li{list-style: none;}
             img{
                 width: 100%;
                 border-radius: 20px;
+                height: 100%;
+            }
+            @media (max-width:625px) {
+                
+                .potraitImg{display:none}
+                .verticleImg{display: block !important; height: 100%;}
             }
 
         }
@@ -834,6 +840,7 @@ li{list-style: none;}
             }
         }
         .photos-wrapper{
+           
             width: 100%;
             display: flex;
             flex-wrap: wrap;
