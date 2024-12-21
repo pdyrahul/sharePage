@@ -110,6 +110,9 @@ export default function BasicTabs() {
           onChange={handleChange}
           aria-label="basic tabs example"
           indicatorColor="none"
+          variant="scrollable"
+          scrollButtons
+          allowScrollButtonsMobile
         >
           {navigationLinks.map((link, index) => (
             <Tab key={index} label={link.label} {...a11yProps(index)} sx={{
