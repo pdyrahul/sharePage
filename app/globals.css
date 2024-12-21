@@ -231,6 +231,7 @@ li{list-style: none;}
             gap: 20px;
             width: 100%;
             flex-wrap: wrap;
+            @media (max-width: 767px) {padding: 0;}
             .top-name{
                 font-size: 20px;
                 font-weight: 500;
