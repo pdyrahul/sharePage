@@ -2,6 +2,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  user-select: none;
 }
 a{text-decoration: none !important; color:#454545 !important;}
 li{list-style: none;}
@@ -11,10 +12,6 @@ li{list-style: none;}
     --foreground: #ededed;
   }
 }
-
-
-
-
 
 .body-wrapper{
     max-width: 1440px;

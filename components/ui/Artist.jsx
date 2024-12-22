@@ -2,6 +2,7 @@ import React from 'react'
 import dot from '../../public/images/three-dot-red.svg';
 import user2 from '../../public/images/user-02.svg';
 import Image from 'next/image';
+import { IoMdChatboxes } from "react-icons/io";
 const Artist = () => {
   return (
     <div className="friend-list-wrapper">
@@ -46,7 +47,7 @@ const Artist = () => {
         </div>
       </div>
       <div className="message">
-        <img src="./images/message-3.svg" alt="" className="option-icon" />
+      <IoMdChatboxes />
       </div>
     </div>
   </div>
@@ -83,7 +84,7 @@ const Artist = () => {
         </div>
       </div>
       <div className="message">
-        <img src="./images/message-3.svg" alt="" className="option-icon" />
+      <IoMdChatboxes />
       </div>
     </div>
   </div>
@@ -120,7 +121,7 @@ const Artist = () => {
         </div>
       </div>
       <div className="message">
-        <img src="./images/message-3.svg" alt="" className="option-icon" />
+      <IoMdChatboxes />
       </div>
     </div>
   </div>
@@ -157,7 +158,7 @@ const Artist = () => {
         </div>
       </div>
       <div className="message">
-        <img src="./images/message-3.svg" alt="" className="option-icon" />
+      <IoMdChatboxes />
       </div>
     </div>
   </div>
@@ -194,7 +195,7 @@ const Artist = () => {
         </div>
       </div>
       <div className="message">
-        <img src="./images/message-3.svg" alt="" className="option-icon" />
+      <IoMdChatboxes />
       </div>
     </div>
   </div>

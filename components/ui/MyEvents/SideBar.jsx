@@ -122,7 +122,7 @@ export function SideBar() {
                 {[
                   { name: 'Dashboard', path: '/fund-raising/dashboard' },
                   { name: 'Create a campaign', path: '/fund-raising/create-campaign' },
-                  { name: 'Active campaigns', path: '/fund-raising/active-campaigns', name: 'Post campaigns', path: '/fund-raising/post-campaigns' },
+                  { name: 'Active campaigns', path: '/fund-raising/active-campaigns', name: 'Past campaigns', path: '/fund-raising/past-campaigns' },
                   { name: 'Draft campaigns', path: '/fund-raising/draft-campaigns' },
                   { name: 'Updates', path: '/fund-raising/event-updates' },
                 ].map((link, index) => (
