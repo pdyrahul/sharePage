@@ -85,6 +85,7 @@ export function SideBar() {
 
   const handleItemClick = (path) => {
     setActivePath(path);
+    setIsOpen(false);
   };
 
   const toggleSidebar = () => {
