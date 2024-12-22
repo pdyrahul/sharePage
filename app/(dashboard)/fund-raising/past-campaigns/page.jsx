@@ -3,7 +3,7 @@ import React from 'react'
 const page = () => {
   return (
     <div className="event-body">
-    <div className="heading">Post Campaigns</div>
+    <div className="heading">Past Campaigns</div>
     <div className="event-page">
       <div className="page-filter">
         <div className="left">

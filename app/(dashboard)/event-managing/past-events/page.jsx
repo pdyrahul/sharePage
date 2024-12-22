@@ -12,7 +12,7 @@ const Page = () => {
 
   return (
     <div className="event-body">
-      <div className="heading">Post Events</div>
+      <div className="heading">Past Events</div>
       <div className="event-page">
         <div className="page-filter">
           <div className="left">
