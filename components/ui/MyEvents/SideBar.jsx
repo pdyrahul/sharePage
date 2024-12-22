@@ -104,7 +104,7 @@ export function SideBar() {
           <div className="name">Amelia Joseph</div>
           <div className="title">Personal Profile</div>
         </div>
-        <ul className="menu">
+        <ul className="menu"  style={{ maxHeight: '400px', overflowY: 'scroll' }}>
           <li className="menu-item px-3">
             <Typography sx={styles.menuItem}>Notes</Typography>
           </li>
@@ -176,7 +176,7 @@ export function SideBar() {
             <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
               <Typography sx={styles.menuItem}>Event Managing</Typography>
             </AccordionSummary>
-            <AccordionDetails sx={{ marginTop: -2, padding: 0 }}>
+            <AccordionDetails sx={{ marginTop: -2, padding: 0,}}>
               <List sx={styles.subMenu}>
                 {[
                   { name: 'Dashboard', path: '/event-managing/event-dashboard' },

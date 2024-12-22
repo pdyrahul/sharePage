@@ -1,8 +1,12 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
+@import "rsuite/dist/rsuite.css";
 :root {
   --background: #ffffff;
   --foreground: #171717;
   user-select: none;
+  font-family: "Karla", serif !important;
+  font-style: normal;
 }
 a{text-decoration: none !important; color:#454545 !important;}
 li{list-style: none;}
@@ -12,6 +16,8 @@ li{list-style: none;}
     --foreground: #ededed;
   }
 }
+body{  font-family: "Karla", serif !important;
+    font-style: normal;}
 
 .body-wrapper{
     max-width: 1440px;

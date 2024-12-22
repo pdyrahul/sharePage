@@ -3,6 +3,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Event from "@/components/ui/Events/Event";
+import Modal from '@/components/ui/muicomponents/Modal';
 const EventsPage = () => {
   const router = useRouter();
 
@@ -61,13 +62,7 @@ const EventsPage = () => {
               </div>
             </div>
             <div className="change-location">
-              <div
-                  className="change-location-btn"
-                  data-bs-toggle="modal"
-                  data-bs-target="#change-location"
-              >
-                Change Location
-              </div>
+              <Modal/>
               <div className="location">Rawalpindi, Punjab, Pakistan</div>
             </div>
           </div>
