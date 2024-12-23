@@ -1,16 +1,17 @@
 import React from 'react'
-
+import advertiser from '../public/images/photo.svg';
+import Image from 'next/image';
 const AdvertiserCard = () => {
   return (
     <div className="advertiser-wrapper">
   <div className="photo" data-bs-toggle="modal" data-bs-target="#view-image">
-    <img src="./images/photo.svg" alt="" />
+   <Image src={advertiser} alt="Advertiser" />
   </div>
   <div className="photo">
-    <img src="./images/photo.svg" alt="" />
+   <Image src={advertiser} alt="Advertiser" />
   </div>
   <div className="photo">
-    <img src="./images/photo.svg" alt="" />
+   <Image src={advertiser} alt="Advertiser" />
   </div>
 
   

@@ -15,6 +15,7 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 400,
+  maxWidth: '92%',
   bgcolor: 'background.paper',
   border: '2px solid #c11', // Ensure border is in #c11
   borderRadius: 4,
@@ -49,9 +50,10 @@ export default function ChangeLocationModal() {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+
       >
         <Box sx={style}>
-          <Box className="modal-header" sx={{ mb: 2, fontSize: '10px' }}>
+          <Box className="modal-header" sx={{ mb: 2, fontSize: '10px', }}>
             <Box className="loc-info">
               <Typography
                 variant="subtitle1"

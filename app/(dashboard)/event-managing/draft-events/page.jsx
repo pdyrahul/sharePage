@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper } from '@mui/material';
 import { AiOutlineBars } from "react-icons/ai";
+import { BsThreeDots } from "react-icons/bs";
 const Page = () => {
   const [view, setView] = useState('grid'); // Default view is 'grid'
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,7 +34,7 @@ const Page = () => {
       date: 'Mar-16-2024',
       time: '07:00 AM',
       category: 'Music',
-      status: '',
+      status: 'Not Active',
     },
     // Add more event objects as needed
   ];
@@ -120,13 +121,14 @@ const Page = () => {
                 <TableBody>
                   {filteredEvents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((event, index) => (
                     <TableRow key={index}>
-                      <TableCell>{event.titel}</TableCell>
+                      <TableCell>{event.title}</TableCell>
                       <TableCell>{event.price}</TableCell>
+                      <TableCell>{event.category}</TableCell>
                       <TableCell>
                         {event.date} <p>Started at {event.time}</p>
                       </TableCell>
-                      <TableCell>{event.category}</TableCell>
                       <TableCell>{event.status}</TableCell>
+                      <TableCell><BsThreeDots /></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

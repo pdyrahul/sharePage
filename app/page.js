@@ -62,7 +62,7 @@ const EventsPage = () => {
               </div>
             </div>
             <div className="change-location">
-              <Modal/>
+              <Modal />
               <div className="location">Rawalpindi, Punjab, Pakistan</div>
             </div>
           </div>
@@ -74,14 +74,7 @@ const EventsPage = () => {
           <div className="event-box-wrapper">
             <div className="main-heading">
               <div className="heading text-left">Educational</div>
-              <div className="icons">
-                <div className="arrow" id="prev-btn">
-                  <img src="./images/arrow-left.svg" alt="Previous"/>
-                </div>
-                <div className="arrow" id="next-btn">
-                  <img src="./images/arrow-right.svg" alt="Next"/>
-                </div>
-              </div>
+              
             </div>
             <Event />
             <Event />
