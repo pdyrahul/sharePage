@@ -1,21 +1,18 @@
 'use client'
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
+import {Tabs,Tab,Box,TextField,Button,Grid } from '@mui/material';
 import VideoCard from '../VideoCard'; // Import the VideoCard component
 import SeatingLayout from '../SeatingLayout'; // Import the SeatingLayout component
 import Sponsor from '../Sponsor';
 import Artist from '../Artist';
 import PhotosCard from '@/components/PhotosCard';
 import AdvertiserCard from '@/components/AdvertiserCard';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
-
+ 
   return (
     <div
       role="tabpanel"
@@ -94,8 +91,11 @@ export default function BasicTabs() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    toast.success('Message sent successfully!');
     console.log('Form submitted:', formData);
     setFormData({ name: '', email: '', message: '' });
+    
+
   };
 
   return (
@@ -128,55 +128,57 @@ export default function BasicTabs() {
       {navigationLinks.map((link, index) => (
         <CustomTabPanel key={index} value={value} index={index}>
           {link.label === 'Contact Organizer' ? (
-           <Grid container spacing={2}>
-           <Grid item  md={6} xs={12}>
-             <h2>Contact Information</h2>
-             <p><strong   style={{color:'#c11'}}>Name:</strong> CICA Vancouver</p>
-             <p><strong  style={{color:'#c11'}}>Phone:</strong> <span>+92323456456</span></p>
-             <p><strong  style={{color:'#c11'}}>Organizer Email:</strong>  <span>codegenio@gmail.com</span></p>
-            
-           </Grid>
-           <Grid item md={6} xs={12}>
-             <form onSubmit={handleSubmit}>
-               <TextField
-                 label="Name"
-                 name="name"
-                 value={formData.name}
-                 onChange={handleInputChange}
-                 fullWidth
-                 margin="normal"
-                 required
-               />
-               <TextField
-                 label="Email"
-                 name="email"
-                 type="email"
-                 value={formData.email}
-                 onChange={handleInputChange}
-                 fullWidth
-                 margin="normal"
-                 required
-               />
-               <TextField
-                 label="Message"
-                 name="message"
-                 value={formData.message}
-                 onChange={handleInputChange}
-                 fullWidth
-                 margin="normal"
-                 multiline
-                 rows={4}
-                 required
-               />
-               <Button type="submit"
-                 variant="contained"
-                 sx={{ backgroundColor: '#c11', '&:hover': { backgroundColor: '#a00' } }}
-               >
-                 Send Message
-               </Button>
-             </form>
-           </Grid>
-         </Grid>
+            <Grid container spacing={2}>
+              <Grid item md={6} xs={12}>
+                <h2>Contact Information</h2>
+                <p><strong style={{ color: '#c11' }}>Name:</strong> CICA Vancouver</p>
+                <p><strong style={{ color: '#c11' }}>Phone:</strong> <span>+92323456456</span></p>
+                <p><strong style={{ color: '#c11' }}>Organizer Email:</strong>  <span>codegenio@gmail.com</span></p>
+
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <form onSubmit={handleSubmit} >
+                  <TextField
+                    label="Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                  />
+                  <TextField
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                  />
+                  <TextField
+                    label="Message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                    multiline
+                    rows={4}
+                    required
+                  />
+                  <Button type="submit"
+                    variant="contained"
+                    sx={{ backgroundColor: '#c11', '&:hover': { backgroundColor: '#a00' } }}
+                  >
+                    Send Message
+                  </Button>
+                  <ToastContainer />
+                </form>
+              
+              </Grid>
+            </Grid>
           ) : link.label === 'Videos' ? (
             <Grid container spacing={2}>
               {videoData.map((video, index) => (
@@ -234,14 +236,14 @@ export default function BasicTabs() {
               </Grid>
             </Grid>
           ) : link.label === 'Sponsors' ? (
-            <Sponsor />) : link.label === 'Artists' ? 
+            <Sponsor />) : link.label === 'Artists' ?
             (<Artist />) : link.label === 'Photos' ? (<PhotosCard />) : link.label === 'Advertisers' ?
-             (<AdvertiserCard />) : 
+              (<AdvertiserCard />) :
               (
                 <>
                   <h2>{link.label}</h2>
                   <p>{link.data}</p>
-                 <p>No Data</p>
+                  <p>No Data</p>
                 </>
               )}
         </CustomTabPanel>

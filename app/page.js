@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Event from "@/components/ui/Events/Event";
 import Modal from '@/components/ui/muicomponents/Modal';
+import 'react-toastify/dist/ReactToastify.css';
 const EventsPage = () => {
   const router = useRouter();
 
