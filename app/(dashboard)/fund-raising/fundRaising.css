@@ -384,6 +384,9 @@
               color: #cc1111;
               font-size: 32px;
               font-weight: 600;
+              @media (max-width: 474px) {
+                font-size: 21px !important;
+              }
             }
             .sub-line {
               font-size: 16px;

@@ -376,6 +376,7 @@
           @media (max-width:474px) {
             width: 100%;
             height: unset;
+            text-align: center;
           }
           .count-border {
             border-radius: 6px;
@@ -389,11 +390,14 @@
             .title {
               color: #cc1111;
               font-size: 32px;
+              @media (max-width: 474px) {
+                font-size: 21px !important;
+              }
               font-weight: 600;
             }
             .sub-line {
               font-size: 16px;
-              @media(max-width: 474px){font-size: 12px;}
+              @media(max-width: 474px){font-size: 12px !important;}
             }
           }
         }
