@@ -9,7 +9,7 @@ import Artist from '../Artist';
 import PhotosCard from '@/components/PhotosCard';
 import AdvertiserCard from '@/components/AdvertiserCard';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
  
@@ -91,7 +91,9 @@ export default function BasicTabs() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    toast.success('Message sent successfully!');
+    toast.success('Message sent successfully!', {
+      style: { width: '300px' , marginTop: '10px'},
+    });
     console.log('Form submitted:', formData);
     setFormData({ name: '', email: '', message: '' });
     
@@ -174,7 +176,7 @@ export default function BasicTabs() {
                   >
                     Send Message
                   </Button>
-                  <ToastContainer />
+                  <ToastContainer   />
                 </form>
               
               </Grid>
