@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import { Modal, Box, Button, Typography } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { isOverflowing } from 'rsuite/esm/DOMHelper';
 
 const style = {
   position: 'absolute',
@@ -9,91 +11,28 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: '90%', // Responsive width
+  maxHeight: 400, // Max height for overflow
   maxWidth: 500, // Max width for larger screens
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+  overflowY: 'auto', // ya 'scroll'
 };
 
 const Page = () => {
-  const [formData, setFormData] = useState({
-    title: '',
-    type: '',
-    category: '',
-    goal: '',
-    country: '',
-    state: '',
-    city: '',
-    postalCode: '',
-    launchDate: '',
-    phoneNumber: '',
-    beneficiary: '',
-    beneficiaryFirstName: '',
-    beneficiaryLastName: '',
-    description: '',
-    bannerImage: null,
-    posterImage: null,
-    albumPhotos: [],
-    albumVideos: [],
-  });
-
-  const [error, setError] = useState(null); // State for error handling
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
   const [isLoading, setIsLoading] = useState(false); // State for loading indicator
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleFileChange = (event) => {
-    const { name, files } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: files.length > 1 ? Array.from(files) : files[0],
-    }));
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const onSubmit = (data) => {
     setIsLoading(true); // Set loading state
 
-    // Basic validation
-    if (!formData.title || !formData.type || !formData.category || !formData.goal) {
-      setError('Please fill in all required fields.');
-      setIsLoading(false);
-      return;
-    }
-
     // Log the form data to the console
-    console.log('Form submitted successfully:', formData);
+    console.log('Form submitted successfully:', data);
 
     // Reset form fields
-    setFormData({
-      title: '',
-      type: '',
-      category: '',
-      goal: '',
-      country: '',
-      state: '',
-      city: '',
-      postalCode: '',
-      launchDate: '',
-      phoneNumber: '',
-      beneficiary: '',
-      beneficiaryFirstName: '',
-      beneficiaryLastName: '',
-      description: '',
-      bannerImage: null,
-      posterImage: null,
-      albumPhotos: [],
-      albumVideos: [],
-    });
-    setError(null); // Clear any previous errors
+    Object.keys(data).forEach(key => setValue(key, ''));
     setIsLoading(false); // Reset loading state
   };
 
@@ -105,12 +44,13 @@ const Page = () => {
     setIsModalOpen(false);
   };
 
-  const isFormComplete = formData.title && formData.type && formData.category && formData.goal;
+  const isFormComplete = watch('title') && watch('type') && watch('category') && watch('goal');
 
+  const watchFormFields = watch({ disabled: true });
   return (
     <div className="event-body">
       <div className="heading">Create a Fund Raising Campaign</div>
-      <form className="submit-an-event" onSubmit={handleSubmit}>
+      <form className="submit-an-event" onSubmit={handleSubmit(onSubmit)}>
         {/* Title Field */}
         <div className="input-group in-1-col">
           <label>
@@ -118,11 +58,10 @@ const Page = () => {
           </label>
           <input
             type="text"
-            name="title"
+            {...register('title', { required: true })}
             placeholder="Enter Event Title"
-            value={formData.title}
-            onChange={handleChange}
           />
+          {errors.title && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* Type Field */}
@@ -131,16 +70,15 @@ const Page = () => {
             Type<span style={{ color: "#ef1d26" }}>*</span>
           </label>
           <select
-            name="type"
+            {...register('type', { required: true })}
             className="form-select"
-            value={formData.type}
-            onChange={handleChange}
           >
             <option value="">Select Type</option>
             <option value="1">One</option>
             <option value="2">Two</option>
             <option value="3">Three</option>
           </select>
+          {errors.type && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* Category Field */}
@@ -149,16 +87,15 @@ const Page = () => {
             Category<span style={{ color: "#ef1d26" }}>*</span>
           </label>
           <select
-            name="category"
+            {...register('category', { required: true })}
             className="form-select"
-            value={formData.category}
-            onChange={handleChange}
           >
             <option value="">Select Category</option>
             <option value="1">One</option>
             <option value="2">Two</option>
             <option value="3">Three</option>
           </select>
+          {errors.category && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* Fund Raising Goal Field */}
@@ -168,11 +105,10 @@ const Page = () => {
           </label>
           <input
             type="text"
-            name="goal"
+            {...register('goal', { required: true })}
             placeholder="Enter Goals"
-            value={formData.goal}
-            onChange={handleChange}
           />
+          {errors.goal && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* Country Field */}
@@ -181,16 +117,15 @@ const Page = () => {
             Country Where Funds Will Go<span style={{ color: "#ef1d26" }}>*</span>
           </label>
           <select
-            name="country"
+            {...register('country', { required: true })}
             className="form-select"
-            value={formData.country}
-            onChange={handleChange}
           >
             <option value="">Select Country</option>
             <option value="1">One</option>
             <option value="2">Two</option>
             <option value="3">Three</option>
           </select>
+          {errors.country && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* State Field */}
@@ -199,16 +134,15 @@ const Page = () => {
             State<span style={{ color: "#ef1d26" }}>*</span>
           </label>
           <select
-            name="state"
+            {...register('state', { required: true })}
             className="form-select"
-            value={formData.state}
-            onChange={handleChange}
           >
             <option value="">Select State</option>
             <option value="1">One</option>
             <option value="2">Two</option>
             <option value="3">Three</option>
           </select>
+          {errors.state && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* City Field */}
@@ -217,16 +151,15 @@ const Page = () => {
             City<span style={{ color: "#ef1d26" }}>*</span>
           </label>
           <select
-            name="city"
+            {...register('city', { required: true })}
             className="form-select"
-            value={formData.city}
-            onChange={handleChange}
           >
             <option value="">Select City</option>
             <option value="1">One</option>
             <option value="2">Two</option>
             <option value="3">Three</option>
           </select>
+          {errors.city && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* Postal Code Field */}
@@ -236,11 +169,10 @@ const Page = () => {
           </label>
           <input
             type="text"
-            name="postalCode"
+            {...register('postalCode', { required: true })}
             placeholder="Enter Postal Code"
-            value={formData.postalCode}
-            onChange={handleChange}
           />
+          {errors.postalCode && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* Launch Date Field */}
@@ -250,10 +182,9 @@ const Page = () => {
           </label>
           <input
             type="date"
-            name="launchDate"
-            value={formData.launchDate}
-            onChange={handleChange}
+            {...register('launchDate', { required: true })}
           />
+          {errors.launchDate && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* Phone Number Field */}
@@ -263,11 +194,10 @@ const Page = () => {
           </label>
           <input
             type="number"
-            name="phoneNumber"
+            {...register('phoneNumber', { required: true })}
             placeholder="Enter Phone number"
-            value={formData.phoneNumber}
-            onChange={handleChange}
           />
+          {errors.phoneNumber && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* Beneficiary Field */}
@@ -276,40 +206,37 @@ const Page = () => {
             Who is this Fund Raising For?<span style={{ color: "#ef1d26" }}>*</span>
           </label>
           <select
-            name="beneficiary"
+            {...register('beneficiary', { required: true })}
             className="form-select"
-            value={formData.beneficiary}
-            onChange={handleChange}
           >
             <option value="">Some One Else</option>
             <option value="1">One</option>
             <option value="2">Two</option>
             <option value="3">Three</option>
           </select>
+          {errors.beneficiary && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* Beneficiary Full Name Fields */}
         <div className="input-group in-3-col">
-          < label>
+          <label>
             Type the beneficiary’s Full Name<span style={{ color: "#ef1d26" }}>*</span>
           </label>
           <input
             type="text"
-            name="beneficiaryFirstName"
+            {...register('beneficiaryFirstName', { required: true })}
             placeholder="First Name"
-            value={formData.beneficiaryFirstName}
-            onChange={handleChange}
           />
+          {errors.beneficiaryFirstName && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
         <div className="input-group in-3-col">
-          <label>-<span style={{ color: "#ef1d26" }}>*</span></label>
+          <label>-<span style={{ color: "#ef1d26 " }}>*</span></label>
           <input
             type="text"
-            name="beneficiaryLastName"
+            {...register('beneficiaryLastName', { required: true })}
             placeholder="Last Name"
-            value={formData.beneficiaryLastName}
-            onChange={handleChange}
           />
+          {errors.beneficiaryLastName && <span style={{ color: 'red' }}>This field is required</span>}
         </div>
 
         {/* Description Field */}
@@ -318,12 +245,11 @@ const Page = () => {
             Description<span style={{ color: "#ef1d26" }}>*</span>
           </label>
           <textarea
-            name="description"
+            {...register('description', { required: true })}
             placeholder="Type Description"
             rows={6}
-            value={formData.description}
-            onChange={handleChange}
           />
+          {errors.description && <span style={{ color: 'red' }}>This field is required</span>}
           <div className="icons">
             <div className="icon">
               <img src="./images/italic.svg" alt="" />
@@ -347,7 +273,7 @@ const Page = () => {
             <p>
               <span>Click Here</span> to upload banner image of Fund Raising*(png, jpg, jpeg)
             </p>
-            <input type="file" id="banner-upload" name="bannerImage" onChange={handleFileChange} />
+            <input type="file" id="banner-upload" {...register('bannerImage')} />
           </label>
         </div>
 
@@ -361,7 +287,7 @@ const Page = () => {
               <p>
                 <span>Click Here</span> to upload Image
               </p>
-              <input type="file" id="poster-upload" name="posterImage" onChange={handleFileChange} />
+              <input type="file" id="poster-upload" {...register('posterImage')} />
             </label>
           </div>
         </div>
@@ -385,7 +311,7 @@ const Page = () => {
                 <p>
                   <span>Click Here</span> to upload Image
                 </p>
-                <input type="file" id="photo-upload" name="albumPhotos" multiple onChange={handleFileChange} />
+                <input type="file" id="photo-upload" {...register('albumPhotos')} multiple />
               </label>
             </div>
           </div>
@@ -413,7 +339,7 @@ const Page = () => {
                 <p>
                   <span>Click Here</span> to upload video
                 </p>
-                <input type="file" id="video-upload" name="albumVideos" multiple onChange={handleFileChange} />
+                <input type="file" id="video-upload" {...register('albumVideos')} multiple />
               </label>
             </div>
           </div>
@@ -431,7 +357,7 @@ const Page = () => {
             onClick={() => console.log('Draft saved')}
           >
             SAVE AS DRAFT
-          </button>
+          </ button>
           <button
             type="button"
             style={{
@@ -450,7 +376,11 @@ const Page = () => {
         </div>
 
         {/* Error Message Display */}
-        {error && <div className="error-message" style={{ color: 'red' }}>{error}</div>}
+        {Object.keys(errors).length > 0 && (
+          <div className="error-message" style={{ color: 'red' }}>
+            Please fill in all required fields.
+          </div>
+        )}
       </form>
 
       {/* Modal to show form data */}
@@ -464,26 +394,19 @@ const Page = () => {
           <Typography id="modal-title" variant="h6" component="h2">
             Preview Data
           </Typography>
-          <Typography id="modal-description" sx={{ mt: 2 }}>
-            <div>Title: {formData.title}</div>
-            <div>Type: {formData.type}</div>
-            <div>Category: {formData.category}</div>
-            <div>Goal: {formData.goal}</div>
-            <div>Country: {formData.country}</div>
-            <div>State: {formData.state}</div>
-            <div>City: {formData.city}</div>
-            <div>Postal Code: {formData.postalCode}</div>
-            <div>Launch Date: {formData.launchDate}</div>
-            <div>Phone Number: {formData.phoneNumber}</div>
-            <div>Beneficiary: {formData.beneficiary}</div>
-            <div>Beneficiary First Name: {formData.beneficiaryFirstName}</div>
-            <div>Beneficiary Last Name: {formData.beneficiaryLastName}</div>
-            <div>Description: {formData.description}</div>
-            {/* Add other fields as necessary */}
-          </Typography>
-          <Button onClick={handleCloseModal}>Close</Button>
+          <Box id="modal-description" sx={{ mt: 2 }}>
+            {Object.keys(watchFormFields).map((field, index) => (
+              <Typography key={index} variant="body1" sx={{ mb: 1 }}>
+                <strong>{field.replace(/([A-Z])/g, ' $1').trim().toUpperCase()}:</strong> {watchFormFields[field] || 'N/A'}
+              </Typography>
+            ))}
+          </Box>
+          <Button onClick={handleCloseModal} sx={{ mt: 3 }}>
+            Close
+          </Button>
         </Box>
       </Modal>
+
     </div>
   );
 };

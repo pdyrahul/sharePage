@@ -29,7 +29,7 @@ const Page = () => {
   const handlePreview = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const watchFields = watch();
+  const watchFormFields = watch({ disabled: true });
 
   return (
     <div className="event-body">
@@ -219,29 +219,12 @@ const Page = () => {
             Preview Event
           </Typography>
           <Typography id="modal-description" sx={{ mt: 2 }}>
-            <strong>Title:</strong> {watchFields.title || 'N/A'}
-            <br />
-            <strong>Type:</strong> {watchFields.type || 'N/A'}
-            <br />
-            <strong>Category:</strong> {watchFields.category || 'N/A'}
-            <br />
-            <strong>Sub Category:</strong> {watchFields.subCategory || 'N/A'}
-            <br />
-            <strong>Event Date:</strong> {watchFields.eventDate || 'N/A'}
-            <br />
-            <strong>Start Time:</strong> {watchFields.startTime || 'N/A'}
-            <br />
-            <strong>End Time:</strong> {watchFields.endTime || 'N/A'}
-            <br />
-            <strong>Venue Name:</strong> {watchFields.venueName || 'N/A'}
-            <br />
-            <strong>Address:</strong> {watchFields.address || 'N/A'}
-            <br />
-            <strong>Capacity:</strong> {watchFields.capacity || 'N/A'}
-            <br />
-            <strong>Refund Policy:</strong> {watchFields.refundPolicy || 'N/A'}
-            <br />
-            <strong>Amenities:</strong> {watchFields.amenities || 'N/A'}
+            {Object.keys(watchFormFields).map((field, index) => (
+              <React.Fragment key={index}>
+                <strong>{field.replace(/([A-Z])/g, ' $1').trim()}:</strong> {watchFormFields[field] || 'N/A'}
+                <br />
+              </React.Fragment>
+            ))}
           </Typography>
           <Button onClick={handleCloseModal}>Close</Button>
         </Box>

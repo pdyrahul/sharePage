@@ -55,7 +55,7 @@ const Page = () => {
               </div>
               <div className="title">Masterclass-Currency</div>
               <div className="location">
-                <Image src={Event} alt="" />
+                <Image src={Event} style={{width:'100%',}} alt="" />
                 <span>Rawalpindi, Pakistan</span>
               </div>
               <div className="hosted">
