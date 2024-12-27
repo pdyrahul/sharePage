@@ -1,5 +1,5 @@
 import React from 'react'
-
+import Link from 'next/link';
 const page = () => {
   return (
     <div className="body-wrapper">
@@ -7,7 +7,9 @@ const page = () => {
     <div className="event-body">
       <div className="top-heading">
         <div className="top-name">Events</div>
-        <button className="top-btn">Dashboard</button>
+        <Link href="/my-events">
+              <button className="top-btn">Dashboard</button>
+            </Link>
       </div>
       <div className="menu-filter">
         <div className="item">

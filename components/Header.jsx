@@ -1,7 +1,6 @@
 'use client';
 import Image from 'next/image';
 import logo from '../public/images/logo.svg';
-import UserProfile from '../public/images/profile-img.svg';
 import { FaBars, FaTimes } from 'react-icons/fa'; // Import React Icons
 import searchIcon from '../public/images/search-2.svg';
 import handShake from '../public/images/hand-shake.svg';
@@ -14,7 +13,8 @@ import threeDotIcon from '../public/images/three-dot.svg';
 import Link from "next/link";
 import { useSidebar } from '@/Context/SidebarContext';
 import { useState, useEffect } from 'react';
-
+import { LuCircleUser } from "react-icons/lu";
+import { MdOutlineArrowDropDown } from "react-icons/md";
 const Header = () => {
   const { isOpen, toggleSidebar } = useSidebar();
   const [isMobile, setIsMobile] = useState(false);
@@ -36,13 +36,13 @@ const Header = () => {
             <Image src={logo} alt="Logo" />
           </Link>
         </div>
-       {isMobile? <div className="menu" onClick={toggleSidebar}>
+        {isMobile ? <div className="menu" onClick={toggleSidebar}>
           {isOpen ? (
             <FaTimes size={18} color="white" />
           ) : (
             <FaBars size={18} color="white" />
           )}
-        </div>: null}
+        </div> : null}
       </div>
       <div className="search-box">
         <div className="select-options">
@@ -60,38 +60,26 @@ const Header = () => {
         <div className="search-mobile link">
           <Image src={searchIcon} alt="Search Icon" />
         </div>
-        <a href="" className="hide-mobile">
-          <div className="hand-shake link">
-            <Image src={handShake} alt="Hand Shake" />
-          </div>
-        </a>
-        <a href="" className="hide-mobile">
-          <div className="persons link">
-            <Image src={personIcon} alt="Person Icon" />
-            <div className="count">1</div>
-          </div>
-        </a>
-        <a href="" className="hide-mobile">
-          <div className="help link">
-            <Image src={helpIcon} alt="Help" />
-          </div>
-        </a>
-        <a href="" className="hide-mobile">
-          <div className="notification link">
-            <Image src={notificationIcon} alt="Notification" />
-            <div className="count">2</div>
-          </div>
-        </a>
-        <a href="" className="hide-mobile">
-          <div className="cart link">
-            <Image src={cartIcon} alt="Cart" />
-          </div>
-        </a>
-        <a href="" className="hide-mobile">
-          <div className="setting link">
-            <Image src={settingIcon} alt="Setting" />
-          </div>
-        </a>
+        <div className="hand-shake link">
+          <Image src={handShake} alt="Hand Shake" />
+        </div>
+        <div className="persons link">
+          <Image src={personIcon} alt="Person Icon" />
+          <div className="count">1</div>
+        </div>
+        <div className="help link">
+          <Image src={helpIcon} alt="Help" />
+        </div>
+        <div className="notification link">
+          <Image src={notificationIcon} alt="Notification" />
+          <div className="count">2</div>
+        </div>
+        <div className="cart link">
+          <Image src={cartIcon} alt="Cart" />
+        </div>
+        <div className="setting link">
+          <Image src={settingIcon} alt="Setting" />
+        </div>
         <div className="three-dot link">
           <Image src={threeDotIcon} alt="Three Dot" />
         </div>
@@ -99,7 +87,8 @@ const Header = () => {
         <div className="perfile-detail">
           <div className="img-wrapper">
             <div className="circle">
-              <Image src={UserProfile} alt="" />
+              {/* <Image src={UserProfile} alt="" /> */}
+              <LuCircleUser style={{ fontSize: '2rem' }} />
             </div>
           </div>
           <div className="profile-detail-wrapper">
@@ -107,7 +96,8 @@ const Header = () => {
             <div className="title">Personal Profile</div>
           </div>
           <div className="down-icon">
-            <img src="./images/down-arrow-2.svg" alt="" />
+            {/* <img src="./images/down-arrow-2.svg" alt="" /> */}
+            <MdOutlineArrowDropDown style={{ color: '#fff', fontSize: '1.5rem' }} />
           </div>
         </div>
       </div>

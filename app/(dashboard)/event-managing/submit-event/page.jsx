@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Modal, Box, Typography, Button } from '@mui/material';
-
+import { ToastContainer, toast } from 'react-toastify';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -21,6 +21,9 @@ const Page = () => {
   const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
 
   const onSubmit = (data) => {
+    toast.success('submitted successfully!', {
+      style: { width: '300px', marginTop: '10px' },
+    });
     console.log('Form submitted successfully:', data);
     reset();
     setIsModalOpen(false);
@@ -205,6 +208,7 @@ const Page = () => {
           </button>
           <button className="prim" type="submit">SUBMIT</button>
         </div>
+        <ToastContainer />
       </form>
 
       {/* Modal for Preview */}

@@ -3,7 +3,9 @@
 import React, { useState } from 'react';
 import { Modal, Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { isOverflowing } from 'rsuite/esm/DOMHelper';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const style = {
   position: 'absolute',
@@ -26,6 +28,9 @@ const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
   const onSubmit = (data) => {
+   toast.success('Launched successfully!', {
+       style: { width: '300px', marginTop: '10px' },
+     });
     setIsLoading(true); // Set loading state
 
     // Log the form data to the console
@@ -381,6 +386,7 @@ const Page = () => {
             Please fill in all required fields.
           </div>
         )}
+        <ToastContainer/>
       </form>
 
       {/* Modal to show form data */}

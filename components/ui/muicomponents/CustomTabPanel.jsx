@@ -127,6 +127,8 @@ export default function BasicTabs() {
                 <p><strong style={{ color: '#c11' }}>Organizer Email:</strong>  <span>codegenio@gmail.com</span></p>
               </Grid>
               <Grid item md={6} xs={12}>
+
+                {/*    form start here */}
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <Grid container spacing={2}>
                     <Grid item md={6} xs={12}>
