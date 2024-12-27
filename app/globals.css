@@ -610,6 +610,11 @@ body {
         .event-box-wrapper {
             width: 100%;
 
+            .heading_home {
+                font-size: 1.5rem;
+                font-weight: 700;
+            }
+
             .main-heading {
                 display: flex;
                 justify-content: space-between;

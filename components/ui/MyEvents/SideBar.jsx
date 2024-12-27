@@ -2,10 +2,9 @@
 import * as React from 'react';
 import Link from 'next/link';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import MenuIcon from '@mui/icons-material/Menu'; // Import Menu icon
-import CloseIcon from '@mui/icons-material/Close'; // Import Close icon
 import user from '../../../public/images/user-01.svg';
 import Image from 'next/image';
+import { useSidebar } from '@/Context/SidebarContext';
 import {
   Accordion,
   AccordionSummary,
@@ -16,13 +15,34 @@ import {
   ListItem,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+// import Position from 'rsuite/esm/internals/Overlay/Position';
 
 const styles = {
+  sidebar: {
+    width: '280px',
+    height: '100%',
+    backgroundColor: '#fff',
+    boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
+    padding: '10px',
+    // '@media (min-width: 768px)': {
+    //   transform: 'translateX(0)', 
+    // }, 
+  },
+  sidebarOpen: {
+    transform: 'translateX(-100%)',
+  
+  },
+
+
+  profileDetail: {
+    textAlign: 'center',
+    marginBottom: '20px',
+  },
   menuItem: {
     fontSize: 16,
     border: 'none',
     boxShadow: 'none',
-    margin:'10px 0',
+    margin: '10px 0',
   },
   subMenu: {
     display: 'flex',
@@ -48,64 +68,33 @@ const styles = {
       color: 'white',
     },
   },
-  sidebar: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '280px',
-    padding:'10px',
-    height: '100%',
-    backgroundColor: '#fff',
-    boxShadow: '2px 0 5px rgba(0,0,0,0.5)',
-    transition: 'transform 0.3s ease',
-    zIndex: 1000,
-    
-
-  },
-  sidebarClosed: {
-    transform: 'translateX(-100%)',
-  },
-  toggleButton: {
-    position: 'fixed',
-    top: '68px',
-    left: '0',
-    backgroundColor: '#c11',
-    border: 'none',
-    // borderRadius: '50%',
-    cursor: 'pointer',
-    padding: '10px',
-    zIndex: 1001,
-    color: 'white',
-  },
 };
 
 export function SideBar() {
+  const { isOpen,  closeSidebar } = useSidebar();
   const [activePath, setActivePath] = React.useState('');
-  const [isOpen, setIsOpen] = React.useState(false); // State to manage sidebar open/close
-
+  console.log( 'sidebar', isOpen);
   const handleItemClick = (path) => {
     setActivePath(path);
-    setIsOpen(false);
-  };
-
-  const toggleSidebar = () => {
-    setIsOpen((prev) => !prev); // Toggle the sidebar state
+    closeSidebar();
   };
 
   return (
     <div>
-      <button style={styles.toggleButton} onClick={toggleSidebar}>
-        {isOpen ? <CloseIcon /> : <MenuIcon />}
-      </button>
-      <div style={{ ...styles.sidebar, ...(isOpen ? {} : styles.sidebarClosed) }} id="side-bar">
-        <div className="profile-detail text-center my-4">
-          <div className="img-wrapper">
-            <Image src={user} alt="Profile" />
-          </div>
+      <div
+        style={{
+          ...styles.sidebar,
+          ...(isOpen ? styles.sidebarOpen : {}), 
+        }}
+        id="side-bar"
+      >
+        <div style={styles.profileDetail}>
+          <Image src={user} alt="Profile" />
           <div className="name">Amelia Joseph</div>
           <div className="title">Personal Profile</div>
         </div>
-        <ul className="menu"  style={{ maxHeight: '400px', overflowY: 'scroll' }}>
+        
+        <ul className="menu" style={{minheight: '400px', overflowY: 'scroll' }}>
           <li className="menu-item px-3">
             <Typography sx={styles.menuItem}>Notes</Typography>
           </li>
@@ -113,6 +102,7 @@ export function SideBar() {
             <Typography sx={styles.menuItem}>Reminder</Typography>
           </li>
           <Divider />
+
           {/* My Fund Raising Accordion */}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
@@ -202,11 +192,9 @@ export function SideBar() {
               </List>
             </AccordionDetails>
           </Accordion>
-
           <Divider />
-
           <div className="return my-2">
-            <Link href="/" passHref style={{ color: '#c11', cursor: 'pointer' }}>
+            <Link href="/" passHref>
               <ArrowBackIcon style={{ color: '#c11' }} />
               <span style={{ marginLeft: '8px', color: '#c11' }}>Return To Home</span>
             </Link>

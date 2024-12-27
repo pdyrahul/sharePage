@@ -37,13 +37,13 @@ export default function ChangeLocationModal() {
       <Button
         onClick={handleOpen}
         style={{
-          textTransform: 'lowercase',
+          textTransform: 'capitalize',
           color: '#c11',
           padding: 0,
           textDecoration: 'underline',
         }}
       >
-        change location
+        Change Location
       </Button>
       <Modal
         open={open}

@@ -6,12 +6,21 @@ import vericle from '../../../public/images/vericle-banner.svg'
 import map from '../../../public/images/map.svg'
 import Image from 'next/image'
 const eventDetail = ({ slug }) => {
+    const mapContainerStyle = {
+        height: "400px",
+        width: "100%"
+    };
+
+    const center = {
+        lat: 33.6007, // Latitude for Rawalpindi, Pakistan
+        lng: 72.6751  // Longitude for Rawalpindi, Pakistan
+    };
     return (
         <div className="body-wrapper">
             <div className="event-wrapper">
                 <div className="event-body">
                     <div className="banner-img">
-                        <Image src={banner} alt=""  className='potraitImg'/>
+                        <Image src={banner} alt="" className='potraitImg' />
                         <Image src={vericle} alt="" className='verticleImg d-none' />
                     </div>
                     <div className="event-detail">
@@ -146,12 +155,19 @@ const eventDetail = ({ slug }) => {
                                 <Image src={vericle} alt="" />
                             </div>
                             <div className="map-wrapper">
-                                <Image src={map} alt="" />
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d212780.22019256774!2d72.85333713221225!3d33.56140540336099!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df948974419acb%3A0x984357e1632d30f!2sRawalpindi%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2sin!4v1735306281627!5m2!1sen!2sin"
+                                    height={350}
+                                    style={{ border: 0 }}
+                                    allowFullScreen=""
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                />
                             </div>
                         </div>
                     </div>
                     <div className='my-2'>
-                    <CustomTabPanel />
+                        <CustomTabPanel />
                     </div>
                     <div className="event-box-wrapper">
                         <div className="main-heading">

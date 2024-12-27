@@ -74,7 +74,7 @@ const EventsPage = () => {
           </div>
           <div className="event-box-wrapper">
             <div className="main-heading">
-              <div className="heading text-left">Educational</div>
+              <div className="heading_home">Educational</div>
               
             </div>
             <Event />
