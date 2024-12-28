@@ -50,9 +50,6 @@ const Page = () => {
         {view === 'grid' ? (
           <div className="event-list">
             <div className="event">
-              <div className="img-wrapper">
-                <img src="./images/event.svg" alt="" />
-              </div>
               <div className="title">Masterclass-Currency</div>
               <div className="location">
                 <Image src={Event} style={{width:'100%',}} alt="" />

@@ -8,6 +8,9 @@
     font-family: "Karla", serif !important;
     font-style: normal;
 }
+@media(min-width: 768px) {
+    .menuIcon{display: none;}
+}
 ::-webkit-scrollbar {
     width: 5px;
     height: 5px;

@@ -5,6 +5,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import user from '../../../public/images/user-01.svg';
 import Image from 'next/image';
 import { useSidebar } from '@/Context/SidebarContext';
+import { useState,useEffect } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -15,7 +16,6 @@ import {
   ListItem,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Height } from '@mui/icons-material';
 const styles = {
 
   sidebarOpen: {
@@ -73,11 +73,22 @@ export function SideBar() {
     setActivePath(path);
     closeSidebar();
   };
+  const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 768);
+      }
+      handleResize();
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+  
+    }, [])
+  
 
   return (
    
       <div className='sidebar'
-        style={!isOpen ? { transform: 'translateX(0)' } : styles.sidebarOpen}>
+        style={isOpen===isMobile ? { transform: 'translateX(0)' } : styles.sidebarOpen}>
         <div style={styles.profileDetail}>
           <Image src={user} alt="Profile" />
           <div className="name" style={{ fontSize: '20px', fontWeight: 700 }}>Amelia Joseph</div>
@@ -93,7 +104,35 @@ export function SideBar() {
           </li>
           <Divider />
 
-
+  {/* My Events Accordion */}
+          <Accordion>
+            <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
+              <Typography sx={styles.menuItem}>My Events</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ marginTop: -2, padding: 0 }}>
+              <List sx={styles.subMenu}>
+                {[
+                  { name: 'Tickets purchased', path: '/my-events/ticket-purchased' },
+                  { name: 'Past Events Attended', path: '/my-events/past-event' },
+                  { name: 'Favorite Events', path: '/my-events/favorite-events' },
+                  { name: 'Upcoming Events', path: '/my-events/upcoming-event' },
+                  { name: 'Online Events', path: '/my-events/online-event' },
+                  { name: 'From Connections', path: '/my-events/from-connections' },
+                  { name: 'My Interest', path: '/my-events/my-interest' },
+                ].map((link, index) => (
+                  <ListItem
+                    key={index}
+                    sx={{ ...styles.subMenuItem, ...(activePath === link.path && styles.activeItem) }}
+                    onClick={() => handleItemClick(link.path)}
+                  >
+                    <Link href={link.path} passHref>
+                      <Typography>{link.name}</Typography>
+                    </Link>
+                  </ListItem>
+                ))}
+              </List>
+            </AccordionDetails>
+          </Accordion>
 
           {/* Event Managing Accordion */}
           <Accordion defaultExpanded>
@@ -125,37 +164,6 @@ export function SideBar() {
               </List>
             </AccordionDetails>
           </Accordion>
-
-          {/* My Events Accordion */}
-          <Accordion>
-            <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
-              <Typography sx={styles.menuItem}>My Events</Typography>
-            </AccordionSummary>
-            <AccordionDetails sx={{ marginTop: -2, padding: 0 }}>
-              <List sx={styles.subMenu}>
-                {[
-                  { name: 'Tickets purchased', path: '/my-events/ticket-purchased' },
-                  { name: 'Past Events Attended', path: '/my-events/past-event' },
-                  { name: 'Favorite Events', path: '/my-events/favorite-events' },
-                  { name: 'Upcoming Events', path: '/my-events/upcoming-event' },
-                  { name: 'Online Events', path: '/my-events/online-event' },
-                  { name: 'From Connections', path: '/my-events/from-connections' },
-                  { name: 'My Interest', path: '/my-events/my-interest' },
-                ].map((link, index) => (
-                  <ListItem
-                    key={index}
-                    sx={{ ...styles.subMenuItem, ...(activePath === link.path && styles.activeItem) }}
-                    onClick={() => handleItemClick(link.path)}
-                  >
-                    <Link href={link.path} passHref>
-                      <Typography>{link.name}</Typography>
-                    </Link>
-                  </ListItem>
-                ))}
-              </List>
-            </AccordionDetails>
-          </Accordion>
-
           <Divider />
 
           {/* My Fund Raising Accordion */}

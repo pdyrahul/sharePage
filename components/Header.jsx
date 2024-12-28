@@ -36,7 +36,7 @@ const Header = () => {
             <Image src={logo} alt="Logo" />
           </Link>
         </div>
-        {isMobile ? <div className="menu" onClick={toggleSidebar}>
+        {isMobile ? <div className="menuIcon" onClick={toggleSidebar}>
           {isOpen ? (
             <FaTimes size={18} color="white" />
           ) : (
