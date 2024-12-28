@@ -16,13 +16,6 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 const styles = {
-  sidebar: {
-    width: '280px',
-    height: '100%',
-    backgroundColor: '#fff',
-    boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
-    padding: '10px',
-    }, 
 
   sidebarOpen: {
     transform: 'translateX(-100%)',
@@ -69,7 +62,7 @@ const styles = {
 export function SideBar() {
   const { isOpen,  closeSidebar } = useSidebar();
   const [activePath, setActivePath] = React.useState('');
-  console.log( 'sidebar', isOpen);
+
   const handleItemClick = (path) => {
     setActivePath(path);
     closeSidebar();
@@ -77,14 +70,8 @@ export function SideBar() {
 
   return (
     <div>
-      <div  className='sidebarwrap'
-        style={{
-          ...styles.sidebar,
-          ...(isOpen ? styles.sidebarOpen : {}), 
-        }}
-
-        id="side-bar"
-      >
+      <div  className='sidebar' 
+        style={!isOpen ? { transform: 'translateX(0)' } : styles.sidebarOpen}>
         <div style={styles.profileDetail}>
           <Image src={user} alt="Profile" />
           <div className="name">Amelia Joseph</div>

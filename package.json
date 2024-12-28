@@ -17,7 +17,6 @@
     "@mui/x-charts": "6.0.0-alpha.1",
     "@react-google-maps/api": "^2.20.5",
     "bootstrap": "^5.3.3",
-    "jodit-react": "^4.1.2",
     "next": "15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
