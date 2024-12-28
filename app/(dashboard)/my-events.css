@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
-* {
+*,ul {
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
@@ -260,7 +260,7 @@
     height: 100%;
     background-color: #fff;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-    padding: 10px;
+    padding: 10px, 0;
 
 
     @media (max-width: 767px) {

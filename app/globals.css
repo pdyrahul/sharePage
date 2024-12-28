@@ -28,6 +28,9 @@ li {
 body {
     font-family: "Karla", serif !important;
     font-style: normal;
+    margin: 0;
+    padding: 0;
+    
 }
 
 
