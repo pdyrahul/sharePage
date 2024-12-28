@@ -60,6 +60,7 @@ const Header = () => {
         <div className="search-mobile link">
           <Image src={searchIcon} alt="Search Icon" />
         </div>
+        <div className="utilityIcons">
         <div className="hand-shake link">
           <Image src={handShake} alt="Hand Shake" />
         </div>
@@ -79,6 +80,7 @@ const Header = () => {
         </div>
         <div className="setting link">
           <Image src={settingIcon} alt="Setting" />
+        </div>
         </div>
         <div className="three-dot link">
           <Image src={threeDotIcon} alt="Three Dot" />

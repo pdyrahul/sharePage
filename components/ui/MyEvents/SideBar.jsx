@@ -24,9 +24,19 @@ const styles = {
     backgroundColor: '#fff',
     boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
     padding: '10px',
-    // '@media (min-width: 768px)': {
-    //   transform: 'translateX(0)', 
-    // }, 
+    '@media (max-width: 768px)': {
+      sidebar : {
+        width: "280px",
+        height: "100%",
+        backgroundColor: "rgb(255, 255, 255)",
+        boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
+        padding: "10px",
+        position: "absolute",
+        zIndex: 1,
+        left: "0px",
+        top: "0px"
+      } 
+    }, 
   },
   sidebarOpen: {
     transform: 'translateX(-100%)',
@@ -81,7 +91,7 @@ export function SideBar() {
 
   return (
     <div>
-      <div
+      <div className='sidebarWrapper'
         style={{
           ...styles.sidebar,
           ...(isOpen ? styles.sidebarOpen : {}), 
