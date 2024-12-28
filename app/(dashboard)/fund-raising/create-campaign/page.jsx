@@ -1,6 +1,6 @@
 'use client'; // This is necessary for client-side rendering in Next.js 13+
-
-import React, { useState } from 'react';
+import JoditEditor from 'jodit-react';
+import React, { useState, useRef, useMemo } from 'react';
 import { Modal, Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,11 +26,15 @@ const Page = () => {
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
   const [isLoading, setIsLoading] = useState(false); // State for loading indicator
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
-
+  const editor = useRef(null);
+  const [content, setContent] = useState('');
+  const config = {
+    placeholder: 'Type Description',
+  }
   const onSubmit = (data) => {
-   toast.success('Launched successfully!', {
-       style: { width: '300px', marginTop: '10px' },
-     });
+    toast.success('Launched successfully!', {
+      style: { width: '300px', marginTop: '10px' },
+    });
     setIsLoading(true); // Set loading state
 
     // Log the form data to the console
@@ -249,27 +253,20 @@ const Page = () => {
           <label>
             Description<span style={{ color: "#ef1d26" }}>*</span>
           </label>
-          <textarea
+          {/* <textarea
             {...register('description', { required: true })}
             placeholder="Type Description"
             rows={6}
-          />
+          /> */}
           {errors.description && <span style={{ color: 'red' }}>This field is required</span>}
-          <div className="icons">
-            <div className="icon">
-              <img src="./images/italic.svg" alt="" />
-            </div>
-            <div className="icon">
-              <img src="./images/bold.svg" alt="" />
-            </div>
-            <div className="icon">
-              <img src="./images/underline.svg" alt="" />
-            </div>
-            <div className="icon">
-              <img src="./images/line-through.svg" alt="" />
-            </div>
-            <div className="icon">Generate By AI</div>
-          </div>
+          <JoditEditor
+            ref={editor}
+            value={content}
+            config={config}
+            tabIndex={1} // tabIndex of textarea
+            onBlur={newContent => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
+            onChange={newContent => { }}
+          />
         </div>
 
         {/* Banner Image Upload */}
@@ -386,7 +383,7 @@ const Page = () => {
             Please fill in all required fields.
           </div>
         )}
-        <ToastContainer/>
+        <ToastContainer />
       </form>
 
       {/* Modal to show form data */}

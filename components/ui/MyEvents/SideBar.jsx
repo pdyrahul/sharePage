@@ -15,8 +15,6 @@ import {
   ListItem,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import Position from 'rsuite/esm/internals/Overlay/Position';
-
 const styles = {
   sidebar: {
     width: '280px',
@@ -24,20 +22,8 @@ const styles = {
     backgroundColor: '#fff',
     boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
     padding: '10px',
-    '@media (max-width: 768px)': {
-      sidebar : {
-        width: "280px",
-        height: "100%",
-        backgroundColor: "rgb(255, 255, 255)",
-        boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-        padding: "10px",
-        position: "absolute",
-        zIndex: 1,
-        left: "0px",
-        top: "0px"
-      } 
     }, 
-  },
+
   sidebarOpen: {
     transform: 'translateX(-100%)',
   
@@ -91,11 +77,12 @@ export function SideBar() {
 
   return (
     <div>
-      <div className='sidebarWrapper'
+      <div  className='sidebarwrap'
         style={{
           ...styles.sidebar,
           ...(isOpen ? styles.sidebarOpen : {}), 
         }}
+
         id="side-bar"
       >
         <div style={styles.profileDetail}>
