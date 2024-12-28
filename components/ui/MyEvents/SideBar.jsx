@@ -15,28 +15,33 @@ import {
   ListItem,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Height } from '@mui/icons-material';
 const styles = {
 
   sidebarOpen: {
     transform: 'translateX(-100%)',
-  
+
   },
 
 
   profileDetail: {
     textAlign: 'center',
-    marginBottom: '20px',
+    margin: '20px',
+
   },
   menuItem: {
     fontSize: 16,
     border: 'none',
     boxShadow: 'none',
     margin: '10px 0',
+    fontWeight: 'bold',
   },
   subMenu: {
     display: 'flex',
     flexDirection: 'column',
-    fontSize: 15,
+    fontSize: 12,
+    padding: '10px 0',
+    fontWeight: 'bold !important',
   },
   expandIcon: {
     backgroundColor: '#c11',
@@ -44,6 +49,7 @@ const styles = {
   },
   subMenuItem: {
     cursor: 'pointer',
+    fontWeight: 'bold',
     '&:hover': {
       backgroundColor: '#c11',
       '& .MuiTypography-root': {
@@ -60,7 +66,7 @@ const styles = {
 };
 
 export function SideBar() {
-  const { isOpen,  closeSidebar } = useSidebar();
+  const { isOpen, closeSidebar } = useSidebar();
   const [activePath, setActivePath] = React.useState('');
 
   const handleItemClick = (path) => {
@@ -69,16 +75,16 @@ export function SideBar() {
   };
 
   return (
-    <div>
-      <div  className='sidebar' 
+   
+      <div className='sidebar'
         style={!isOpen ? { transform: 'translateX(0)' } : styles.sidebarOpen}>
         <div style={styles.profileDetail}>
           <Image src={user} alt="Profile" />
-          <div className="name">Amelia Joseph</div>
+          <div className="name" style={{ fontSize: '20px', fontWeight: 700 }}>Amelia Joseph</div>
           <div className="title">Personal Profile</div>
         </div>
-        
-        <ul className="menu" style={{minheight: '400px', overflowY: 'scroll' }}>
+
+        <ul className="menu" style={{ maxHeight: '100vh', overflowY: 'scroll' }}>
           <li className="menu-item px-3">
             <Typography sx={styles.menuItem}>Notes</Typography>
           </li>
@@ -87,19 +93,24 @@ export function SideBar() {
           </li>
           <Divider />
 
-          {/* My Fund Raising Accordion */}
+
+
+          {/* Event Managing Accordion */}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
-              <Typography sx={styles.menuItem}>My Fund Raising</Typography>
+              <Typography sx={styles.menuItem}>Event Managing</Typography>
             </AccordionSummary>
-            <AccordionDetails sx={{ marginTop: -2, padding: 0 }}>
+            <AccordionDetails sx={{ marginTop: -2, padding: 0, }}>
               <List sx={styles.subMenu}>
                 {[
-                  { name: 'Dashboard', path: '/fund-raising/dashboard' },
-                  { name: 'Create a campaign', path: '/fund-raising/create-campaign' },
-                  { name: 'Active campaigns', path: '/fund-raising/active-campaigns', name: 'Past campaigns', path: '/fund-raising/past-campaigns' },
-                  { name: 'Draft campaigns', path: '/fund-raising/draft-campaigns' },
-                  { name: 'Updates', path: '/fund-raising/event-updates' },
+                  { name: 'Dashboard', path: '/event-managing/event-dashboard' },
+                  { name: 'Submit an Event', path: '/event-managing/submit-event' },
+                  { name: 'Active Events', path: '/event-managing/active-event' },
+                  { name: 'Past Events', path: '/event-managing/past-events' },
+                  { name: 'Draft Events', path: '/event-managing/draft-events' },
+                  { name: 'Sponsors List', path: '/event-managing/sponsor-list' },
+                  { name: 'Paid Sponsors', path: '/event-managing/paid-sponsors' },
+                  { name: 'Paid Vendors', path: '/event-managing/paid-vendors' },
                 ].map((link, index) => (
                   <ListItem
                     key={index}
@@ -114,6 +125,7 @@ export function SideBar() {
               </List>
             </AccordionDetails>
           </Accordion>
+
           {/* My Events Accordion */}
           <Accordion>
             <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
@@ -146,22 +158,19 @@ export function SideBar() {
 
           <Divider />
 
-          {/* Event Managing Accordion */}
-          <Accordion>
+          {/* My Fund Raising Accordion */}
+          <Accordion >
             <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
-              <Typography sx={styles.menuItem}>Event Managing</Typography>
+              <Typography sx={styles.menuItem}>My Fund Raising</Typography>
             </AccordionSummary>
-            <AccordionDetails sx={{ marginTop: -2, padding: 0,}}>
+            <AccordionDetails sx={{ marginTop: -2, padding: 0 }}>
               <List sx={styles.subMenu}>
                 {[
-                  { name: 'Dashboard', path: '/event-managing/event-dashboard' },
-                  { name: 'Submit an Event', path: '/event-managing/submit-event' },
-                  { name: 'Active Events', path: '/event-managing/active-event' },
-                  { name: 'Past Events', path: '/event-managing/past-events' },
-                  { name: 'Draft Events', path: '/event-managing/draft-events' },
-                  { name: 'Sponsors List', path: '/event-managing/sponsor-list' },
-                  { name: 'Paid Sponsors', path: '/event-managing/paid-sponsors' },
-                  { name: 'Paid Vendors', path: '/event-managing/paid-vendors' },
+                  { name: 'Dashboard', path: '/fund-raising/dashboard' },
+                  { name: 'Create a campaign', path: '/fund-raising/create-campaign' },
+                  { name: 'Active campaigns', path: '/fund-raising/active-campaigns', name: 'Past campaigns', path: '/fund-raising/past-campaigns' },
+                  { name: 'Draft campaigns', path: '/fund-raising/draft-campaigns' },
+                  { name: 'Updates', path: '/fund-raising/event-updates' },
                 ].map((link, index) => (
                   <ListItem
                     key={index}
@@ -185,6 +194,6 @@ export function SideBar() {
           </div>
         </ul>
       </div>
-    </div>
+    
   );
 }
