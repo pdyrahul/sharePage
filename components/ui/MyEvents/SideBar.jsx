@@ -95,7 +95,7 @@ export function SideBar() {
           <div className="title">Personal Profile</div>
         </div>
 
-        <ul className="menu" style={{ maxHeight: '100vh', overflowY: 'scroll' }}>
+        <ul className="menu" style={{ maxHeight: '600px', overflowY: 'scroll' }}>
           <li className="menu-item px-3">
             <Typography sx={styles.menuItem}>Notes</Typography>
           </li>

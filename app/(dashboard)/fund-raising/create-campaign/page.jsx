@@ -5,8 +5,7 @@ import { Modal, Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-
-
+import { Editor } from '@/components/ui/TextEditor/Editor';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -26,6 +25,10 @@ const Page = () => {
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
   const [isLoading, setIsLoading] = useState(false); // State for loading indicator
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+
+  const handleEditorChange = (content) => {
+    console.log('Content changed:', content);
+  };
 
   const onSubmit = (data) => {
    toast.success('Launched successfully!', {
@@ -249,13 +252,17 @@ const Page = () => {
           <label>
             Description<span style={{ color: "#ef1d26" }}>*</span>
           </label>
-          <textarea
+          {/* <textarea
             {...register('description', { required: true })}
             placeholder="Type Description"
             rows={6}
+          /> */}
+           <Editor 
+            onEditorChange={handleEditorChange}
+            initialValue="<p>Start writing here...</p>"
           />
           {errors.description && <span style={{ color: 'red' }}>This field is required</span>}
-          <div className="icons">
+          {/* <div className="icons">
             <div className="icon">
               <img src="./images/italic.svg" alt="" />
             </div>
@@ -269,7 +276,7 @@ const Page = () => {
               <img src="./images/line-through.svg" alt="" />
             </div>
             <div className="icon">Generate By AI</div>
-          </div>
+          </div> */}
         </div>
 
         {/* Banner Image Upload */}

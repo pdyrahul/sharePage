@@ -8,11 +8,13 @@
     font-family: "Karla", serif !important;
     font-style: normal;
 }
+.tox .tox-edit-area::before {
+    border: 1px solid #c11 !important;}
 @media(min-width: 768px) {
     .menuIcon{display: none;}
 }
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 3px;
     height: 5px;
   }
   
