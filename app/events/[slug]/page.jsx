@@ -5,6 +5,7 @@ import banner from '../../../public/images/banner.svg'
 import vericle from '../../../public/images/vericle-banner.svg'
 import map from '../../../public/images/map.svg'
 import Image from 'next/image'
+import TicketBooking from '@/components/Ticket/TicketBooking'
 const eventDetail = ({ slug }) => {
     const mapContainerStyle = {
         height: "400px",
@@ -119,32 +120,7 @@ const eventDetail = ({ slug }) => {
                                 </a>
                             </div>
                             <div className="ticket-wrapper">
-                                <div className="heading">Ticket Price</div>
-                                <div className="count">
-                                    <div className="title">Adult($10)</div>
-                                    <div className="detail">
-                                        <div className="box">-</div> 0<div className="box">+</div>
-                                    </div>
-                                </div>
-                                <div className="count">
-                                    <div className="title">Child($20)</div>
-                                    <div className="detail">
-                                        <div className="box">-</div> 0<div className="box">+</div>
-                                    </div>
-                                </div>
-                                <div className="count">
-                                    <div className="title">Seniors($5)</div>
-                                    <div className="detail">
-                                        <div className="box">-</div> 0<div className="box">+</div>
-                                    </div>
-                                </div>
-                                <div className="total">
-                                    <div className="title">Total Amount</div>
-                                    <div className="price">CA $340</div>
-                                </div>
-                                <button data-bs-toggle="modal" data-bs-target="#buy-ticket">
-                                    Get Ticket
-                                </button>
+                             <TicketBooking />
                             </div>
                             <div className="become-sponsor">
                                 <button data-bs-toggle="modal" data-bs-target="#become-sponsor-vender">
