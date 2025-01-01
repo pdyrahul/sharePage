@@ -11,7 +11,7 @@ import cartIcon from '../public/images/cart.svg';
 import settingIcon from '../public/images/setting.svg';
 import threeDotIcon from '../public/images/three-dot.svg';
 import Link from "next/link";
-import { useSidebar } from '@/Context/SidebarContext';
+import { useSidebar } from '../Context/SidebarContext';
 import { useState, useEffect } from 'react';
 import { LuCircleUser } from "react-icons/lu";
 import { MdOutlineArrowDropDown } from "react-icons/md";

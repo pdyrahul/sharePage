@@ -1,5 +1,5 @@
 import React from 'react';
-import PhotosCard from '@/components/PhotosCard';
+import PhotosCard from '../../../components/PhotosCard';
 function MyEventPage(props) {
     return (
 

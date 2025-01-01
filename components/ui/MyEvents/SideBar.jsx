@@ -4,7 +4,7 @@ import Link from 'next/link';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import user from '../../../public/images/user-01.svg';
 import Image from 'next/image';
-import { useSidebar } from '@/Context/SidebarContext';
+import { useSidebar } from '../../../Context/SidebarContext';
 import { useState,useEffect } from 'react';
 import {
   Accordion,
@@ -95,7 +95,7 @@ export function SideBar() {
           <div className="title">Personal Profile</div>
         </div>
 
-        <ul className="menu" style={{ maxHeight: '600px', overflowY: 'scroll' }}>
+        <ul className="menu" style={{ minHeight: '600px', overflowY: 'scroll' }}>
           <li className="menu-item px-3">
             <Typography sx={styles.menuItem}>Notes</Typography>
           </li>

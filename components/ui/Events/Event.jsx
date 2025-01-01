@@ -1,6 +1,6 @@
-import EventCard from "@/components/ui/Events/EventCard";
-import React from "react";
 
+import React from "react";
+import EventCard from "./EventCard"
 const Event =() =>{
     const events = [
         {

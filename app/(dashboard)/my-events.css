@@ -649,296 +649,55 @@
       background-color: white;
       box-shadow: 1px 1px 7px 0 rgba(0, 0, 0, 0.1);
       padding: 15px;
-
+    
       .in-1-col {
         width: 100%;
       }
-
+      
+    
       .in-2-col {
         width: calc(50% - 7.5px);
-
         @media (max-width: 415px) {
           width: 100%;
         }
       }
-
+    
       .in-3-col {
         width: calc(33.3% - 10px);
-
         @media (max-width: 1076px) {
           width: calc(50% - 7.5px);
         }
-
         @media (max-width: 600px) {
           width: 100%;
         }
       }
-
+    
       .in-0-75-col {
         width: calc(66.7% - 7.5px);
-
         @media (max-width: 1076px) {
           width: 100%;
         }
       }
-
-      .desc {
-        position: relative;
-
-        textarea {
-          padding-top: 50px;
-
-          @media (max-width: 393px) {
-            padding-top: 90px;
-          }
-        }
-
-        .icons {
-          position: absolute;
-          display: flex;
-          gap: 10px;
-          top: 40px;
-          left: 15px;
-
-          @media (max-width: 412px) {
-            flex-wrap: wrap;
-          }
-
-          .icon {
-            height: 30px;
-            padding: 0px 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 4px;
-            background-color: #cc1111;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-          }
-        }
+    
+      .in-0-5-col {
+        width: calc(50% - 7.5px);
+        @media (max-width: 1076px) {
+          width: calc(100%);
+        }   
       }
-
-      .range {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-
-        span {
-          padding-top: 5px;
+      .in-0-25-col {
+        width: calc(20% - 5px);
+        
+        @media (max-width: 1076px) {
+          width: calc(40% - 7.5px); 
         }
-      }
-
-      .cancel-policy {
-        width: 100%;
-        min-height: 105px;
-        border-radius: 4px;
-        border: 1px solid #d9dce0;
-        background-color: #f9fafb;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 10px;
-
-        a {
-          color: #cc1111;
-        }
-
-        p {
-          margin: 0px;
-          padding: 0px;
-          color: #1f1216;
-          font-size: 16px;
-          font-weight: 500;
-          text-align: center;
-        }
-      }
-
-      .banner-img {
-        width: 100%;
-        position: relative;
-        margin-bottom: 10px;
-        min-height: 240px;
-        border-radius: 4px;
-        border: 1px solid #d9dce0;
-        background-color: #f9fafb;
-
-        span {
-          color: #cc1111;
-        }
-
-        p {
-          margin: 0px;
-          padding: 0px;
-          color: #1f1216;
-          font-size: 16px;
-          font-weight: 500;
-          text-align: center;
-        }
-
-        label {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          cursor: pointer;
-        }
-
-        input {
-          position: absolute;
-          z-index: -90;
-          opacity: 0;
-        }
-      }
-
-      .img-label {
-        label {
-          width: 100%;
-          font-size: 14px;
-          font-family: 500;
-          margin-bottom: 10px;
-        }
-      }
-
-      .poster-img {
-        width: 240px;
-        position: relative;
-        margin-bottom: 10px;
-        height: 240px;
-        padding: 10px;
-        border-radius: 4px;
-        border: 1px solid #d9dce0;
-        background-color: #f9fafb;
-
-        span {
-          color: #cc1111;
-        }
-
-        p {
-          margin: 0px;
-          padding: 0px;
-          color: #1f1216;
-          font-size: 16px;
-          font-weight: 500;
-          text-align: center;
-        }
-
-        label {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          cursor: pointer;
-        }
-
-        input {
-          position: absolute;
-          z-index: -90;
-          opacity: 0;
-        }
-      }
-
-      .photo-wrapper {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-
-        .photo {
-          width: 260px;
-          height: 260px;
-          position: relative;
-
-          .img-wrapper {
-            width: 100%;
-
-            height: 100%;
-
-            img {
-              width: 100%;
-              border-radius: 12px;
-            }
-          }
-
-          .icon {
-            position: absolute;
-            top: 0px;
-            right: 0px;
-          }
-        }
-      }
-
-      .video-wrapper {
-        display: flex;
-        gap: 12px;
-        align-items: stretch !important;
-        margin-top: 10px;
-        flex-wrap: wrap;
-
-        .video {
-          width: 300px;
-          position: relative;
-
-          .img-wrapper {
-            width: 100%;
-
-            height: 100%;
-
-            img {
-              width: 100%;
-              border-radius: 12px;
-            }
-          }
-
-          .icon {
-            position: absolute;
-            top: 0px;
-            right: 0px;
-          }
-
-          .play {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-          }
-        }
-      }
-
-      .main-btn {
-        width: 100%;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 40px;
-        margin-bottom: 30px;
-
-        @media (max-width: 800px) {
-          flex-wrap: wrap;
-        }
-
-        button {
-          width: 250px;
-          height: 46px;
-          border-radius: 75px;
-          color: white;
-          background-color: #cc1111;
-          border: none;
-          font-size: 17px;
-          cursor: pointer;
-          font-weight: 600;
-
-          @media (max-width: 600px) {
-            width: 100%;
-          }
-        }
-
-        .prim {
-          background-color: #cc1111;
+      
+        @media (max-width: 600px) {
+          width: 100%; 
         }
       }
     }
+    
 
     .preview {
       width: 100%;
