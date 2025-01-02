@@ -1,6 +1,6 @@
 import React from 'react'
 import Event from '@/components/ui/Events/Event'
-import CustomTabPanel from '@/components/ui/muicomponents/CustomTabPanel'
+import CustomTabPanel from '../../../components/ui/muicomponents/CustomTabPanel'
 import banner from '../../../public/images/banner.svg'
 import vericle from '../../../public/images/vericle-banner.svg'
 import map from '../../../public/images/map.svg'

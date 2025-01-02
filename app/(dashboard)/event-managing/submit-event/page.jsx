@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Modal, Box, Typography, Button } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
-import { Editor } from '@/components/ui/TextEditor/Editor';
+import { Editor } from '../../../../components/ui/TextEditor/Editor';
 import * as Yup from 'yup';
 
 
