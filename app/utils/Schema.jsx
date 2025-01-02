@@ -11,20 +11,19 @@ const validationSchema = Yup.object({
     .required('Catchy phrase is required'),
   // description: Yup.string().required('Event description is required'),
   // privacy: Yup.string().required('Return policy is required'),
-  country: Yup.string().required('Country is required'),
-  state: Yup.string().required('State is required'),
-  city: Yup.string().required('City is required'),
+  // country: Yup.string().required('Country is required'),
+  // state: Yup.string().required('State is required'),
+  // city: Yup.string().required('City is required'),
   address: Yup.string().required('Event Address is required'),
   place: Yup.string().required('Name of Place is required'),
-  eventType: Yup.string()
-    .required('Please select Yes or No'),
   ticketLinkType: Yup.string().when('eventType', {
     is: (value) => value === 'Paid',
     then: (schema) => schema.required('Link Type Required'),
     otherwise: (schema) => schema.notRequired(),
   }),
+
   ticketUrl: Yup.string().when('ticketLinkType', {
-    is: (value) => value === 'External',
+    is: (value) => value === 'external',
     then: (schema) => schema.required('URL is Required'),
     otherwise: (schema) => schema.notRequired(),
   }),

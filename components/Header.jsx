@@ -33,7 +33,7 @@ const Header = () => {
       <div className="logo-menu">
         <div className="logo-wrapper">
           <Link href={'/'}>
-            <Image src={logo} alt="Logo" />
+            <Image src={logo} alt="Logo" loading='lazy' />
           </Link>
         </div>
         {isMobile ? <div className="menuIcon" onClick={toggleSidebar}>
@@ -58,32 +58,32 @@ const Header = () => {
       </div>
       <div className="import-links">
         <div className="search-mobile link">
-          <Image src={searchIcon} alt="Search Icon" />
+          <Image src={searchIcon} alt="Search Icon" height={30} width={30}/>
         </div>
         <div className="utilityIcons">
         <div className="hand-shake link">
-          <Image src={handShake} alt="Hand Shake" />
+          <Image src={handShake} alt="Hand Shake" height={30} width={30}/>
         </div>
         <div className="persons link">
-          <Image src={personIcon} alt="Person Icon" />
+          <Image src={personIcon} alt="Person Icon" height={30} width={30}/>
           <div className="count">1</div>
         </div>
         <div className="help link">
           <Image src={helpIcon} alt="Help" />
         </div>
         <div className="notification link">
-          <Image src={notificationIcon} alt="Notification" />
+          <Image src={notificationIcon} alt="Notification" height={30} width={30}/>
           <div className="count">2</div>
         </div>
         <div className="cart link">
-          <Image src={cartIcon} alt="Cart" />
+          <Image src={cartIcon} alt="Cart" height={30} width={30}/>
         </div>
         <div className="setting link">
-          <Image src={settingIcon} alt="Setting" />
+          <Image src={settingIcon} alt="Setting"height={30} width={30} />
         </div>
         </div>
         <div className="three-dot link">
-          <Image src={threeDotIcon} alt="Three Dot" />
+          <Image src={threeDotIcon} alt="Three Dot" height={30} width={30}/>
         </div>
         <div className="line" />
         <div className="perfile-detail">

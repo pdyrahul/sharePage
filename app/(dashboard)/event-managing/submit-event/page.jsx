@@ -25,8 +25,8 @@ const initialValues = {
   ethnicity: '',
   eventTitle: '',
   event: '',
-  description: 'null',
-  privacy: 'null',
+  description: null,
+  privacy: null,
   country: '',
   state: '',
   city: '',
@@ -45,87 +45,55 @@ const initialValues = {
   ticketLinkType: '',
   ticketUrl: '',
   featuredEvent: 'no',
+  posterUpload: null,
+  galleryUpload:[],
+  layoutUpload:null,
 };
-
-
 
 
 const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formValues, setFormValues] = useState({}); // State to hold form values for preview
   const [modalContent, setModalContent] = useState('');
-  const [posterPreview, setPosterPreview] = useState(null);
-  const [seatingLayoutPreview, setSeatingLayoutPreview] = useState(null);
-  const [galleryImagesPreview, setGalleryImagesPreview] = useState([]);
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false)
   // Hardcoded ticket details
   const [tickets, setTickets] = useState([
     { name: 'VIP Ticket', price: 50, quantity: 100 },
     { name: 'General Admission', price: 20, quantity: 200 }
   ]);
-
-  // Add a new ticket
-  const addTicket = () => {
-    const newTicket = {
-      name: 'New Ticket',
-      price: 30,
-      quantity: 150,
-    };
-    setTickets([...tickets, newTicket]);
-  };
-
-  // Remove a ticket
-  const removeTicket = (index) => {
-    const updatedTickets = tickets.filter((_, idx) => idx !== index);
-    setTickets(updatedTickets);
-  };
-
   const handleEditorChange = (content) => {
-    console.log('Content changed:', content);
+    console.log(content);
   };
-
   const handleSubmit = (values) => {
     console.log('Form data:', values);
     toast.success('Event submitted successfully!');
   };
-
-  const handlePreview = (values) => {
-    setFormValues(values); // Set the form values for preview
-    setIsModalOpen(true); // Open the modal
-  };
-  const handleCloseModal = () => setIsModalOpen(false);
   const openModal = (content) => {
     setModalContent(content); // Set the modal content dynamically
     setIsModalOpen(true);
   };
-  // Handle file upload for poster
-  const handlePosterUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPosterPreview(URL.createObjectURL(file));
-    }
-  };
-
-  // Handle file upload for seating layout
-  const handleSeatingLayoutUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSeatingLayoutPreview(URL.createObjectURL(file));
-    }
-  };
-
-  const handleGalleryImagesUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const filePreviews = files.map((file) => URL.createObjectURL(file));
-    setGalleryImagesPreview(filePreviews);
-  };
-
   const handleOpenModal = () => {
     setSponsorModalOpen(true);
   };
   const CloseModal = () => {
     setSponsorModalOpen(false);
+    setIsModalOpen(false)
   }
+  
+    // Add a new ticket
+    const addTicket = () => {
+      const newTicket = {
+        name: 'New Ticket',
+        price: 30,
+        quantity: 150,
+      };
+      setTickets([...tickets, newTicket]);
+    };
+  
+    // Remove a ticket
+    const removeTicket = (index) => {
+      const updatedTickets = tickets.filter((_, idx) => idx !== index);
+      setTickets(updatedTickets);
+    };
 
   return (
     <div className="event-body">
@@ -135,7 +103,7 @@ const Page = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, isSubmitting }) => (
+        {({setFieldValue, values}) => (
           <Form className="submit-an-event">
             {/* Category Field */}
             <div className="input-group in-0-5-col">
@@ -196,7 +164,7 @@ const Page = () => {
               <ErrorMessage name="privacy" component="span" style={{ color: 'red' }} />
             </div>
             {/* Country Field */}
-            <div className="input-group in-3-col">
+            {/* <div className="input-group in-3-col">
               <label>
                 Country<span style={{ color: "#EF1D26" }}>*</span>
               </label>
@@ -205,13 +173,13 @@ const Page = () => {
                 <option value="USA">USA</option>
                 <option value="India">India</option>
                 <option value="Canada">Canada</option>
-                {/* Add more countries as needed */}
+             
               </Field>
               <ErrorMessage name="country" component="span" style={{ color: 'red' }} />
-            </div>
+            </div> */}
 
             {/* State Field */}
-            <div className="input-group in-3-col">
+            {/* <div className="input-group in-3-col">
               <label>
                 State<span style={{ color: "#EF1D26" }}>*</span>
               </label>
@@ -221,13 +189,12 @@ const Page = () => {
                 <option value="Texas">Texas</option>
                 <option value="Maharashtra">Maharashtra</option>
                 <option value="Ontario">Ontario</option>
-                {/* Add more states as needed */}
               </Field>
               <ErrorMessage name="state" component="span" style={{ color: 'red' }} />
-            </div>
+            </div> */}
 
             {/* City Field */}
-            <div className="input-group in-3-col">
+            {/* <div className="input-group in-3-col">
               <label>
                 City<span style={{ color: "#EF1D26" }}>*</span>
               </label>
@@ -237,10 +204,10 @@ const Page = () => {
                 <option value="New York">New York</option>
                 <option value="Mumbai">Mumbai</option>
                 <option value="Toronto">Toronto</option>
-                {/* Add more cities as needed */}
+              
               </Field>
               <ErrorMessage name="city" component="span" style={{ color: 'red' }} />
-            </div>
+            </div> */}
 
             {/* Address */}
             <div className="input-group in-0-5-col">
@@ -454,20 +421,24 @@ const Page = () => {
             {/* Uploader Component */}
             <div className="input-group in-3-col">
               <label>
-              Upload Poster(s)<span style={{ color: "#EF1D26" }}>*</span>
+                Upload Poster(s)<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <ImageUpload />
+              <ImageUpload name="posterUpload" setFieldValue={setFieldValue} />
+              <ErrorMessage name="posterUpload" component="span" style={{ color: 'red' }} />
             </div>
             <div className="input-group in-3-col">
             <label>
             Upload Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <ImageUpload /></div>
+              <ImageUpload name="layoutUpload" setFieldValue={setFieldValue} />
+              </div>
             <div className="input-group in-3-col">
             <label>
             Upload Images For Gallery<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <ImageUpload /></div>
+              <ImageUpload  name="galleryUpload" setFieldValue={setFieldValue}/>
+              </div>
+
             {/* Sponser Information */}
             <div className="input-group in-1-col" style={{
               margin: "0",
@@ -539,33 +510,12 @@ const Page = () => {
             <ToastContainer />
           </Form>
         )}
-      </Formik>
+      </Formik> 
 
       {/* Modal for Preview */}
       <Modal
-        open={isModalOpen}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-title" variant="h6">
-            Preview Event
-          </Typography>
-          <Typography id="modal-description" sx={{ mt: 2 }}>
-            {Object.keys(formValues).map((field, index) => (
-              <React.Fragment key={index}>
-                <strong>{field.replace(/([A-Z])/g, ' $1').trim()}:</strong> {formValues[field] || 'N/A'}
-                <br />
-              </React.Fragment>
-            ))}
-          </Typography>
-          <Button onClick={handleCloseModal}>Close</Button>
-        </Box>
-      </Modal>
-      <Modal
-        open={isModalOpen && modalContent !== 'Preview'} // Check if it's the "Select Friends" modal
-        onClose={handleCloseModal}
+        open={isModalOpen} // Check if it's the "Select Friends" modal
+        onClose={CloseModal}
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
@@ -575,7 +525,7 @@ const Page = () => {
           </Typography>
           <div className="friends-list">
             <p>Friends list goes here...</p>
-            <button onClick={handleCloseModal}>Close</button>
+            <button onClick={CloseModal}>Close</button>
           </div>
         </Box>
       </Modal>

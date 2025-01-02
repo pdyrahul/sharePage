@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-const ImageUpload = () => {
+const ImageUpload = ({ name, setFieldValue }) => {
   const [files, setFiles] = useState([]);
 
   // Handle files drop
@@ -12,21 +12,32 @@ const ImageUpload = () => {
       })
     );
     setFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
+    setFieldValue(name, acceptedFiles); // Update Formik state with all files
   };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: "image/*",
+    accept: {
+      "image/jpeg": [".jpeg", ".jpg"],
+      "image/png": [".png"],
+      "image/gif": [".gif"],
+    }
+    
   });
 
   // Remove single file
   const removeFile = (file) => {
-    setFiles((prevFiles) => prevFiles.filter((f) => f !== file));
+    setFiles((prevFiles) => {
+      const updatedFiles = prevFiles.filter((f) => f !== file);
+      setFieldValue(name, updatedFiles); // Update Formik state
+      return updatedFiles;
+    });
   };
 
   // Remove all files
   const removeAllFiles = () => {
     setFiles([]);
+    setFieldValue(name, []); // Clear Formik state
   };
 
   return (
@@ -44,7 +55,7 @@ const ImageUpload = () => {
         <input {...getInputProps()} />
         <p>Drag and drop images here, or click to select files</p>
       </div>
-      
+
       {/* Display Images and Remove Buttons */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
         {files.map((file, index) => (
