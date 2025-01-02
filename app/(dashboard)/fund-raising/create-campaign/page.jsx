@@ -1,11 +1,11 @@
-'use client'; // This is necessary for client-side rendering in Next.js 13+
+'use client'; 
 
 import React, { useState } from 'react';
 import { Modal, Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-import { Editor } from '@/components/ui/TextEditor/Editor';
+import { Editor } from '../../../../components/ui/TextEditor/Editor';
 const style = {
   position: 'absolute',
   top: '50%',

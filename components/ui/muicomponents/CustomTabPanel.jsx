@@ -6,8 +6,8 @@ import VideoCard from '../VideoCard'; // Import the VideoCard component
 import SeatingLayout from '../SeatingLayout'; // Import the SeatingLayout component
 import Sponsor from '../Sponsor';
 import Artist from '../Artist';
-import PhotosCard from '@/components/PhotosCard';
-import AdvertiserCard from '@/components/AdvertiserCard';
+import PhotosCard from '../../../components/PhotosCard';
+import AdvertiserCard from '../../../components/PhotosCard';
 import { ToastContainer, toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 

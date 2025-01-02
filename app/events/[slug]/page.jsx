@@ -1,11 +1,11 @@
 import React from 'react'
-import Event from '@/components/ui/Events/Event'
+import Event from '../../../components/ui/Events/Event'
 import CustomTabPanel from '../../../components/ui/muicomponents/CustomTabPanel'
 import banner from '../../../public/images/banner.svg'
 import vericle from '../../../public/images/vericle-banner.svg'
 import map from '../../../public/images/map.svg'
 import Image from 'next/image'
-import TicketBooking from '@/components/Ticket/TicketBooking'
+import TicketBooking from '../../../components/Ticket/TicketBooking'
 const eventDetail = ({ slug }) => {
     const mapContainerStyle = {
         height: "400px",

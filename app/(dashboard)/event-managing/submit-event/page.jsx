@@ -1,4 +1,4 @@
-'use client'; // For Next.js client components
+'use client'; 
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Modal, Box, Typography, Button } from '@mui/material';
@@ -192,7 +192,7 @@ const Page = () => {
       <div className="heading">Submit an Event</div>
       <Formik
         initialValues={initialValues}
-        // validationSchema={validationSchema}
+        validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ values, isSubmitting }) => (

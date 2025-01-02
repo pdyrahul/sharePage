@@ -1,5 +1,5 @@
-import Event from '@/components/ui/Events/Event'
-import CustomTabPanel from '@/components/ui/muicomponents/CustomTabPanel'
+import Event from '../../components/ui/Events/Event';
+import CustomTabPanel from '../../components/ui/muicomponents/CustomTabPanel';
 import React from 'react'
 
 const advertiser
