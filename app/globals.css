@@ -12,7 +12,15 @@
 .tox .tox-edit-area::before {
     border: 1px solid #c11 !important;
 }
-
+input[type="radio"] {
+    height: 12px !important;
+    width: 12px !important;
+    label {
+        display: flex;
+        align-items: center;
+    }
+}
+.radiobttn >label{display: flex; gap:4px; align-items: center;}
 @media(min-width: 768px) {
     .menuIcon {
         display: none;

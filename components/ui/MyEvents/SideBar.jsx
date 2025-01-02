@@ -95,7 +95,7 @@ export function SideBar() {
           <div className="title">Personal Profile</div>
         </div>
 
-        <ul className="menu" style={{ minHeight: '600px', overflowY: 'scroll' }}>
+        <ul className="menu" style={{height:"100vh", overflowY: 'scroll' }}>
           <li className="menu-item px-3">
             <Typography sx={styles.menuItem}>Notes</Typography>
           </li>
@@ -105,7 +105,7 @@ export function SideBar() {
           <Divider />
 
   {/* My Events Accordion */}
-          <Accordion>
+          <Accordion defaultExpanded >
             <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
               <Typography sx={styles.menuItem}>My Events</Typography>
             </AccordionSummary>
@@ -167,7 +167,7 @@ export function SideBar() {
           <Divider />
 
           {/* My Fund Raising Accordion */}
-          <Accordion >
+          <Accordion defaultExpanded  >
             <AccordionSummary expandIcon={<div style={styles.expandIcon}><ExpandMoreIcon /></div>}>
               <Typography sx={styles.menuItem}>My Fund Raising</Typography>
             </AccordionSummary>

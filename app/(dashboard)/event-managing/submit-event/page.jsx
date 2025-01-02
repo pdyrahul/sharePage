@@ -1,11 +1,11 @@
-'use client'; 
-import React, { useState } from 'react';
+'use client';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Modal, Box, Typography, Button } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import { Editor } from '../../../../components/ui/TextEditor/Editor';
-import * as Yup from 'yup';
-
+import validationSchema from '../../../utils/Schema';
+import ImageUpload from './component/ImageUpload';
 
 const style = {
   position: 'absolute',
@@ -25,15 +25,15 @@ const initialValues = {
   ethnicity: '',
   eventTitle: '',
   event: '',
-  description: '',
-  privacy: '',
+  description: 'null',
+  privacy: 'null',
   country: '',
   state: '',
   city: '',
   address: '',
   place: '',
-  eventType: '',
-  registrationRequired: '',
+  eventType: 'free',
+  registrationRequired: 'yes',
   capacity: '',
   organizerName: '',
   organizerEmail: '',
@@ -44,57 +44,9 @@ const initialValues = {
   endTime: '',
   ticketLinkType: '',
   ticketUrl: '',
-  featuredEvent: '',
+  featuredEvent: 'no',
 };
 
-const validationSchema = Yup.object().shape({
-  category: Yup.string().required('Category is required'),
-  ethnicity: Yup.string().required('Ethnicity is required'),
-  eventTitle: Yup.string()
-    .max(60, 'Event Title must be at most 60 characters')
-    .required('Event Title is required'),
-  event: Yup.string()
-    .max(100, 'Catchy phrase must be at most 100 characters')
-    .required('Catchy phrase is required'),
-  description: Yup.string().required('Event description is required'),
-  privacy: Yup.string().required('Return policy is required'),
-  country: Yup.string().required('Country is required'),
-  state: Yup.string().required('State is required'),
-  city: Yup.string().required('City is required'),
-  address: Yup.string().required('Event Address is required'),
-  place: Yup.string().required('Name of Place is required'),
-  eventType: Yup.string().required('Event Type is required'),
-  registrationRequired: Yup.string().required('Registration Needed is required'),
-  capacity: Yup.number()
-    .positive('Capacity must be a positive number')
-    .integer('Capacity must be an integer')
-    .required('Capacity is required'),
-  organizerName: Yup.string().required('Organizer Name is required'),
-  organizerEmail: Yup.string()
-    .email('Invalid email format')
-    .required('Organizer Email is required'),
-  organizerPhone: Yup.string().required('Organizer Phone is required'),
-  startDate: Yup.date().required('Start Date is required').nullable(),
-  endDate: Yup.date()
-    .required('End Date is required')
-    .nullable()
-    .min(Yup.ref('startDate'), 'End Date must be after Start Date'),
-  startTime: Yup.string().required('Start Time is required'),
-  endTime: Yup.string().required('End Time is required'),
-  ticketLinkType: Yup.string()
-    .when('eventType', {
-      is: 'Paid',
-      then: Yup.string().required('Ticket Link Type is required'),
-      otherwise: Yup.string().nullable(),
-    }),
-  ticketUrl: Yup.string()
-    .when('ticketLinkType', {
-      is: 'External',
-      then: Yup.string().url('Invalid URL format').required('Ticket URL is required'),
-      otherwise: Yup.string().nullable(),
-    }),
-  featuredEvent: Yup.string().required('Featured Event selection is required'),
-});
 
 
 
@@ -102,9 +54,6 @@ const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formValues, setFormValues] = useState({}); // State to hold form values for preview
   const [modalContent, setModalContent] = useState('');
-  const [eventType, setEventType] = useState('Free'); // State to control radio button selection
-  const [registrationRequired, setRegistrationRequired] = useState('Yes'); // State for Registration radio button
-  const [ticketLinkType, setTicketLinkType] = useState(''); // initial state is empty
   const [posterPreview, setPosterPreview] = useState(null);
   const [seatingLayoutPreview, setSeatingLayoutPreview] = useState(null);
   const [galleryImagesPreview, setGalleryImagesPreview] = useState([]);
@@ -130,23 +79,14 @@ const Page = () => {
     const updatedTickets = tickets.filter((_, idx) => idx !== index);
     setTickets(updatedTickets);
   };
+
   const handleEditorChange = (content) => {
     console.log('Content changed:', content);
   };
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    try {
-      setSubmitting(true);
-      // API call would go here
-      console.log('Form values:', values);
-      toast.success('Event submitted successfully!');
-      resetForm();
-    } catch (error) {
-      toast.error('Failed to submit event');
-      console.error('Submission error:', error);
-    } finally {
-      setSubmitting(false);
-    }
+  const handleSubmit = (values) => {
+    console.log('Form data:', values);
+    toast.success('Event submitted successfully!');
   };
 
   const handlePreview = (values) => {
@@ -242,7 +182,6 @@ const Page = () => {
             <div className="input-group input-group in-1-col">
               <Editor
                 onEditorChange={handleEditorChange}
-                initialValue="<p>Start writing here...</p>"
                 name="description"
               />
               <ErrorMessage name="description" component="span" style={{ color: 'red' }} />
@@ -252,7 +191,6 @@ const Page = () => {
             <div className="input-group in-1-col">
               <Editor
                 onEditorChange={handleEditorChange}
-                initialValue="<p>Start writing here...</p>"
                 name="privacy"
               />
               <ErrorMessage name="privacy" component="span" style={{ color: 'red' }} />
@@ -320,65 +258,41 @@ const Page = () => {
               <Field type="text" name="place" placeholder="Enter Venue Name" />
               <ErrorMessage name="place" component="span" style={{ color: 'red' }} />
             </div>
+
             {/* Event Type - Radio Buttons */}
-            <div className="input-group in-3-col">
-              <label>
-                Event Type<span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <label style={{ display: "flex", alignItems: "center", marginRight: "15px" }}>
-                  <Field
-                    type="radio"
-                    name="eventType"
-                    value="Free"
-                    checked={eventType === 'Free'}
-                    onChange={() => setEventType('Free')}
-                  />
-                  <span style={{ marginLeft: "5px" }}>Free</span>
+            <div className='input-group in-3-col' >
+              <label>Event Type</label>
+              <div className='radiobttn' style={{ display: "flex", alignItems: "center", gap: "10px" }} role="group" aria-labelledby="radio-group">
+                <label>
+                  <Field type="radio" name="eventType" value="free" />
+                  Free
                 </label>
-                <label style={{ display: "flex", alignItems: "center" }}>
-                  <Field
-                    type="radio"
-                    name="eventType"
-                    value="Paid"
-                    checked={eventType === 'Paid'}
-                    onChange={() => setEventType('Paid')}
-                  />
-                  <span style={{ marginLeft: "5px" }}>Paid</span>
+                <label>
+                  <Field type="radio" name="eventType" value="paid" />
+                  Paid
                 </label>
               </div>
-              <ErrorMessage name="eventType" component="span" style={{ color: 'red' }} />
+              <ErrorMessage name="eventType" component="div" style={{ color: 'red' }} />
             </div>
 
-            {/* Registration Needed - Radio Buttons */}
-            <div className="input-group in-3-col">
+            <div className='input-group in-3-col'>
               <label>
                 Registration Needed<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <label style={{ display: "flex", alignItems: "center", marginRight: "15px" }}>
-                  <Field
-                    type="radio"
-                    name="registrationRequired"
-                    value="Yes"
-                    checked={registrationRequired === 'Yes'}
-                    onChange={() => setRegistrationRequired('Yes')}
-                  />
-                  <span style={{ marginLeft: "5px" }}>Yes</span>
+              <div className='radiobttn' style={{ display: "flex", alignItems: "center", gap: "10px" }} role="group" aria-labelledby="radio-group">
+                <label>
+                  <Field type="radio" name="registrationRequired" value="yes" />
+                  Yes
                 </label>
-                <label style={{ display: "flex", alignItems: "center" }}>
-                  <Field
-                    type="radio"
-                    name="registrationRequired"
-                    value="No"
-                    checked={registrationRequired === 'No'}
-                    onChange={() => setRegistrationRequired('No')}
-                  />
-                  <span style={{ marginLeft: "5px" }}>No</span>
+                <label>
+                  <Field type="radio" name="registrationRequired" value="no" />
+                  No
                 </label>
               </div>
-              <ErrorMessage name="registrationRequired" component="span" style={{ color: 'red' }} />
+              <ErrorMessage name="registrationRequired" component="div" style={{ color: 'red' }} />
             </div>
+
+            {/* Registration Needed - Radio Buttons */}
 
             {/* Capacity Field */}
             <div className="input-group in-3-col">
@@ -388,126 +302,27 @@ const Page = () => {
               <Field type="number" name="capacity" placeholder="Enter Capacity" />
               <ErrorMessage name="capacity" component="span" style={{ color: 'red' }} />
             </div>
-            {/* Conditional Field Based on Event Type */}
-            {eventType === 'Free' && (
-              <div className='submit-an-event'>
-                {/* Organizer Name Field */}
-                <div className="input-group in-3-col">
-                  <label>
-                    Organizer Name<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="text" name="organizerName" placeholder="Enter Organizer Name" />
-                  <ErrorMessage name="organizerName" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* Organizer Email Field */}
-                <div className="input-group in-3-col">
-                  <label>
-                    Organizer Email<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="email" name="organizerEmail" placeholder="Enter Organizer Email" />
-                  <ErrorMessage name="organizerEmail" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* Organizer Phone Field */}
-                <div className="input-group in-3-col">
-                  <label>
-                    Organizer Phone<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="text" name="organizerPhone" placeholder="Enter Organizer Phone" />
-                  <ErrorMessage name="organizerPhone" component="span" style={{ color: 'red' }} />
-                </div>
-                {/* Start Date Field */}
-                <div className="input-group  in-0-25-col ">
-                  <label>
-                    Start Date<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="date" name="startDate" />
-                  <ErrorMessage name="startDate" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* End Date Field */}
-                <div className="input-group  in-0-25-col ">
-                  <label>
-                    End Date<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="date" name="endDate" />
-                  <ErrorMessage name="endDate" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* Start Time Field */}
-                <div className="input-group in-0-25-col ">
-                  <label>
-                    Start Time<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="time" name="startTime" />
-                  <ErrorMessage name="startTime" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* End Time Field */}
-                <div className="input-group in-0-25-col ">
-                  <label>
-                    End Time<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="time" name="endTime" />
-                  <ErrorMessage name="endTime" component="span" style={{ color: 'red' }} />
-                </div>
-                {/* Featured Artist For This Event */}
-                <div className="input-group in-3-col">
-                  <label>
-                    Featured Artist For This Event
-                  </label>
-                  <button type="button" onClick={() => openModal("Featured Artist")} style={{ color: '#fff', background: '#c11', padding: '5px 10px', borderRadius: '5px' }}>
-                    Select Friends
-                  </button>
-                </div>
-
-                {/* Co-Host Name */}
-                <div className="input-group in-3-col">
-                  <label>
-                    Co-Host Name
-                  </label>
-                  <button type="button" onClick={() => openModal("Co-Host Name")} style={{ color: '#fff', background: '#c11', padding: '5px 10px', borderRadius: '5px' }}>
-                    Select Friends
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {eventType === 'Paid' && (
+            {values.eventType === 'paid' && (
               <div className="submit-an-event">
                 {/* Add Ticket Link Field */}
                 <div className="input-group in-1-col">
                   <label>
                     Add Ticket Link<span style={{ color: "#EF1D26" }}>*</span>
                   </label>
-                  <div style={{ display: "flex", alignItems: "center", width: '50%' }}>
-                    <label style={{ display: "flex", alignItems: "center", marginRight: "15px" }}>
-                      <Field
-                        type="radio"
-                        name="ticketLinkType"
-                        value="External"
-                        checked={ticketLinkType === 'External'}
-                        onChange={() => setTicketLinkType('External')}
-                        style={{ marginRight: "8px", width: "10px", height: "10px" }} // Adjusted radio button size
-                      />
-                      <span>External Ticket Link</span>
+                  <div className='in-0-5-col radiobttn' style={{ display: "flex", alignItems: "center", gap: "10px" }} role="group" aria-labelledby="radio-group">
+                    <label>
+                      <Field type="radio" name="ticketLinkType" value="external" />
+                      External
                     </label>
-                    <label style={{ display: "flex", alignItems: "center" }}>
-                      <Field
-                        type="radio"
-                        name="ticketLinkType"
-                        value="SharePage"
-                        checked={ticketLinkType === 'SharePage'}
-                        onChange={() => setTicketLinkType('SharePage')}
-                        style={{ marginRight: "8px", width: "10px", height: "10px" }} // Adjusted radio button size
-                      />
-                      <span>Sell Ticket on TheSharePage</span>
+                    <label>
+                      <Field type="radio" name="ticketLinkType" value="sharePage" />
+                      Sell Ticket on TheSharePage
                     </label>
                   </div>
+                  <ErrorMessage name="ticketLinkType" component="div" style={{ color: 'red' }} />
 
                   {/* Conditional Rendering Based on Ticket Link Type */}
-                  {ticketLinkType === 'External' && (
+                  {values.ticketLinkType === 'external' && (
                     <div className="input-group in-3-col">
                       <label>
                         Ticket URL<span style={{ color: "#EF1D26" }}>*</span>
@@ -522,7 +337,7 @@ const Page = () => {
                     </div>
                   )}
 
-                  {ticketLinkType === 'SharePage' && (
+                  {values.ticketLinkType === 'sharePage' && (
                     <div className="input-group in-1-col">
                       <table style={{ width: '100%', border: '1px solid #ddd', marginTop: '10px' }}>
                         <thead>
@@ -551,162 +366,108 @@ const Page = () => {
 
                   <ErrorMessage name="ticketLinkType" component="span" style={{ color: 'red' }} />
                 </div>
-
-                {/* Organizer Name Field */}
-                <div className="input-group in-3-col">
-                  <label>
-                    Organizer Name<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="text" name="organizerName" placeholder="Enter Organizer Name" />
-                  <ErrorMessage name="organizerName" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* Organizer Email Field */}
-                <div className="input-group in-3-col">
-                  <label>
-                    Organizer Email<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="email" name="organizerEmail" placeholder="Enter Organizer Email" />
-                  <ErrorMessage name="organizerEmail" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* Organizer Phone Field */}
-                <div className="input-group in-3-col">
-                  <label>
-                    Organizer Phone<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="text" name="organizerPhone" placeholder="Enter Organizer Phone" />
-                  <ErrorMessage name="organizerPhone" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* Start Date Field */}
-                <div className="input-group in-0-25-col">
-                  <label>
-                    Start Date<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="date" name="startDate" />
-                  <ErrorMessage name="startDate" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* End Date Field */}
-                <div className="input-group in-0-25-col">
-                  <label>
-                    End Date<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="date" name="endDate" />
-                  <ErrorMessage name="endDate" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* Start Time Field */}
-                <div className="input-group in-0-25-col">
-                  <label>
-                    Start Time<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="time" name="startTime" />
-                  <ErrorMessage name="startTime" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* End Time Field */}
-                <div className="input-group in-0-25-col">
-                  <label>
-                    End Time<span style={{ color: "#EF1D26" }}>*</span>
-                  </label>
-                  <Field type="time" name="endTime" />
-                  <ErrorMessage name="endTime" component="span" style={{ color: 'red' }} />
-                </div>
-
-                {/* Featured Artist For This Event */}
-                <div className="input-group in-3-col">
-                  <label>
-                    Featured Artist For This Event
-                  </label>
-                  <button type="button" onClick={() => openModal("Featured Artist")} style={{ color: '#fff', background: '#c11', padding: '5px 10px', borderRadius: '5px' }}>
-                    Select Friends
-                  </button>
-                </div>
-
-                {/* Co-Host Name */}
-                <div className="input-group in-3-col">
-                  <label>
-                    Co-Host Name
-                  </label>
-                  <button type="button" onClick={() => openModal("Co-Host Name")} style={{ color: '#fff', background: '#c11', padding: '5px 10px', borderRadius: '5px' }}>
-                    Select Friends
-                  </button>
-                </div>
               </div>
             )}
+            {/* Conditional Field Based on Event Type */}
+            <div className='submit-an-event'>
+              {/* Organizer Name Field */}
+              <div className="input-group in-3-col">
+                <label>
+                  Organizer Name<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Field type="text" name="organizerName" placeholder="Enter Organizer Name" />
+                <ErrorMessage name="organizerName" component="span" style={{ color: 'red' }} />
+              </div>
 
-            <div className="input-group in-1-col my-2">
-              <label>
-                Upload Poster<span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePosterUpload}
-                  style={{ marginRight: "10px" }}
-                />
-                {posterPreview && (
-                  <img src={posterPreview} alt="Poster Preview" style={{ width: "100px", height: "auto", marginLeft: "10px" }} />
-                )}
+              {/* Organizer Email Field */}
+              <div className="input-group in-3-col">
+                <label>
+                  Organizer Email<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Field type="email" name="organizerEmail" placeholder="Enter Organizer Email" />
+                <ErrorMessage name="organizerEmail" component="span" style={{ color: 'red' }} />
+              </div>
+
+              {/* Organizer Phone Field */}
+              <div className="input-group in-3-col">
+                <label>
+                  Organizer Phone<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Field type="text" name="organizerPhone" placeholder="Enter Organizer Phone" />
+                <ErrorMessage name="organizerPhone" component="span" style={{ color: 'red' }} />
+              </div>
+              {/* Start Date Field */}
+              <div className="input-group  in-0-25-col ">
+                <label>
+                  Start Date<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Field type="date" name="startDate" />
+                <ErrorMessage name="startDate" component="span" style={{ color: 'red' }} />
+              </div>
+
+              {/* End Date Field */}
+              <div className="input-group  in-0-25-col ">
+                <label>
+                  End Date<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Field type="date" name="endDate" />
+                <ErrorMessage name="endDate" component="span" style={{ color: 'red' }} />
+              </div>
+
+              {/* Start Time Field */}
+              <div className="input-group in-0-25-col ">
+                <label>
+                  Start Time<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Field type="time" name="startTime" />
+                <ErrorMessage name="startTime" component="span" style={{ color: 'red' }} />
+              </div>
+
+              {/* End Time Field */}
+              <div className="input-group in-0-25-col ">
+                <label>
+                  End Time<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Field type="time" name="endTime" />
+                <ErrorMessage name="endTime" component="span" style={{ color: 'red' }} />
+              </div>
+              {/* Featured Artist For This Event */}
+              <div className="input-group in-3-col">
+                <label>
+                  Featured Artist For This Event
+                </label>
+                <button type="button" onClick={() => openModal("Featured Artist")} style={{ color: '#fff', background: '#c11', padding: '5px 10px', borderRadius: '5px' }}>
+                  Select Friends
+                </button>
+              </div>
+
+              {/* Co-Host Name */}
+              <div className="input-group in-3-col">
+                <label>
+                  Co-Host Name
+                </label>
+                <button type="button" onClick={() => openModal("Co-Host Name")} style={{ color: '#fff', background: '#c11', padding: '5px 10px', borderRadius: '5px' }}>
+                  Select Friends
+                </button>
               </div>
             </div>
-
-            {/* Upload Seating Layout */}
-            <div className="input-group in-1-col">
+            {/* Uploader Component */}
+            <div className="input-group in-3-col">
               <label>
-                Upload Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
+              Upload Poster(s)<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleSeatingLayoutUpload}
-                  style={{ marginRight: "10px" }}
-                />
-                {seatingLayoutPreview && (
-                  <img
-                    src={seatingLayoutPreview}
-                    alt="Seating Layout Preview"
-                    style={{ width: "100px", height: "auto", marginLeft: "10px" }}
-                  />
-                )}
-              </div>
+              <ImageUpload />
             </div>
-
-            {/* Upload Images For Gallery */}
-            <div className="input-group in-1-col">
-              <label>
-                Upload Images For Gallery<span style={{ color: "#EF1D26" }}>*</span>
+            <div className="input-group in-3-col">
+            <label>
+            Upload Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleGalleryImagesUpload}
-                  style={{ marginBottom: "10px" }}
-                />
-                <div style={{ display: "flex", flexWrap: "wrap" }}>
-                  {galleryImagesPreview.map((preview, index) => (
-                    <img
-                      key={index}
-                      src={preview}
-                      alt={`Gallery Preview ${index + 1}`}
-                      style={{
-                        width: "100px",
-                        height: "100px",
-                        objectFit: "cover",
-                        marginRight: "10px",
-                        marginBottom: "10px",
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
+              <ImageUpload /></div>
+            <div className="input-group in-3-col">
+            <label>
+            Upload Images For Gallery<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <ImageUpload /></div>
             {/* Sponser Information */}
             <div className="input-group in-1-col" style={{
               margin: "0",
@@ -749,44 +510,32 @@ const Page = () => {
               <label>
                 Make Featured Event (35 USD)
               </label>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <label style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
-                  <input
-                    type="radio"
-                    name="featuredEvent"
-                    value="Yes"
-                    // checked={isFeaturedEvent === 'Yes'}
-                    // onChange={handleRadioChange}
-                    style={{ marginRight: '8px', width: '15px', height: '15px' }}  // Adjusted radio button size
-                  />
-                  <span>Yes</span>
+              <div className='radiobttn' style={{ display: "flex", alignItems: "center", gap: "10px" }} role="group" aria-labelledby="radio-group">
+                <label>
+                  <Field type="radio" name="featuredEvent" value="yes" />
+                  Yes
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center' }}>
-                  <input
-                    type="radio"
-                    name="featuredEvent"
-                    value="No"
-                    // checked={isFeaturedEvent === 'No'}
-                    // onChange={handleRadioChange}
-                    style={{ marginRight: '8px', width: '15px', height: '15px' }}  // Adjusted radio button size
-                  />
-                  <span>No</span>
+                <label>
+                  <Field type="radio" name="featuredEvent" value="no" />
+                  No
                 </label>
               </div>
+              <ErrorMessage name="featuredEvent" component="div" style={{ color: 'red' }} />
             </div>
-
-
             {/* Submit Button */}
             <div className="main-btn">
               <button
                 type="submit"
-                disabled={isSubmitting}
+                // disabled={isSubmitting}
                 className="submit-button"
+
               >
-                {isSubmitting ? 'Submitting...' : 'Submit Event'}
+                {/* {isSubmitting ? 'Submitting...' : 'Submit Event'}
+                 */}
+                submit
               </button>
             </div>
-
+            {/* Preview Button */}
             <ToastContainer />
           </Form>
         )}
