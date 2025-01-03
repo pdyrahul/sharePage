@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-const ImageUpload = ({ name, setFieldValue }) => {
+const ImageUpload = ({ name, setFieldValue, multiple = true }) => {
   const [files, setFiles] = useState([]);
 
   // Handle files drop
@@ -11,8 +11,14 @@ const ImageUpload = ({ name, setFieldValue }) => {
         preview: URL.createObjectURL(file),
       })
     );
-    setFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
-    setFieldValue(name, acceptedFiles); // Update Formik state with all files
+
+    if (multiple) {
+      setFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
+      setFieldValue(name, [...files, ...acceptedFiles]); // Update Formik state with all files
+    } else {
+      setFiles(updatedFiles);
+      setFieldValue(name, acceptedFiles); // Update Formik state with single file
+    }
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -21,8 +27,8 @@ const ImageUpload = ({ name, setFieldValue }) => {
       "image/jpeg": [".jpeg", ".jpg"],
       "image/png": [".png"],
       "image/gif": [".gif"],
-    }
-    
+    },
+    multiple, // Allow multiple files only if `multiple` is true
   });
 
   // Remove single file
@@ -41,7 +47,7 @@ const ImageUpload = ({ name, setFieldValue }) => {
   };
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center", display: "flex", alignItems: "center" }}>
       <div
         {...getRootProps()}
         style={{
@@ -93,7 +99,7 @@ const ImageUpload = ({ name, setFieldValue }) => {
       </div>
 
       {/* Remove All Files Button */}
-      {files.length > 0 && (
+      {multiple && files.length > 0 && (
         <button
           onClick={removeAllFiles}
           type="button"

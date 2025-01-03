@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Editor } from '../../../../components/ui/TextEditor/Editor';
 import validationSchema from '../../../utils/Schema';
 import ImageUpload from './component/ImageUpload';
+import TicketTable from './component/TicketTable';
 
 const style = {
   position: 'absolute',
@@ -305,30 +306,7 @@ const Page = () => {
                   )}
 
                   {values.ticketLinkType === 'sharePage' && (
-                    <div className="input-group in-1-col">
-                      <table style={{ width: '100%', border: '1px solid #ddd', marginTop: '10px' }}>
-                        <thead>
-                          <tr>
-                            <th>Ticket Type</th>
-                            <th> Ticket Price</th>
-                            <th>Ticket Quantity Limit</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {/* Hardcoded ticket rows */}
-                          {tickets.map((ticket, index) => (
-                            <tr key={index}>
-                              <td>{ticket.name}</td>
-                              <td>${ticket.price}</td>
-                              <td>{ticket.quantity}</td>
-                              <td><button onClick={() => removeTicket(index)}>Remove</button></td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      <button type='button' onClick={addTicket}>Add Ticket</button>
-                    </div>
+                <TicketTable/>
                   )}
 
                   <ErrorMessage name="ticketLinkType" component="span" style={{ color: 'red' }} />
@@ -419,20 +397,20 @@ const Page = () => {
               </div>
             </div>
             {/* Uploader Component */}
-            <div className="input-group in-3-col">
+            <div className="input-group in-1-col">
               <label>
                 Upload Poster(s)<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <ImageUpload name="posterUpload" setFieldValue={setFieldValue} />
+              <ImageUpload name="posterUpload" setFieldValue={setFieldValue}  multiple={false}/>
               <ErrorMessage name="posterUpload" component="span" style={{ color: 'red' }} />
             </div>
-            <div className="input-group in-3-col">
+            <div className="input-group in-1-col">
             <label>
             Upload Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <ImageUpload name="layoutUpload" setFieldValue={setFieldValue} />
+              <ImageUpload name="layoutUpload" setFieldValue={setFieldValue} multiple={false}/>
               </div>
-            <div className="input-group in-3-col">
+            <div className="input-group in-1-col">
             <label>
             Upload Images For Gallery<span style={{ color: "#EF1D26" }}>*</span>
               </label>
