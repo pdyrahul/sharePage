@@ -19,6 +19,7 @@
     "@react-google-maps/api": "^2.20.5",
     "@tinymce/tinymce-react": "^5.1.1",
     "@uiw/react-md-editor": "^4.0.5",
+    "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "codemirror": "5.61.0",
     "formik": "^2.4.6",

@@ -1,45 +1,55 @@
 import React, { useState } from 'react';
-import { FaSave, FaTrashAlt } from 'react-icons/fa'; // Import Save and Trash icons
+import { FaSave, FaTrashAlt } from 'react-icons/fa';
 
-const TicketTable = () => {
-    const [tickets, setTickets] = useState([]);
+const TicketTable = ({tickets, setTickets}) => {
+  
 
     // Add a new ticket row
     const addTicket = () => {
-        setTickets([
-            ...tickets,
-            { name: '', price: '', quantity: '', isNew: true }, // New row marked as editable
-        ]);
+        const id = Date.now().toString(); // Unique identifier for each ticket
+        setTickets((prev) => {
+            const updated = new Map(prev);
+            updated.set(id, { name: '', price: '', quantity: '', isNew: true });
+            return updated;
+        });
     };
 
-    // Save a new ticket
-    const saveTicket = (index) => {
-        const ticket = tickets[index];
+    // Save a ticket
+    const saveTicket = (id) => {
+        setTickets((prev) => {
+            const updated = new Map(prev);
+            const ticket = updated.get(id);
 
-        // Validate fields before saving
-        if (!ticket.name || !ticket.price || !ticket.quantity) {
-            alert('Please fill in all fields before saving.');
-            return;
-        }
+            // Validate fields
+            if (!ticket.name || !ticket.price || !ticket.quantity) {
+                alert('Please fill in all fields before saving.');
+                return prev;
+            }
 
-        const updatedTickets = tickets.map((t, i) =>
-            i === index ? { ...t, isNew: false } : t
-        );
-        setTickets(updatedTickets);
+            updated.set(id, { ...ticket, isNew: false });
+            return updated;
+        });
     };
 
     // Update ticket details while editing
-    const updateTicket = (index, field, value) => {
-        const updatedTickets = tickets.map((ticket, i) =>
-            i === index ? { ...ticket, [field]: value } : ticket
-        );
-        setTickets(updatedTickets);
+    const updateTicket = (id, field, value) => {
+        setTickets((prev) => {
+            const updated = new Map(prev);
+            const ticket = updated.get(id);
+            if (!ticket) return prev;
+
+            updated.set(id, { ...ticket, [field]: value });
+            return updated;
+        });
     };
 
     // Remove a ticket
-    const removeTicket = (index) => {
-        const updatedTickets = tickets.filter((_, i) => i !== index);
-        setTickets(updatedTickets);
+    const removeTicket = (id) => {
+        setTickets((prev) => {
+            const updated = new Map(prev);
+            updated.delete(id);
+            return updated;
+        });
     };
 
     return (
@@ -62,12 +72,13 @@ const TicketTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {tickets.map((ticket, index) => (
+                        {[...tickets.entries()].map(([id, ticket], index) => (
                             <tr
-                                key={index}
+                                key={id}
                                 style={{
-                                    backgroundColor: index === 1 ? '#ffffff' : index % 2 === 0 ? '#f9f9f9' : '#ffffff',
-                                    borderBottom: '1px solid #ddd', textTransform: 'capitalize',
+                                    backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#ffffff',
+                                    borderBottom: '1px solid #ddd',
+                                    
                                 }}
                             >
                                 <td>
@@ -75,9 +86,7 @@ const TicketTable = () => {
                                         type="text"
                                         maxLength={20}
                                         value={ticket.name}
-                                        onChange={(e) =>
-                                            updateTicket(index, 'name', e.target.value)
-                                        }
+                                        onChange={(e) => updateTicket(id, 'name', e.target.value)}
                                         readOnly={!ticket.isNew}
                                         style={{
                                             width: '100%',
@@ -92,9 +101,7 @@ const TicketTable = () => {
                                     <input
                                         type="number"
                                         value={ticket.price}
-                                        onChange={(e) =>
-                                            updateTicket(index, 'price', e.target.value)
-                                        }
+                                        onChange={(e) => updateTicket(id, 'price', e.target.value)}
                                         readOnly={!ticket.isNew}
                                         style={{
                                             width: '100%',
@@ -108,9 +115,7 @@ const TicketTable = () => {
                                     <input
                                         type="number"
                                         value={ticket.quantity}
-                                        onChange={(e) =>
-                                            updateTicket(index, 'quantity', e.target.value)
-                                        }
+                                        onChange={(e) => updateTicket(id, 'quantity', e.target.value)}
                                         readOnly={!ticket.isNew}
                                         style={{
                                             width: '100%',
@@ -125,7 +130,7 @@ const TicketTable = () => {
                                         <>
                                             <button
                                                 type="button"
-                                                onClick={() => saveTicket(index)}
+                                                onClick={() => saveTicket(id)}
                                                 style={{
                                                     backgroundColor: 'green',
                                                     color: 'white',
@@ -140,7 +145,7 @@ const TicketTable = () => {
                                             </button>
                                             <button
                                                 type="button"
-                                                onClick={() => removeTicket(index)}
+                                                onClick={() => removeTicket(id)}
                                                 style={{
                                                     backgroundColor: '#c11',
                                                     color: 'white',
@@ -156,7 +161,7 @@ const TicketTable = () => {
                                     ) : (
                                         <button
                                             type="button"
-                                            onClick={() => removeTicket(index)}
+                                            onClick={() => removeTicket(id)}
                                             style={{
                                                 backgroundColor: '#c11',
                                                 color: 'white',
@@ -176,8 +181,6 @@ const TicketTable = () => {
                 </table>
             </div>
 
-            {/* Add New Ticket Button */}
-
             <button
                 type="button"
                 onClick={addTicket}
@@ -185,7 +188,7 @@ const TicketTable = () => {
                     backgroundColor: '#c11',
                     color: 'white',
                     border: 'none',
-                    marginTop:'5px',
+                    marginTop: '5px',
                     borderRadius: '5px',
                     padding: '5px 10px',
                     cursor: 'pointer',
@@ -194,7 +197,6 @@ const TicketTable = () => {
             >
                 Add Ticket
             </button>
-
         </div>
     );
 };

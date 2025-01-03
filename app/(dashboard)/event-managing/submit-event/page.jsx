@@ -1,72 +1,74 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Modal, Box, Typography, Button } from '@mui/material';
-import { ToastContainer, toast } from 'react-toastify';
-import { Editor } from '../../../../components/ui/TextEditor/Editor';
-import validationSchema from '../../../utils/Schema';
-import ImageUpload from './component/ImageUpload';
-import TicketTable from './component/TicketTable';
-
+"use client";
+import React, { useState, useEffect } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Modal, Box, Typography, Button } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
+import { Editor } from "../../../../components/ui/TextEditor/Editor";
+import validationSchema from "../../../utils/Schema";
+import ImageUpload from "./component/ImageUpload";
+import TicketTable from "./component/TicketTable";
+import axios from "axios";
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '90%',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "90%",
   maxWidth: 500,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
 
 const initialValues = {
-  category: '',
-  ethnicity: '',
-  eventTitle: '',
-  event: '',
+  category: "",
+  ethnicity: "",
+  eventTitle: "",
+  event: "",
   description: null,
   privacy: null,
-  country: '',
-  state: '',
-  city: '',
-  address: '',
-  place: '',
-  eventType: 'free',
-  registrationRequired: 'yes',
-  capacity: '',
-  organizerName: '',
-  organizerEmail: '',
-  organizerPhone: '',
-  startDate: '',
-  endDate: '',
-  startTime: '',
-  endTime: '',
-  ticketLinkType: '',
-  ticketUrl: '',
-  featuredEvent: 'no',
+  country: "",
+  state: "",
+  city: "",
+  address: "",
+  place: "",
+  eventType: "free",
+  registrationRequired: "yes",
+  capacity: "",
+  organizerName: "",
+  organizerEmail: "",
+  organizerPhone: "",
+  startDate: "",
+  endDate: "",
+  startTime: "",
+  endTime: "",
+  ticketLinkType: "",
+  ticketUrl: "",
+  tickets: [{ name: "", price: "", quantity: "" }],
+  featuredEvent: "no",
   posterUpload: null,
-  galleryUpload:[],
-  layoutUpload:null,
+  galleryUpload: [],
+  layoutUpload: null,
+  selectedSponsor:'',
 };
-
 
 const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState('');
-  const [sponsorModalOpen, setSponsorModalOpen] = useState(false)
-  // Hardcoded ticket details
-  const [tickets, setTickets] = useState([
-    { name: 'VIP Ticket', price: 50, quantity: 100 },
-    { name: 'General Admission', price: 20, quantity: 200 }
-  ]);
+  const [modalContent, setModalContent] = useState("");
+  const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
+  const [tickets, setTickets] = useState(new Map());
+  const [categories, setCategories] = useState([]);
+  const [ethnicities, setEthnicities] = useState([]);
+  const [sponsors, setSponsors] = useState([]);
   const handleEditorChange = (content) => {
     console.log(content);
   };
-  const handleSubmit = (values) => {
-    console.log('Form data:', values);
-    toast.success('Event submitted successfully!');
+  const handleSubmit = (values, { resetForm }) => {
+    console.log("Form data:", values);
+    toast.success("Event submitted successfully!");
+    setTickets([]);
+    resetForm();
   };
   const openModal = (content) => {
     setModalContent(content); // Set the modal content dynamically
@@ -77,24 +79,65 @@ const Page = () => {
   };
   const CloseModal = () => {
     setSponsorModalOpen(false);
-    setIsModalOpen(false)
-  }
-  
-    // Add a new ticket
-    const addTicket = () => {
-      const newTicket = {
-        name: 'New Ticket',
-        price: 30,
-        quantity: 150,
-      };
-      setTickets([...tickets, newTicket]);
+    setIsModalOpen(false);
+  };
+  const token = "4|qhQXtFAA8fdBy8c3XUz58DC2y0ReCEH1vULeMlJ34845e15e"; // Replace this with the actual token
+
+  // Fetch event data when component mounts using axios
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Use Promise.all to fetch both event categories/ethnicities and sponsors concurrently
+        const [eventResponse, sponsorResponse] = await Promise.all([
+          axios.get(
+            "https://peru-grouse-335420.hostingersite.com/api/v1/event/ethnicity-category",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Send the token as a Bearer token in the header
+              },
+            }
+          ),
+          axios.get(
+            "https://peru-grouse-335420.hostingersite.com/api/v1/event/sponsored",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Send the token as a Bearer token in the header
+              },
+            }
+          ),
+        ]);
+
+        // Extract event categories and ethnicities from the first response
+        const eventCategories = eventResponse.data.data.event_category.map(
+          (event) => ({
+            id: event.idspevent,
+            title: event.speventTitle,
+          })
+        );
+        const eventEthnicities = eventResponse.data.data.event_ethnicity.map(
+          (ethnicity) => ({
+            id: ethnicity.id,
+            name: ethnicity.ethnicity_name,
+          })
+        );
+
+        // Extract sponsors from the second response
+        const sponsorList = sponsorResponse.data.data.map((sponsor) => ({
+          id: sponsor.id,
+          name: sponsor.sponsorName,
+        }));
+
+        // Set state
+        setCategories(eventCategories);
+        setEthnicities(eventEthnicities);
+        setSponsors(sponsorList);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
-  
-    // Remove a ticket
-    const removeTicket = (index) => {
-      const updatedTickets = tickets.filter((_, idx) => idx !== index);
-      setTickets(updatedTickets);
-    };
+
+    fetchData();
+  }, [token]);
 
   return (
     <div className="event-body">
@@ -104,7 +147,7 @@ const Page = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({setFieldValue, values}) => (
+        {({ setFieldValue, values }) => (
           <Form className="submit-an-event">
             {/* Category Field */}
             <div className="input-group in-0-5-col">
@@ -113,56 +156,91 @@ const Page = () => {
               </label>
               <Field as="select" name="category">
                 <option value="">Select Category</option>
-                <option value="Music">Music</option>
-                <option value="Tech">Tech</option>
-                <option value="Sports">Sports</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.title}
+                  </option>
+                ))}
               </Field>
-              <ErrorMessage name="category" component="span" style={{ color: 'red' }} />
+              <ErrorMessage
+                name="category"
+                component="span"
+                style={{ color: "red" }}
+              />
             </div>
-            {/* Ethnicity* Field */}
+
+            {/* Ethnicity Field */}
             <div className="input-group in-0-5-col">
               <label>
                 Ethnicity<span style={{ color: "#EF1D26" }}>*</span>
               </label>
               <Field as="select" name="ethnicity">
-                <option value="">Select Category</option>
-                <option value="indian">indian</option>
+                <option value="">Select Ethnicity</option>
+                {ethnicities.map((ethnicity) => (
+                  <option key={ethnicity.id} value={ethnicity.id}>
+                    {ethnicity.name}
+                  </option>
+                ))}
               </Field>
-              <ErrorMessage name="ethnicity" component="span" style={{ color: 'red' }} />
+              <ErrorMessage
+                name="ethnicity"
+                component="span"
+                style={{ color: "red" }}
+              />
             </div>
             {/* Title Field */}
             <div className="input-group in-0-5-col">
               <label>
-                Event Title  (Max 60 characters)<span style={{ color: "#EF1D26" }}>*</span>
+                Event Title (Max 60 characters)
+                <span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <Field type="text" name="eventTitle" placeholder="Enter Event Title" />
-              <ErrorMessage name="eventTitle" component="span" style={{ color: 'red' }} />
+              <Field
+                type="text"
+                name="eventTitle"
+                placeholder="Enter Event Title"
+              />
+              <ErrorMessage
+                name="eventTitle"
+                component="span"
+                style={{ color: "red" }}
+              />
             </div>
             {/* Sub Category Field */}
             <div className="input-group in-0-5-col">
               <label>
-                Write a catchy phrase for your event (Max 100 characters)<span style={{ color: "#EF1D26" }}>*</span>
+                Write a catchy phrase for your event (Max 100 characters)
+                <span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <Field type="text" name="event" placeholder="Enter Sub Category" />
-              <ErrorMessage name="event" component="span" style={{ color: 'red' }} />
+              <Field
+                type="text"
+                name="event"
+                placeholder="Enter Sub Category"
+              />
+              <ErrorMessage
+                name="event"
+                component="span"
+                style={{ color: "red" }}
+              />
             </div>
 
             {/* Event Description */}
             <div className="input-group input-group in-1-col">
-              <Editor
-                onEditorChange={handleEditorChange}
+              <Editor onEditorChange={handleEditorChange} name="description" />
+              <ErrorMessage
                 name="description"
+                component="span"
+                style={{ color: "red" }}
               />
-              <ErrorMessage name="description" component="span" style={{ color: 'red' }} />
             </div>
 
             {/* Return Policy */}
             <div className="input-group in-1-col">
-              <Editor
-                onEditorChange={handleEditorChange}
+              <Editor onEditorChange={handleEditorChange} name="privacy" />
+              <ErrorMessage
                 name="privacy"
+                component="span"
+                style={{ color: "red" }}
               />
-              <ErrorMessage name="privacy" component="span" style={{ color: 'red' }} />
             </div>
             {/* Country Field */}
             {/* <div className="input-group in-3-col">
@@ -215,8 +293,16 @@ const Page = () => {
               <label>
                 Event Address<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <Field type="text" name="address" placeholder="Enter Venue Name" />
-              <ErrorMessage name="address" component="span" style={{ color: 'red' }} />
+              <Field
+                type="text"
+                name="address"
+                placeholder="Enter Venue Name"
+              />
+              <ErrorMessage
+                name="address"
+                component="span"
+                style={{ color: "red" }}
+              />
             </div>
             {/* Venue Name */}
             <div className="input-group in-0-5-col">
@@ -224,13 +310,22 @@ const Page = () => {
                 Name Of Place<span style={{ color: "#EF1D26" }}>*</span>
               </label>
               <Field type="text" name="place" placeholder="Enter Venue Name" />
-              <ErrorMessage name="place" component="span" style={{ color: 'red' }} />
+              <ErrorMessage
+                name="place"
+                component="span"
+                style={{ color: "red" }}
+              />
             </div>
 
             {/* Event Type - Radio Buttons */}
-            <div className='input-group in-3-col' >
+            <div className="input-group in-3-col">
               <label>Event Type</label>
-              <div className='radiobttn' style={{ display: "flex", alignItems: "center", gap: "10px" }} role="group" aria-labelledby="radio-group">
+              <div
+                className="radiobttn"
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                role="group"
+                aria-labelledby="radio-group"
+              >
                 <label>
                   <Field type="radio" name="eventType" value="free" />
                   Free
@@ -240,14 +335,23 @@ const Page = () => {
                   Paid
                 </label>
               </div>
-              <ErrorMessage name="eventType" component="div" style={{ color: 'red' }} />
+              <ErrorMessage
+                name="eventType"
+                component="div"
+                style={{ color: "red" }}
+              />
             </div>
 
-            <div className='input-group in-3-col'>
+            <div className="input-group in-3-col">
               <label>
                 Registration Needed<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <div className='radiobttn' style={{ display: "flex", alignItems: "center", gap: "10px" }} role="group" aria-labelledby="radio-group">
+              <div
+                className="radiobttn"
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                role="group"
+                aria-labelledby="radio-group"
+              >
                 <label>
                   <Field type="radio" name="registrationRequired" value="yes" />
                   Yes
@@ -257,7 +361,11 @@ const Page = () => {
                   No
                 </label>
               </div>
-              <ErrorMessage name="registrationRequired" component="div" style={{ color: 'red' }} />
+              <ErrorMessage
+                name="registrationRequired"
+                component="div"
+                style={{ color: "red" }}
+              />
             </div>
 
             {/* Registration Needed - Radio Buttons */}
@@ -267,30 +375,59 @@ const Page = () => {
               <label>
                 Capacity<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <Field type="number" name="capacity" placeholder="Enter Capacity" />
-              <ErrorMessage name="capacity" component="span" style={{ color: 'red' }} />
+              <Field
+                type="number"
+                name="capacity"
+                placeholder="Enter Capacity"
+              />
+              <ErrorMessage
+                name="capacity"
+                component="span"
+                style={{ color: "red" }}
+              />
             </div>
-            {values.eventType === 'paid' && (
+            {values.eventType === "paid" && (
               <div className="submit-an-event">
                 {/* Add Ticket Link Field */}
                 <div className="input-group in-1-col">
                   <label>
                     Add Ticket Link<span style={{ color: "#EF1D26" }}>*</span>
                   </label>
-                  <div className='in-0-5-col radiobttn' style={{ display: "flex", alignItems: "center", gap: "10px" }} role="group" aria-labelledby="radio-group">
+                  <div
+                    className="in-0-5-col radiobttn"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                    role="group"
+                    aria-labelledby="radio-group"
+                  >
                     <label>
-                      <Field type="radio" name="ticketLinkType" value="external" />
+                      <Field
+                        type="radio"
+                        name="ticketLinkType"
+                        value="external"
+                      />
                       External
                     </label>
                     <label>
-                      <Field type="radio" name="ticketLinkType" value="sharePage" />
+                      <Field
+                        type="radio"
+                        name="ticketLinkType"
+                        value="sharePage"
+                      />
                       Sell Ticket on TheSharePage
                     </label>
                   </div>
-                  <ErrorMessage name="ticketLinkType" component="div" style={{ color: 'red' }} />
+                  <ErrorMessage
+                    name="ticketLinkType"
+                    component="div"
+                    style={{ color: "red" }}
+                  />
 
                   {/* Conditional Rendering Based on Ticket Link Type */}
-                  {values.ticketLinkType === 'external' && (
+                  {values.ticketLinkType === "external" && (
                     <div className="input-group in-3-col">
                       <label>
                         Ticket URL<span style={{ color: "#EF1D26" }}>*</span>
@@ -301,27 +438,41 @@ const Page = () => {
                         placeholder="Enter Ticket URL"
                         style={{ marginRight: "8px", width: "100%" }}
                       />
-                      <ErrorMessage name="ticketUrl" component="span" style={{ color: 'red' }} />
+                      <ErrorMessage
+                        name="ticketUrl"
+                        component="span"
+                        style={{ color: "red" }}
+                      />
                     </div>
                   )}
-
-                  {values.ticketLinkType === 'sharePage' && (
-                <TicketTable/>
+                  {values.ticketLinkType === "sharePage" && (
+                    <TicketTable tickets={tickets} setTickets={setTickets} />
                   )}
-
-                  <ErrorMessage name="ticketLinkType" component="span" style={{ color: 'red' }} />
+                  <ErrorMessage
+                    name="ticketLinkType"
+                    component="span"
+                    style={{ color: "red" }}
+                  />
                 </div>
               </div>
             )}
             {/* Conditional Field Based on Event Type */}
-            <div className='submit-an-event'>
+            <div className="submit-an-event">
               {/* Organizer Name Field */}
               <div className="input-group in-3-col">
                 <label>
                   Organizer Name<span style={{ color: "#EF1D26" }}>*</span>
                 </label>
-                <Field type="text" name="organizerName" placeholder="Enter Organizer Name" />
-                <ErrorMessage name="organizerName" component="span" style={{ color: 'red' }} />
+                <Field
+                  type="text"
+                  name="organizerName"
+                  placeholder="Enter Organizer Name"
+                />
+                <ErrorMessage
+                  name="organizerName"
+                  component="span"
+                  style={{ color: "red" }}
+                />
               </div>
 
               {/* Organizer Email Field */}
@@ -329,8 +480,16 @@ const Page = () => {
                 <label>
                   Organizer Email<span style={{ color: "#EF1D26" }}>*</span>
                 </label>
-                <Field type="email" name="organizerEmail" placeholder="Enter Organizer Email" />
-                <ErrorMessage name="organizerEmail" component="span" style={{ color: 'red' }} />
+                <Field
+                  type="email"
+                  name="organizerEmail"
+                  placeholder="Enter Organizer Email"
+                />
+                <ErrorMessage
+                  name="organizerEmail"
+                  component="span"
+                  style={{ color: "red" }}
+                />
               </div>
 
               {/* Organizer Phone Field */}
@@ -338,8 +497,16 @@ const Page = () => {
                 <label>
                   Organizer Phone<span style={{ color: "#EF1D26" }}>*</span>
                 </label>
-                <Field type="text" name="organizerPhone" placeholder="Enter Organizer Phone" />
-                <ErrorMessage name="organizerPhone" component="span" style={{ color: 'red' }} />
+                <Field
+                  type="text"
+                  name="organizerPhone"
+                  placeholder="Enter Organizer Phone"
+                />
+                <ErrorMessage
+                  name="organizerPhone"
+                  component="span"
+                  style={{ color: "red" }}
+                />
               </div>
               {/* Start Date Field */}
               <div className="input-group  in-0-25-col ">
@@ -347,7 +514,11 @@ const Page = () => {
                   Start Date<span style={{ color: "#EF1D26" }}>*</span>
                 </label>
                 <Field type="date" name="startDate" />
-                <ErrorMessage name="startDate" component="span" style={{ color: 'red' }} />
+                <ErrorMessage
+                  name="startDate"
+                  component="span"
+                  style={{ color: "red" }}
+                />
               </div>
 
               {/* End Date Field */}
@@ -356,7 +527,11 @@ const Page = () => {
                   End Date<span style={{ color: "#EF1D26" }}>*</span>
                 </label>
                 <Field type="date" name="endDate" />
-                <ErrorMessage name="endDate" component="span" style={{ color: 'red' }} />
+                <ErrorMessage
+                  name="endDate"
+                  component="span"
+                  style={{ color: "red" }}
+                />
               </div>
 
               {/* Start Time Field */}
@@ -365,7 +540,11 @@ const Page = () => {
                   Start Time<span style={{ color: "#EF1D26" }}>*</span>
                 </label>
                 <Field type="time" name="startTime" />
-                <ErrorMessage name="startTime" component="span" style={{ color: 'red' }} />
+                <ErrorMessage
+                  name="startTime"
+                  component="span"
+                  style={{ color: "red" }}
+                />
               </div>
 
               {/* End Time Field */}
@@ -374,24 +553,42 @@ const Page = () => {
                   End Time<span style={{ color: "#EF1D26" }}>*</span>
                 </label>
                 <Field type="time" name="endTime" />
-                <ErrorMessage name="endTime" component="span" style={{ color: 'red' }} />
+                <ErrorMessage
+                  name="endTime"
+                  component="span"
+                  style={{ color: "red" }}
+                />
               </div>
               {/* Featured Artist For This Event */}
               <div className="input-group in-3-col">
-                <label>
-                  Featured Artist For This Event
-                </label>
-                <button type="button" onClick={() => openModal("Featured Artist")} style={{ color: '#fff', background: '#c11', padding: '5px 10px', borderRadius: '5px' }}>
+                <label>Featured Artist For This Event</label>
+                <button
+                  type="button"
+                  onClick={() => openModal("Featured Artist")}
+                  style={{
+                    color: "#fff",
+                    background: "#c11",
+                    padding: "5px 10px",
+                    borderRadius: "5px",
+                  }}
+                >
                   Select Friends
                 </button>
               </div>
 
               {/* Co-Host Name */}
               <div className="input-group in-3-col">
-                <label>
-                  Co-Host Name
-                </label>
-                <button type="button" onClick={() => openModal("Co-Host Name")} style={{ color: '#fff', background: '#c11', padding: '5px 10px', borderRadius: '5px' }}>
+                <label>Co-Host Name</label>
+                <button
+                  type="button"
+                  onClick={() => openModal("Co-Host Name")}
+                  style={{
+                    color: "#fff",
+                    background: "#c11",
+                    padding: "5px 10px",
+                    borderRadius: "5px",
+                  }}
+                >
                   Select Friends
                 </button>
               </div>
@@ -401,54 +598,76 @@ const Page = () => {
               <label>
                 Upload Poster(s)<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <ImageUpload name="posterUpload" setFieldValue={setFieldValue}  multiple={false}/>
-              <ErrorMessage name="posterUpload" component="span" style={{ color: 'red' }} />
+              <ImageUpload
+                name="posterUpload"
+                setFieldValue={setFieldValue}
+                multiple={false}
+              />
+              <ErrorMessage
+                name="posterUpload"
+                component="span"
+                style={{ color: "red" }}
+              />
             </div>
             <div className="input-group in-1-col">
-            <label>
-            Upload Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
+              <label>
+                Upload Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <ImageUpload name="layoutUpload" setFieldValue={setFieldValue} multiple={false}/>
-              </div>
+              <ImageUpload
+                name="layoutUpload"
+                setFieldValue={setFieldValue}
+                multiple={false}
+              />
+            </div>
             <div className="input-group in-1-col">
-            <label>
-            Upload Images For Gallery<span style={{ color: "#EF1D26" }}>*</span>
+              <label>
+                Upload Images For Gallery
+                <span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <ImageUpload  name="galleryUpload" setFieldValue={setFieldValue}/>
-              </div>
+              <ImageUpload name="galleryUpload" setFieldValue={setFieldValue} />
+            </div>
 
             {/* Sponser Information */}
-            <div className="input-group in-1-col" style={{
-              margin: "0",
-              backgroundColor: "#ffb8bd",
-              color: "#000",
-              padding: "10px",
-              fontWeight: "bold",
-              marginBottom1: "20px",
-            }}>
-              <h5 className='sponser-title m-0 ' >SPONSER INFORMATION </h5>
+            <div
+              className="input-group in-1-col"
+              style={{
+                margin: "0",
+                backgroundColor: "#ffb8bd",
+                color: "#000",
+                padding: "10px",
+                fontWeight: "bold",
+                marginBottom1: "20px",
+              }}
+            >
+              <h5 className="sponser-title m-0 ">SPONSER INFORMATION </h5>
             </div>
             <div className="input-group in-3-col ">
-              <label>Select Sponsor <span style={{ color: "#EF1D26" }}>*</span></label>
-              <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                <select >
-                  <option value="sponsor1">Sponsor 1</option>
-                  <option value="sponsor2">Sponsor 2</option>
-                  <option value="sponsor3">Sponsor 3</option>
-                  {/* Add more sponsors as needed */}
-                </select>
+              <label>
+                Select Sponsor <span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <div name="selectedSponser"
+                style={{ display: "flex", alignItems: "center", width: "100%" }}
+              >
+               <Field as="select" name="selectedSponsor">
+                  <option value="">Select Sponsor</option>
+                  {sponsors.map((sponsor) => (
+                    <option key={sponsor.id} value={sponsor.name}>
+                      {sponsor.name}
+                    </option>
+                  ))}
+                </Field>
 
                 {/* Button to open modal */}
                 <button
                   type="button"
                   onClick={handleOpenModal}
                   style={{
-                    marginLeft: '10px',
-                    background: '#c11',
-                    color: '#fff',
-                    padding: '5px 10px',
-                    borderRadius: '5px',
-                    width: '200px'
+                    marginLeft: "10px",
+                    background: "#c11",
+                    color: "#fff",
+                    padding: "5px 10px",
+                    borderRadius: "5px",
+                    width: "200px",
                   }}
                 >
                   Add Sponsor
@@ -456,10 +675,13 @@ const Page = () => {
               </div>
             </div>
             <div className="input-group in-3-col">
-              <label>
-                Make Featured Event (35 USD)
-              </label>
-              <div className='radiobttn' style={{ display: "flex", alignItems: "center", gap: "10px" }} role="group" aria-labelledby="radio-group">
+              <label>Make Featured Event (35 USD)</label>
+              <div
+                className="radiobttn"
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                role="group"
+                aria-labelledby="radio-group"
+              >
                 <label>
                   <Field type="radio" name="featuredEvent" value="yes" />
                   Yes
@@ -469,7 +691,11 @@ const Page = () => {
                   No
                 </label>
               </div>
-              <ErrorMessage name="featuredEvent" component="div" style={{ color: 'red' }} />
+              <ErrorMessage
+                name="featuredEvent"
+                component="div"
+                style={{ color: "red" }}
+              />
             </div>
             {/* Submit Button */}
             <div className="main-btn">
@@ -477,7 +703,6 @@ const Page = () => {
                 type="submit"
                 // disabled={isSubmitting}
                 className="submit-button"
-
               >
                 {/* {isSubmitting ? 'Submitting...' : 'Submit Event'}
                  */}
@@ -488,7 +713,7 @@ const Page = () => {
             <ToastContainer />
           </Form>
         )}
-      </Formik> 
+      </Formik>
 
       {/* Modal for Preview */}
       <Modal
@@ -523,13 +748,17 @@ const Page = () => {
           <Button
             onClick={CloseModal}
             variant="contained"
-            sx={{ mt: 2, backgroundColor: '#c11', '&:hover': { backgroundColor: '#a00' } }}
+            sx={{
+              mt: 2,
+              backgroundColor: "#c11",
+              "&:hover": { backgroundColor: "#a00" },
+            }}
           >
             Close
           </Button>
         </Box>
       </Modal>
-    </div >
+    </div>
   );
 };
 
