@@ -58,10 +58,9 @@ const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
-  const [tickets, setTickets] = useState(new Map());
-  const [categories, setCategories] = useState([]);
-  const [ethnicities, setEthnicities] = useState([]);
-  const [sponsors, setSponsors] = useState([]);
+  const [tickets, setTickets] =  useState(new Map([
+    [Date.now().toString(), { name: '', price: '', quantity: '', isNew: true }],
+  ]));
   const handleEditorChange = (content) => {
     console.log(content);
   };
