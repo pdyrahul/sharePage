@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
@@ -7,7 +7,8 @@ import { Editor } from "../../../../components/ui/TextEditor/Editor";
 import validationSchema from "../../../utils/Schema";
 import ImageUpload from "./component/ImageUpload";
 import TicketTable from "./component/TicketTable";
-import axios from "axios";
+import useFetchData from '../../../hooks/useFetchData';
+import { getEventCategories, getSponsors } from '../../../services/api';
 const style = {
   position: "absolute",
   top: "50%",
@@ -50,7 +51,7 @@ const initialValues = {
   posterUpload: null,
   galleryUpload: [],
   layoutUpload: null,
-  selectedSponsor:'',
+  selectedSponsor: "",
 };
 
 const Page = () => {
@@ -81,63 +82,28 @@ const Page = () => {
     setSponsorModalOpen(false);
     setIsModalOpen(false);
   };
-  const token = "4|qhQXtFAA8fdBy8c3XUz58DC2y0ReCEH1vULeMlJ34845e15e"; // Replace this with the actual token
+  const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
+  const { data, loading, error } = useFetchData(apiRequests);
 
-  // Fetch event data when component mounts using axios
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Use Promise.all to fetch both event categories/ethnicities and sponsors concurrently
-        const [eventResponse, sponsorResponse] = await Promise.all([
-          axios.get(
-            "https://peru-grouse-335420.hostingersite.com/api/v1/event/ethnicity-category",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`, // Send the token as a Bearer token in the header
-              },
-            }
-          ),
-          axios.get(
-            "https://peru-grouse-335420.hostingersite.com/api/v1/event/sponsored",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`, // Send the token as a Bearer token in the header
-              },
-            }
-          ),
-        ]);
+  // if (loading) return <div>Loading data... Please wait.</div>;
+  // if (error) return <div>Error loading data: {error.message}</div>;
 
-        // Extract event categories and ethnicities from the first response
-        const eventCategories = eventResponse.data.data.event_category.map(
-          (event) => ({
-            id: event.idspevent,
-            title: event.speventTitle,
-          })
-        );
-        const eventEthnicities = eventResponse.data.data.event_ethnicity.map(
-          (ethnicity) => ({
-            id: ethnicity.id,
-            name: ethnicity.ethnicity_name,
-          })
-        );
+  const [eventData, sponsorData] = data;
 
-        // Extract sponsors from the second response
-        const sponsorList = sponsorResponse.data.data.map((sponsor) => ({
-          id: sponsor.id,
-          name: sponsor.sponsorName,
-        }));
+  const eventCategories = eventData?.data?.event_category.map((event) => ({
+    id: event.idspevent,
+    title: event.speventTitle,
+  })) || [];
 
-        // Set state
-        setCategories(eventCategories);
-        setEthnicities(eventEthnicities);
-        setSponsors(sponsorList);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  const eventEthnicities = eventData?.data?.event_ethnicity.map((ethnicity) => ({
+    id: ethnicity.id,
+    name: ethnicity.ethnicity_name,
+  })) || [];
 
-    fetchData();
-  }, [token]);
+  const sponsorList = sponsorData?.data?.map((sponsor) => ({
+    id: sponsor.id,
+    name: sponsor.sponsorName,
+  })) || [];
 
   return (
     <div className="event-body">
@@ -156,7 +122,7 @@ const Page = () => {
               </label>
               <Field as="select" name="category">
                 <option value="">Select Category</option>
-                {categories.map((category) => (
+                {eventCategories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.title}
                   </option>
@@ -176,7 +142,7 @@ const Page = () => {
               </label>
               <Field as="select" name="ethnicity">
                 <option value="">Select Ethnicity</option>
-                {ethnicities.map((ethnicity) => (
+                {eventEthnicities.map((ethnicity) => (
                   <option key={ethnicity.id} value={ethnicity.id}>
                     {ethnicity.name}
                   </option>
@@ -225,22 +191,19 @@ const Page = () => {
 
             {/* Event Description */}
             <div className="input-group input-group in-1-col">
-              <Editor onEditorChange={handleEditorChange} name="description" />
-              <ErrorMessage
+              <Editor
+                onEditorChange={handleEditorChange}
                 name="description"
-                component="span"
-                style={{ color: "red" }}
               />
+              <ErrorMessage name="description" component="span" style={{ color: 'red' }} />
             </div>
-
             {/* Return Policy */}
             <div className="input-group in-1-col">
-              <Editor onEditorChange={handleEditorChange} name="privacy" />
-              <ErrorMessage
+              <Editor
+                onEditorChange={handleEditorChange}
                 name="privacy"
-                component="span"
-                style={{ color: "red" }}
               />
+              <ErrorMessage name="privacy" component="span" style={{ color: 'red' }} />
             </div>
             {/* Country Field */}
             {/* <div className="input-group in-3-col">
@@ -645,12 +608,13 @@ const Page = () => {
               <label>
                 Select Sponsor <span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <div name="selectedSponser"
+              <div
+                name="selectedSponser"
                 style={{ display: "flex", alignItems: "center", width: "100%" }}
               >
-               <Field as="select" name="selectedSponsor">
+                <Field as="select" name="selectedSponsor">
                   <option value="">Select Sponsor</option>
-                  {sponsors.map((sponsor) => (
+                  {sponsorList.map((sponsor) => (
                     <option key={sponsor.id} value={sponsor.name}>
                       {sponsor.name}
                     </option>
