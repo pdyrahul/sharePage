@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,14 +9,14 @@ import TicketTable from "./component/TicketTable";
 import useFetchData from "../../../hooks/useFetchData";
 import { getEventCategories, getSponsors } from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
-
+import JoditEditor from "jodit-react";
 const initialValues = {
   category: "",
   ethnicity: "",
   eventTitle: "",
   event: "",
   description: null,
-  privacy: null,
+  policy: null,
   country: "",
   state: "",
   city: "",
@@ -47,6 +47,7 @@ const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
+  const [content, setContent] = useState("");
   const [tickets, setTickets] = useState(
     new Map([
       [
@@ -55,6 +56,13 @@ const Page = () => {
       ],
     ])
   );
+  const editor1 = useRef(null);
+  const editor2 = useRef(null);
+  const editorConfig = {
+    buttons: ["bold", "italic", "underline", "link"], // Only these features will be shown
+    toolbarAdaptive: false,
+    toolbarSticky: false,
+  };
   const handleEditorChange = (content) => {
     console.log(content);
   };
@@ -74,9 +82,8 @@ const Page = () => {
   const CloseModal = () => {
     setSponsorModalOpen(false);
     setIsModalOpen(false);
-   
   };
-  
+
   const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
   const { data, loading, error } = useFetchData(apiRequests);
 
@@ -111,7 +118,7 @@ const Page = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, values, }) => (
+        {({ setFieldValue, values }) => (
           <Form className="submit-an-event">
             {/* Category Field */}
             <div className="input-group in-0-5-col">
@@ -126,7 +133,7 @@ const Page = () => {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage 
+              <ErrorMessage
                 name="category"
                 component="span"
                 style={{ color: "red" }}
@@ -187,24 +194,33 @@ const Page = () => {
               />
             </div>
 
-            {/* Event Description */}
             <div className="input-group input-group in-1-col">
-            {/* <ReactQuill theme="snow" value={value} onChange={setValue} />; */}
-              <ErrorMessage
-                name="description"
-                component="span"
-                style={{ color: "red" }}
+              <label htmlFor="description">Event Description</label>
+              <JoditEditor
+                ref={editor1}
+                value={values.description}
+                tabIndex={1}
+                config={editorConfig}
+                onBlur={(newContent) =>
+                  setFieldValue("description", newContent)
+                }
+                onChange={() => {}}
               />
             </div>
+
             {/* Return Policy */}
-            <div className="input-group in-1-col">
-            {/* <ReactQuill theme="snow" value={value} onChange={setValue} />; */}
-              <ErrorMessage
-                name="privacy"
-                component="span"
-                style={{ color: "red" }}
+            <div className="input-group input-group in-1-col">
+              <label htmlFor="policy">Return Policy</label>
+              <JoditEditor
+                ref={editor2}
+                value={values.policy}
+                tabIndex={1}
+                config={editorConfig}
+                onBlur={(newContent) => setFieldValue("policy", newContent)}
+                onChange={() => {}}
               />
             </div>
+
             {/* Country Field */}
             {/* <div className="input-group in-3-col">
               <label>
@@ -409,8 +425,11 @@ const Page = () => {
                     </div>
                   )}
                   {values.ticketLinkType === "sharePage" && (
-                    <TicketTable tickets={tickets} setTickets={setTickets} name="ticketLists" />
-                    
+                    <TicketTable
+                      tickets={tickets}
+                      setTickets={setTickets}
+                      name="ticketLists"
+                    />
                   )}
                   <ErrorMessage
                     name="ticketLinkType"
@@ -525,7 +544,7 @@ const Page = () => {
               </div>
               {/* Featured Artist For This Event */}
               <div className="input-group in-3-col">
-                <label>Featured Artist For This Event</label>
+                <label className="py-2">Featured Artist For This Event</label>
                 <button
                   type="button"
                   onClick={() => openModal("Featured Artist")}
@@ -542,7 +561,7 @@ const Page = () => {
 
               {/* Co-Host Name */}
               <div className="input-group in-3-col">
-                <label>Co-Host Name</label>
+                <label className="py-2">Co-Host Name</label>
                 <button
                   type="button"
                   onClick={() => openModal("Co-Host Name")}
@@ -610,7 +629,7 @@ const Page = () => {
               </label>
               <div
                 name="selectedSponser"
-                style={{ display: "flex", alignItems: "center", width: "100%"}}
+                style={{ display: "flex", alignItems: "center", width: "100%" }}
               >
                 <Field as="select" name="selectedSponsor">
                   <option value="">Select Sponsor</option>
@@ -696,7 +715,10 @@ const Page = () => {
           </div>
         </Box>
       </Modal>
-      <SponsorModal sponsorModalOpen={sponsorModalOpen} CloseModal={CloseModal}/>
+      <SponsorModal
+        sponsorModalOpen={sponsorModalOpen}
+        CloseModal={CloseModal}
+      />
     </div>
   );
 };

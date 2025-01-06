@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Modal, Box, Typography, Button, TextField, FormControl, InputLabel, Select, MenuItem, Grid } from "@mui/material";
-import { createSponsor } from "../../../../services/api";
+import { Modal, Box, Typography, Button, TextField, FormControl, InputLabel, Select, MenuItem, Grid, IconButton } from "@mui/material";
+import {getSponsors, createSponsor } from "../../../../services/api";
+import CancelIcon from '@mui/icons-material/Cancel';  // Importing the cancel icon
 
 const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
   const [formData, setFormData] = useState({
@@ -12,20 +13,40 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
     image: null,
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error when user types
   };
 
   const handleFileChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
+    const file = e.target.files[0];
+    setFormData({ ...formData, image: file });
+    setErrors((prev) => ({ ...prev, image: "" })); // Clear file error
+  };
+
+  const handleRemoveImage = () => {
+    setFormData({ ...formData, image: null }); // Remove image on cancel
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.company.trim()) newErrors.company = "Company name is required";
+    if (!formData.companyWebsite.trim()) newErrors.companyWebsite = "Company website is required";
+    if (!formData.price.trim()) newErrors.price = "Price is required";
+    if (!formData.category.trim()) newErrors.category = "Category is required";
+    if (!formData.shortDescription.trim()) newErrors.shortDescription = "Short description is required";
+    return newErrors;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.price) {
-      alert("Price is required!");
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -42,7 +63,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
 
     createSponsor(newSponsor)
       .then((response) => {
-        const { status, message, data } = response.data;
+        const { status, message } = response.data;
 
         if (status === "Success") {
           alert(message);
@@ -63,6 +84,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
         console.error("Error creating sponsor:", error);
         alert("Error creating sponsor. Please try again.");
       });
+      getSponsors();
   };
 
   return (
@@ -73,59 +95,52 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
       aria-describedby="sponsor-modal-description"
     >
       <Box sx={modalStyle}>
-        <Typography id="sponsor-modal-title" variant="h6" component="h2">
+        <Typography id="sponsor-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
           Add Sponsor
         </Typography>
         <form onSubmit={handleSubmit}>
-          {/* Row with two inputs side by side */}
           <Grid container spacing={1}>
-            {/* Company Field */}
             <Grid item xs={6}>
               <TextField
                 label="Company"
                 name="company"
                 fullWidth
+                size="small"
                 value={formData.company}
                 onChange={handleInputChange}
-                required
-                sx={{ marginBottom: 2 }}
+                error={!!errors.company}
+                helperText={errors.company}
               />
             </Grid>
-
-            {/* Company Website */}
             <Grid item xs={6}>
               <TextField
                 label="Company Website"
                 name="companyWebsite"
                 fullWidth
-                type="url"
+                size="small"
                 value={formData.companyWebsite}
                 onChange={handleInputChange}
-                required
-                sx={{ marginBottom: 2 }}
+                error={!!errors.companyWebsite}
+                helperText={errors.companyWebsite}
               />
             </Grid>
           </Grid>
-
-          {/* Row with price and category side by side */}
-          <Grid container spacing={1}>
-            {/* Price */}
+          <Grid container spacing={1} sx={{ mt: 1 }}>
             <Grid item xs={6}>
               <TextField
                 label="Price"
                 name="price"
                 fullWidth
+                size="small"
                 type="number"
                 value={formData.price}
                 onChange={handleInputChange}
-                required
-                sx={{ marginBottom: 2 }}
+                error={!!errors.price}
+                helperText={errors.price}
               />
             </Grid>
-
-            {/* Category */}
             <Grid item xs={6}>
-              <FormControl fullWidth required sx={{ marginBottom: 2 }}>
+              <FormControl fullWidth size="small" error={!!errors.category}>
                 <InputLabel>Category</InputLabel>
                 <Select
                   name="category"
@@ -141,25 +156,28 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
                   <MenuItem value="Silver">Silver</MenuItem>
                   <MenuItem value="Media">Media</MenuItem>
                 </Select>
+                {errors.category && (
+                  <Typography variant="caption" color="error">
+                    {errors.category}
+                  </Typography>
+                )}
               </FormControl>
             </Grid>
           </Grid>
-
-          {/* Short Description */}
           <TextField
             label="Short Description"
             name="shortDescription"
             fullWidth
+            size="small"
             multiline
-            rows={2}
+            rows={4}
             value={formData.shortDescription}
             onChange={handleInputChange}
-            required
-            sx={{ marginBottom: 2 }}
+            error={!!errors.shortDescription}
+            helperText={errors.shortDescription}
+            sx={{ mt: 1 }}
           />
-
-          {/* Image Upload */}
-          <Button variant="outlined" component="label" fullWidth sx={{ marginBottom: 2 }}>
+          <Button variant="outlined" component="label" fullWidth sx={{ mt: 2, mb: 1 }}>
             Upload Logo
             <input
               type="file"
@@ -170,20 +188,32 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
             />
           </Button>
           {formData.image && (
-            <Typography variant="body2" align="center">
-              Selected File: {formData.image.name}
+            <Box sx={{ position: "relative", textAlign: "center", mb: 1 }}>
+              <img
+                src={URL.createObjectURL(formData.image)}
+                alt="Image Preview"
+                style={{ width: "100%", maxHeight: "200px", objectFit: "contain" }}
+              />
+              <IconButton
+                onClick={handleRemoveImage}
+                sx={{
+                  position: "absolute",
+                  top: "8px",
+                  right: "8px",
+                  backgroundColor: "rgba(255, 255, 255, 0.5)",
+                  "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.7)" },
+                }}
+              >
+                <CancelIcon sx={{ color: "#ff0000" }} />
+              </IconButton>
+            </Box>
+          )}
+          {errors.image && (
+            <Typography variant="caption" color="error" align="center">
+              {errors.image}
             </Typography>
           )}
-
-          {/* Submit Button (half width side by side) */}
           <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Button type="submit" variant="contained" color="primary" fullWidth>
-                Save Sponsor
-              </Button>
-            </Grid>
-
-            {/* Close Button */}
             <Grid item xs={6}>
               <Button
                 onClick={CloseModal}
@@ -197,6 +227,11 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
                 Close
               </Button>
             </Grid>
+            <Grid item xs={6}>
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                Save Sponsor
+              </Button>
+            </Grid>
           </Grid>
         </form>
       </Box>
@@ -204,7 +239,6 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
   );
 };
 
-// Modal styling for 600x600px size
 const modalStyle = {
   position: "absolute",
   top: "50%",
@@ -213,10 +247,10 @@ const modalStyle = {
   bgcolor: "background.paper",
   border: "2px solid #c11",
   boxShadow: 24,
-  p: 4,
-  width: 450,
-  borderRadius:8,
-  overflowY: "auto", // Ensure scrolling if content overflows
+  p: 3,
+  width: 600,
+  borderRadius: 4,
+  overflowY: "auto",
 };
 
 export default SponsorModal;
