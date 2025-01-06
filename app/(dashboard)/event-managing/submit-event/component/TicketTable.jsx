@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { FaSave, FaTrashAlt } from 'react-icons/fa';
 
 const TicketTable = ({tickets, setTickets}) => {
-  
+      
 
     // Add a new ticket row
     const addTicket = () => {

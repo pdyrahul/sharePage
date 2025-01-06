@@ -10,6 +10,8 @@ const api = axios.create({
 // API endpoint functions
 export const getEventCategories = () => api.get('/event/ethnicity-category');
 export const getSponsors = () => api.get('/event/sponsored');
+export const createSponsor = (data) => api.post('/event/sponsored', data);
+
 
 // More API calls can be added as needed
 export default api;

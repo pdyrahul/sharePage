@@ -5,7 +5,7 @@ import { Modal, Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-import { Editor } from '../../../../components/ui/TextEditor/Editor';
+// import { Editor } from '../../../../components/ui/TextEditor/Editor';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -257,10 +257,10 @@ const Page = () => {
             placeholder="Type Description"
             rows={6}
           /> */}
-           <Editor 
+           {/* <Editor 
             onEditorChange={handleEditorChange}
             initialValue="<p>Start writing here...</p>"
-          />
+          /> */}
           {errors.description && <span style={{ color: 'red' }}>This field is required</span>}
           {/* <div className="icons">
             <div className="icon">

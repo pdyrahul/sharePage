@@ -3,24 +3,12 @@ import React, { useState, useMemo } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Modal, Box, Typography, Button } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
-import { Editor } from "../../../../components/ui/TextEditor/Editor";
 import validationSchema from "../../../utils/Schema";
 import ImageUpload from "./component/ImageUpload";
 import TicketTable from "./component/TicketTable";
-import useFetchData from '../../../hooks/useFetchData';
-import { getEventCategories, getSponsors } from '../../../services/api';
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "90%",
-  maxWidth: 500,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+import useFetchData from "../../../hooks/useFetchData";
+import { getEventCategories, getSponsors } from "../../../services/api";
+import SponsorModal from "./component/SponsorModal";
 
 const initialValues = {
   category: "",
@@ -47,6 +35,7 @@ const initialValues = {
   ticketLinkType: "",
   ticketUrl: "",
   tickets: [{ name: "", price: "", quantity: "" }],
+  ticketLists: null,
   featuredEvent: "no",
   posterUpload: null,
   galleryUpload: [],
@@ -58,9 +47,14 @@ const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
-  const [tickets, setTickets] =  useState(new Map([
-    [Date.now().toString(), { name: '', price: '', quantity: '', isNew: true }],
-  ]));
+  const [tickets, setTickets] = useState(
+    new Map([
+      [
+        Date.now().toString(),
+        { name: "", price: "", quantity: "", isNew: true },
+      ],
+    ])
+  );
   const handleEditorChange = (content) => {
     console.log(content);
   };
@@ -80,7 +74,9 @@ const Page = () => {
   const CloseModal = () => {
     setSponsorModalOpen(false);
     setIsModalOpen(false);
+   
   };
+  
   const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
   const { data, loading, error } = useFetchData(apiRequests);
 
@@ -89,20 +85,23 @@ const Page = () => {
 
   const [eventData, sponsorData] = data;
 
-  const eventCategories = eventData?.data?.event_category.map((event) => ({
-    id: event.idspevent,
-    title: event.speventTitle,
-  })) || [];
+  const eventCategories =
+    eventData?.data?.event_category.map((event) => ({
+      id: event.idspevent,
+      title: event.speventTitle,
+    })) || [];
 
-  const eventEthnicities = eventData?.data?.event_ethnicity.map((ethnicity) => ({
-    id: ethnicity.id,
-    name: ethnicity.ethnicity_name,
-  })) || [];
+  const eventEthnicities =
+    eventData?.data?.event_ethnicity.map((ethnicity) => ({
+      id: ethnicity.id,
+      name: ethnicity.ethnicity_name,
+    })) || [];
 
-  const sponsorList = sponsorData?.data?.map((sponsor) => ({
-    id: sponsor.id,
-    name: sponsor.sponsorName,
-  })) || [];
+  const sponsorList =
+    sponsorData?.data?.map((sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.sponsorName,
+    })) || [];
 
   return (
     <div className="event-body">
@@ -112,7 +111,7 @@ const Page = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ setFieldValue, values }) => (
+        {({ setFieldValue, values, }) => (
           <Form className="submit-an-event">
             {/* Category Field */}
             <div className="input-group in-0-5-col">
@@ -127,7 +126,7 @@ const Page = () => {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage
+              <ErrorMessage 
                 name="category"
                 component="span"
                 style={{ color: "red" }}
@@ -190,19 +189,21 @@ const Page = () => {
 
             {/* Event Description */}
             <div className="input-group input-group in-1-col">
-              <Editor
-                onEditorChange={handleEditorChange}
+            {/* <ReactQuill theme="snow" value={value} onChange={setValue} />; */}
+              <ErrorMessage
                 name="description"
+                component="span"
+                style={{ color: "red" }}
               />
-              <ErrorMessage name="description" component="span" style={{ color: 'red' }} />
             </div>
             {/* Return Policy */}
             <div className="input-group in-1-col">
-              <Editor
-                onEditorChange={handleEditorChange}
+            {/* <ReactQuill theme="snow" value={value} onChange={setValue} />; */}
+              <ErrorMessage
                 name="privacy"
+                component="span"
+                style={{ color: "red" }}
               />
-              <ErrorMessage name="privacy" component="span" style={{ color: 'red' }} />
             </div>
             {/* Country Field */}
             {/* <div className="input-group in-3-col">
@@ -408,7 +409,8 @@ const Page = () => {
                     </div>
                   )}
                   {values.ticketLinkType === "sharePage" && (
-                    <TicketTable tickets={tickets} setTickets={setTickets} />
+                    <TicketTable tickets={tickets} setTickets={setTickets} name="ticketLists" />
+                    
                   )}
                   <ErrorMessage
                     name="ticketLinkType"
@@ -419,7 +421,7 @@ const Page = () => {
               </div>
             )}
             {/* Conditional Field Based on Event Type */}
-            <div className="submit-an-event">
+            <div className="submit-an-event my-3">
               {/* Organizer Name Field */}
               <div className="input-group in-3-col">
                 <label>
@@ -593,7 +595,6 @@ const Page = () => {
             <div
               className="input-group in-1-col"
               style={{
-                margin: "0",
                 backgroundColor: "#ffb8bd",
                 color: "#000",
                 padding: "10px",
@@ -609,7 +610,7 @@ const Page = () => {
               </label>
               <div
                 name="selectedSponser"
-                style={{ display: "flex", alignItems: "center", width: "100%" }}
+                style={{ display: "flex", alignItems: "center", width: "100%"}}
               >
                 <Field as="select" name="selectedSponsor">
                   <option value="">Select Sponsor</option>
@@ -695,34 +696,21 @@ const Page = () => {
           </div>
         </Box>
       </Modal>
-      <Modal
-        open={sponsorModalOpen}
-        onClose={CloseModal}
-        aria-labelledby="sponsor-modal-title"
-        aria-describedby="sponsor-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="sponsor-modal-title" variant="h6" component="h2">
-            Add Sponsor
-          </Typography>
-          <Typography id="sponsor-modal-description" sx={{ mt: 2 }}>
-            You can add sponsor details here.
-          </Typography>
-          <Button
-            onClick={CloseModal}
-            variant="contained"
-            sx={{
-              mt: 2,
-              backgroundColor: "#c11",
-              "&:hover": { backgroundColor: "#a00" },
-            }}
-          >
-            Close
-          </Button>
-        </Box>
-      </Modal>
+      <SponsorModal sponsorModalOpen={sponsorModalOpen} CloseModal={CloseModal}/>
     </div>
   );
+};
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "90%",
+  maxWidth: 500,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
 };
 
 export default Page;
