@@ -136,7 +136,7 @@ const Page = () => {
               <ErrorMessage
                 name="category"
                 component="span"
-                style={{ color: "red" }}
+                style={{ color: "red", position:"absolute", bottom:"25px" }}
               />
             </div>
 
