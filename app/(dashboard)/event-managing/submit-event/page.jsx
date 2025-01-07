@@ -9,7 +9,8 @@ import TicketTable from "./component/TicketTable";
 import useFetchData from "../../../hooks/useFetchData";
 import { getEventCategories, getSponsors } from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
-import JoditEditor from "jodit-react";
+
+
 const initialValues = {
   category: "",
   ethnicity: "",
@@ -43,11 +44,13 @@ const initialValues = {
   selectedSponsor: "",
 };
 
+
+
 const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
-  const [content, setContent] = useState("");
+  // const [content, setContent] = useState("");
   const [tickets, setTickets] = useState(
     new Map([
       [
@@ -58,14 +61,7 @@ const Page = () => {
   );
   const editor1 = useRef(null);
   const editor2 = useRef(null);
-  const editorConfig = {
-    buttons: ["bold", "italic", "underline", "link"], // Only these features will be shown
-    toolbarAdaptive: false,
-    toolbarSticky: false,
-  };
-  const handleEditorChange = (content) => {
-    console.log(content);
-  };
+
   const handleSubmit = (values, { resetForm }) => {
     console.log("Form data:", values);
     toast.success("Event submitted successfully!");
@@ -136,7 +132,7 @@ const Page = () => {
               <ErrorMessage
                 name="category"
                 component="span"
-                style={{ color: "red", position:"absolute", bottom:"25px" }}
+                style={{ color: "red", }}
               />
             </div>
 
@@ -194,31 +190,20 @@ const Page = () => {
               />
             </div>
 
+            {/* Description */}
             <div className="input-group input-group in-1-col">
-              <label htmlFor="description">Event Description</label>
-              <JoditEditor
-                ref={editor1}
-                value={values.description}
-                tabIndex={1}
-                config={editorConfig}
-                onBlur={(newContent) =>
-                  setFieldValue("description", newContent)
-                }
-                onChange={() => {}}
-              />
+            <label>
+                Description<span style={{ color: "#EF1D26",  }}>*</span>
+              </label>
+             
             </div>
 
             {/* Return Policy */}
             <div className="input-group input-group in-1-col">
-              <label htmlFor="policy">Return Policy</label>
-              <JoditEditor
-                ref={editor2}
-                value={values.policy}
-                tabIndex={1}
-                config={editorConfig}
-                onBlur={(newContent) => setFieldValue("policy", newContent)}
-                onChange={() => {}}
-              />
+            <label>
+                Policy<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              
             </div>
 
             {/* Country Field */}
