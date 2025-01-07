@@ -43,6 +43,10 @@ const initialValues = {
 };
 
 const Page = () => {
+
+  if (typeof window === undefined) {
+    return false;
+}
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
@@ -180,7 +184,7 @@ const Page = () => {
             </div>
 
             {/* Description */}
-            {/* <div className="input-group input-group in-1-col">
+            <div className="input-group input-group in-1-col">
               <label>
                 Description<span style={{ color: "#EF1D26" }}>*</span>
               </label>
@@ -196,10 +200,10 @@ const Page = () => {
                   />
                 )}
               </Field>
-            </div> */}
+            </div>
 
             {/* Return Policy */}
-            {/* <div className="input-group input-group in-1-col">
+            <div className="input-group input-group in-1-col">
               <label>
                 Policy<span style={{ color: "#EF1D26" }}>*</span>
               </label>
@@ -215,7 +219,7 @@ const Page = () => {
                   />
                 )}
               </Field>
-            </div> */}
+            </div>
             {/* Address */}
             <div className="input-group in-0-5-col">
               <label>
