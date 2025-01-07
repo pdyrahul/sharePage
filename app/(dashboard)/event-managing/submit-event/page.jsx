@@ -36,7 +36,7 @@ const initialValues = {
     endTime: "",
     ticketLinkType: "",
     ticketUrl: "",
-    tickets: [{name: "", price: "", quantity: ""}],
+    tickets: [{}],
     featuredEvent: "no",
     posterUpload: null,
     galleryUpload: [],
@@ -51,14 +51,6 @@ const Page = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState("");
     const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
-    const [tickets, setTickets] = useState(
-        new Map([
-            [
-                Date.now().toString(),
-                {name: "", price: "", quantity: "", isNew: true},
-            ],
-        ])
-    );
     const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
     const {data, loading, error} = useFetchData(apiRequests);
 
