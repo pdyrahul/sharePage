@@ -5,12 +5,11 @@ import { Modal, Box, Typography, Button } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import validationSchema from "../../../utils/Schema";
 import ImageUpload from "./component/ImageUpload";
-import TicketTable from "./component/TicketTable";
+import TicketList from "./component/TicketList";
 import useFetchData from "../../../hooks/useFetchData";
 import { getEventCategories, getSponsors } from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
-
-
+import "@vaadin/rich-text-editor/theme/material/vaadin-rich-text-editor.js";
 const initialValues = {
   category: "",
   ethnicity: "",
@@ -36,7 +35,6 @@ const initialValues = {
   ticketLinkType: "",
   ticketUrl: "",
   tickets: [{ name: "", price: "", quantity: "" }],
-  ticketLists: null,
   featuredEvent: "no",
   posterUpload: null,
   galleryUpload: [],
@@ -44,13 +42,10 @@ const initialValues = {
   selectedSponsor: "",
 };
 
-
-
 const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
-  // const [content, setContent] = useState("");
   const [tickets, setTickets] = useState(
     new Map([
       [
@@ -59,8 +54,8 @@ const Page = () => {
       ],
     ])
   );
-  const editor1 = useRef(null);
-  const editor2 = useRef(null);
+  const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
+  const { data, loading, error } = useFetchData(apiRequests);
 
   const handleSubmit = (values, { resetForm }) => {
     console.log("Form data:", values);
@@ -79,12 +74,6 @@ const Page = () => {
     setSponsorModalOpen(false);
     setIsModalOpen(false);
   };
-
-  const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
-  const { data, loading, error } = useFetchData(apiRequests);
-
-  // if (loading) return <div>Loading data... Please wait.</div>;
-  // if (error) return <div>Error loading data: {error.message}</div>;
 
   const [eventData, sponsorData] = data;
 
@@ -132,7 +121,7 @@ const Page = () => {
               <ErrorMessage
                 name="category"
                 component="span"
-                style={{ color: "red", }}
+                style={{ color: "red" }}
               />
             </div>
 
@@ -191,67 +180,42 @@ const Page = () => {
             </div>
 
             {/* Description */}
-            <div className="input-group input-group in-1-col">
-            <label>
-                Description<span style={{ color: "#EF1D26",  }}>*</span>
+            {/* <div className="input-group input-group in-1-col">
+              <label>
+                Description<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-             
-            </div>
+              <Field name="description">
+                {({ field }) => (
+                  <vaadin-rich-text-editor
+                    {...field}
+                    value={values.description || ''}
+                    style={{ width: "100%" }}
+                    on-value-changed={(e) =>
+                      setFieldValue("description", e.target.value)
+                    }
+                  />
+                )}
+              </Field>
+            </div> */}
 
             {/* Return Policy */}
-            <div className="input-group input-group in-1-col">
-            <label>
+            {/* <div className="input-group input-group in-1-col">
+              <label>
                 Policy<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              
-            </div>
-
-            {/* Country Field */}
-            {/* <div className="input-group in-3-col">
-              <label>
-                Country<span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <Field as="select" name="country">
-                <option value="">Select Country</option>
-                <option value="USA">USA</option>
-                <option value="India">India</option>
-                <option value="Canada">Canada</option>
-             
+              <Field name="policy">
+                {({ field }) => (
+                  <vaadin-rich-text-editor
+                    {...field}
+                    value={values.policy || ''}
+                    style={{ width: "100%" }}
+                    on-value-changed={(e) =>
+                      setFieldValue("policy", e.target.value)
+                    }
+                  />
+                )}
               </Field>
-              <ErrorMessage name="country" component="span" style={{ color: 'red' }} />
             </div> */}
-
-            {/* State Field */}
-            {/* <div className="input-group in-3-col">
-              <label>
-                State<span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <Field as="select" name="state">
-                <option value="">Select State</option>
-                <option value="California">California</option>
-                <option value="Texas">Texas</option>
-                <option value="Maharashtra">Maharashtra</option>
-                <option value="Ontario">Ontario</option>
-              </Field>
-              <ErrorMessage name="state" component="span" style={{ color: 'red' }} />
-            </div> */}
-
-            {/* City Field */}
-            {/* <div className="input-group in-3-col">
-              <label>
-                City<span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <Field as="select" name="city">
-                <option value="">Select City</option>
-                <option value="Los Angeles">Los Angeles</option>
-                <option value="New York">New York</option>
-                <option value="Mumbai">Mumbai</option>
-                <option value="Toronto">Toronto</option>
-              
-              </Field>
-              <ErrorMessage name="city" component="span" style={{ color: 'red' }} />
-            </div> */}
-
             {/* Address */}
             <div className="input-group in-0-5-col">
               <label>
@@ -410,10 +374,9 @@ const Page = () => {
                     </div>
                   )}
                   {values.ticketLinkType === "sharePage" && (
-                    <TicketTable
-                      tickets={tickets}
-                      setTickets={setTickets}
-                      name="ticketLists"
+                    <TicketList
+                      name="tickets"
+                      setStudentValue={setFieldValue}
                     />
                   )}
                   <ErrorMessage
@@ -630,7 +593,7 @@ const Page = () => {
                   type="button"
                   onClick={handleOpenModal}
                   style={{
-                    marginLeft: "10px",
+                    margin: "10px",
                     background: "#c11",
                     color: "#fff",
                     padding: "5px 10px",

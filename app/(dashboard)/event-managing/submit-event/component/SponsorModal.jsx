@@ -229,7 +229,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
             </Grid>
             <Grid item xs={6}>
               <Button type="submit" variant="contained" color="primary" fullWidth>
-                Save Sponsor
+                Save
               </Button>
             </Grid>
           </Grid>
