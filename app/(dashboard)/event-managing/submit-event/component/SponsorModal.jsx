@@ -248,7 +248,8 @@ const modalStyle = {
   border: "2px solid #c11",
   boxShadow: 24,
   p: 3,
-  width: 600,
+  width: "90%", // Default for mobile
+  maxWidth: 600, // Ensures it doesn't exceed 600px on larger screens
   borderRadius: 4,
   overflowY: "auto",
 };
