@@ -11,19 +11,19 @@ const TicketList = ({ name, setTicketList }) => {
             <div key={index} style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
               <div style={{ marginRight: '10px' }}>
                 <label htmlFor={`${name}[${index}].Ticket_type`}>Ticket Type:</label>
-                <Field name={`${name}[${index}].Ticket_type`} placeholder="Ticket Type" />
+                <Field name={`${name}[${index}].Ticket_type`} placeholder="Type" />
                 <ErrorMessage name={`${name}[${index}].Ticket_type`} component="div" style={{ color: 'red' }} />
               </div>
 
               <div style={{ marginRight: '10px' }}>
                 <label htmlFor={`${name}[${index}].Ticket_price`}>Ticket Price:</label>
-                <Field name={`${name}[${index}].Ticket_price`} type="number" placeholder="Ticket Price" />
+                <Field name={`${name}[${index}].Ticket_price`} type="number" placeholder="Price" />
                 <ErrorMessage name={`${name}[${index}].Ticket_price`} component="div" style={{ color: 'red' }} />
               </div>
 
               <div style={{ marginRight: '10px' }}>
                 <label htmlFor={`${name}[${index}].Quantity`}>Quantity Limit</label>
-                <Field name={`${name}[${index}].Quantity`} placeholder="Quantity Limit" />
+                <Field name={`${name}[${index}].Quantity`} placeholder="Quantity" />
                 <ErrorMessage name={`${name}[${index}].Quantity`} component="div" style={{ color: 'red' }} />
               </div>
 
@@ -36,7 +36,7 @@ const TicketList = ({ name, setTicketList }) => {
                   border: 'none',
                   padding: '5px 10px',
                   cursor: 'pointer',
-                  marginTop: '28px',
+                  alignSelf: 'end',
                 }}
               >
                <AiOutlineDelete />

@@ -9,6 +9,12 @@ const validationSchema = Yup.object({
   event: Yup.string()
     .max(100, 'Catchy phrase must be at most 100 characters')
     .required('Catchy phrase is required'),
+      description: Yup.string()
+    .required("Description is required")
+    .min(10, "Description must be at least 10 characters"),
+  policy: Yup.string()
+    .required("Policy is required")
+    .min(10, "Policy must be at least 10 characters"),
   address: Yup.string().required('Event Address is required'),
   place: Yup.string().required('Name of Place is required'),
 
@@ -43,12 +49,7 @@ const validationSchema = Yup.object({
   organizerEmail: Yup.string()
     .email('Invalid email format')
     .required('Organizer Email is required'),
-  organizerPhone: Yup.string()
-    .matches(
-      /^[+]?[0-9]{7,15}$/,
-      'Phone number must be valid and between 7-15 digits'
-    )
-    .required('Organizer Phone is required'),
+  organizerPhone: Yup.string().required('Organizer Phone is required'),
 
   // Dates and Times validations
   startDate: Yup.date()
