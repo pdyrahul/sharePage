@@ -9,12 +9,8 @@ import TicketList from "./component/TicketList";
 import useFetchData from "../../../hooks/useFetchData";
 import { getEventCategories, getSponsors } from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
-import dynamic from "next/dynamic";
 import Editor from "../../../../components/ui/TextEditor/Editor";
-const CustomEditor = dynamic(
-  () => import("../../../../components/ui/TextEditor/Editor"),
-  { ssr: false }
-);
+
 
 const initialValues = {
   category: "",
@@ -232,7 +228,6 @@ const Page = () => {
                 style={errorStyles}
               />
             </div>
-
             {/* Venue Name */}
             <div className="input-group in-0-5-col">
               <label>
@@ -650,6 +645,7 @@ const Page = () => {
                 submit
               </button>
             </div>
+            <ToastContainer/>
           </Form>
         )}
       </Formik>

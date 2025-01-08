@@ -1,53 +1,68 @@
-'use client';
-import Image from 'next/image';
-import logo from '../public/images/logo.svg';
-import { FaBars, FaTimes } from 'react-icons/fa'; // Import React Icons
-import searchIcon from '../public/images/search-2.svg';
-import handShake from '../public/images/hand-shake.svg';
-import personIcon from '../public/images/person-2.svg';
-import helpIcon from '../public/images/help.svg';
-import notificationIcon from '../public/images/notification.svg';
-import cartIcon from '../public/images/cart.svg';
-import settingIcon from '../public/images/setting.svg';
-import threeDotIcon from '../public/images/three-dot.svg';
+"use client";
+import {react,useMemo} from "react";
+import Image from "next/image";
+import logo from "../public/images/logo.svg";
+import user from "../public/images/user-01.svg";
+import { FaBars, FaTimes } from "react-icons/fa"; // Import React Icons
+import searchIcon from "../public/images/search-2.svg";
+import handShake from "../public/images/hand-shake.svg";
+import personIcon from "../public/images/person-2.svg";
+import helpIcon from "../public/images/help.svg";
+import notificationIcon from "../public/images/notification.svg";
+import cartIcon from "../public/images/cart.svg";
+import settingIcon from "../public/images/setting.svg";
+import threeDotIcon from "../public/images/three-dot.svg";
 import Link from "next/link";
-import { useSidebar } from '../Context/SidebarContext';
-import { useState, useEffect } from 'react';
+import { useSidebar } from "../Context/SidebarContext";
+import { useState, useEffect } from "react";
 import { LuCircleUser } from "react-icons/lu";
 import { MdOutlineArrowDropDown } from "react-icons/md";
+import useFetchData from "../app/hooks/useFetchData";
+import { userProfiles } from "../app/services/api";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 const Header = () => {
   const { isOpen, toggleSidebar } = useSidebar();
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
-    }
+    };
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-
-  }, [])
-
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  const apiRequests = useMemo(() => [userProfiles], []);
+  const { data, isLoading, error } = useFetchData(apiRequests);
+  const profiles = data?.[0]?.data || [];
   return (
     <div className="nav-bar">
       <div className="logo-menu">
         <div className="logo-wrapper">
-          <Link href={'/'}>
-            <Image src={logo} alt="Logo" loading='lazy' />
+          <Link href={"/"}>
+            <Image src={logo} alt="Logo" loading="lazy" />
           </Link>
         </div>
-        {isMobile ? <div className="menuIcon" onClick={toggleSidebar}>
-          {isOpen ? (
-            <FaTimes size={18} color="white" />
-          ) : (
-            <FaBars size={18} color="white" />
-          )}
-        </div> : null}
+        {isMobile ? (
+          <div className="menuIcon" onClick={toggleSidebar}>
+            {isOpen ? (
+              <FaTimes size={18} color="white" />
+            ) : (
+              <FaBars size={18} color="white" />
+            )}
+          </div>
+        ) : null}
       </div>
       <div className="search-box">
         <div className="select-options">
           All Profiles
-          <Image src="/images/down-arrow.svg" alt="Down Arrow" width={16} height={16} />
+          <Image
+            src="/images/down-arrow.svg"
+            alt="Down Arrow"
+            width={16}
+            height={16}
+          />
         </div>
         <div className="search-box-wrapper">
           <input type="text" placeholder="Search" />
@@ -58,49 +73,95 @@ const Header = () => {
       </div>
       <div className="import-links">
         <div className="search-mobile link">
-          <Image src={searchIcon} alt="Search Icon" height={30} width={30}/>
+          <Image src={searchIcon} alt="Search Icon" height={30} width={30} />
         </div>
         <div className="utilityIcons">
-        <div className="hand-shake link">
-          <Image src={handShake} alt="Hand Shake" height={30} width={30}/>
-        </div>
-        <div className="persons link">
-          <Image src={personIcon} alt="Person Icon" height={30} width={30}/>
-          <div className="count">1</div>
-        </div>
-        <div className="help link">
-          <Image src={helpIcon} alt="Help" />
-        </div>
-        <div className="notification link">
-          <Image src={notificationIcon} alt="Notification" height={30} width={30}/>
-          <div className="count">2</div>
-        </div>
-        <div className="cart link">
-          <Image src={cartIcon} alt="Cart" height={30} width={30}/>
-        </div>
-        <div className="setting link">
-          <Image src={settingIcon} alt="Setting"height={30} width={30} />
-        </div>
+          <div className="hand-shake link">
+            <Image src={handShake} alt="Hand Shake" height={30} width={30} />
+          </div>
+          <div className="persons link">
+            <Image src={personIcon} alt="Person Icon" height={30} width={30} />
+            <div className="count">1</div>
+          </div>
+          <div className="help link">
+            <Image src={helpIcon} alt="Help" />
+          </div>
+          <div className="notification link">
+            <Image
+              src={notificationIcon}
+              alt="Notification"
+              height={30}
+              width={30}
+            />
+            <div className="count">2</div>
+          </div>
+          <div className="cart link">
+            <Image src={cartIcon} alt="Cart" height={30} width={30} />
+          </div>
+          <div className="setting link">
+            <Image src={settingIcon} alt="Setting" height={30} width={30} />
+          </div>
         </div>
         <div className="three-dot link">
-          <Image src={threeDotIcon} alt="Three Dot" height={30} width={30}/>
+          <Image src={threeDotIcon} alt="Three Dot" height={30} width={30} />
         </div>
         <div className="line" />
-        <div className="perfile-detail">
-          <div className="img-wrapper">
-            <div className="circle">
-              {/* <Image src={UserProfile} alt="" /> */}
-              <LuCircleUser style={{ fontSize: '2rem' }} />
-            </div>
-          </div>
-          <div className="profile-detail-wrapper">
-            <div className="name">Amelia Joseph</div>
-            <div className="title">Personal Profile</div>
-          </div>
-          <div className="down-icon">
-            {/* <img src="./images/down-arrow-2.svg" alt="" /> */}
-            <MdOutlineArrowDropDown style={{ color: '#fff', fontSize: '1.5rem' }} />
-          </div>
+        <div className="profile-section">
+          {/* Dropdown */}
+          <li className="nav-item dropdown">
+            <button
+              className="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center"
+              id="profileDropdown"
+              type="button"
+              aria-expanded="false"
+              data-bs-toggle="dropdown"
+              data-bs-display="static"
+            >
+              <div className="img-wrapper">
+                <div className="circle">
+                  <Image
+                    src={user} // Replace with your profile image path
+                    alt="Profile"
+                    width={32}
+                    height={32}
+                  />
+                </div>
+              </div>
+              <span className="ms-2">Amelia Joseph</span>
+            </button>
+            <ul
+              className="dropdown-menu dropdown-menu-end"
+              aria-labelledby="profileDropdown"
+            >
+              {isLoading && <li>Loading profiles...</li>}
+              {error && <li>Error loading profiles</li>}
+              {!isLoading && !error && profiles.length === 0 && (
+                <li>No profiles found</li>
+              )}
+              {!isLoading &&
+                !error &&
+                profiles.map((profile) => (
+                  <li
+                  key={profile.idspProfiles}
+                  className="dropdown-item d-flex align-items-center"
+                  onClick={() => alert(`Profile ID: ${profile.idspProfiles}`)} // Show ID on click
+                  style={{ cursor: "pointer" }} // Add pointer cursor for better UX
+                >
+                  <img
+                    src={profile.spProfilePic || "/images/user-placeholder.png"} // Use profile picture or placeholder
+                    alt={profile.spProfileName}
+                    className="rounded-circle me-2"
+                    style={{ width: "40px", height: "40px", objectFit: "cover" }} // Styling for image
+                  />
+                  <div className="d-flex flex-column">
+                    <strong>{profile.spProfileName}</strong> {/* Display profile name */}
+                    <small className="text-muted">{profile.profile_type.spProfileTypeName}</small> {/* Display profile type */}
+                  </div>
+                </li>
+                
+                ))}
+            </ul>
+          </li>
         </div>
       </div>
     </div>
