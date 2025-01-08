@@ -12,7 +12,6 @@ export const getEventCategories = () => api.get('/event/ethnicity-category');
 export const getSponsors = () => api.get('/event/sponsored');
 export const createSponsor = (data) => api.post('/event/sponsored', data);
 export const userProfiles = () => api.get('/event/user/profiles');
-console.log(userProfiles)
 
 // More API calls can be added as needed
 export default api;
