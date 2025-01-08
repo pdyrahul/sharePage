@@ -21,7 +21,7 @@ input[type="radio"] {
         align-items: center;
     }
 }
-img{height: auto !important;}
+
 .radiobttn >label{display: flex; gap:4px; align-items: center;}
 .ck-editor__editable{height: 150px;}
 ul.autocomplete-suggestions {
