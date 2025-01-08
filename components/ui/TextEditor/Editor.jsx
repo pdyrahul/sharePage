@@ -1,6 +1,5 @@
-// components/custom-editor.js
-'use client' // only in App Router
 
+'use client' 
 import React from 'react';
 import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 

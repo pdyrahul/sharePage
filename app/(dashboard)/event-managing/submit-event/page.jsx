@@ -10,8 +10,6 @@ import useFetchData from "../../../hooks/useFetchData";
 import { getEventCategories, getSponsors } from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
 import Editor from "../../../../components/ui/TextEditor/Editor";
-
-
 const initialValues = {
   category: "",
   ethnicity: "",
@@ -42,6 +40,7 @@ const initialValues = {
 };
 
 const Page = () => {
+
   if (typeof window === undefined) {
     return false;
   }

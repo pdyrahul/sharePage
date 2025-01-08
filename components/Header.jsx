@@ -20,9 +20,12 @@ import { MdOutlineArrowDropDown } from "react-icons/md";
 import useFetchData from "../app/hooks/useFetchData";
 import { userProfiles } from "../app/services/api";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { Dropdown } from 'react-bootstrap';
 
 const Header = () => {
+  if (typeof window === undefined) {
+    return false;
+  }
   const { isOpen, toggleSidebar } = useSidebar();
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -107,62 +110,59 @@ const Header = () => {
         </div>
         <div className="line" />
         <div className="profile-section">
-          {/* Dropdown */}
-          <li className="nav-item dropdown">
-            <button
-              className="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center"
-              id="profileDropdown"
-              type="button"
-              aria-expanded="false"
-              data-bs-toggle="dropdown"
-              data-bs-display="static"
-            >
-              <div className="img-wrapper">
-                <div className="circle">
-                  <Image
-                    src={user} // Replace with your profile image path
-                    alt="Profile"
-                    width={32}
-                    height={32}
-                  />
-                </div>
+        <Dropdown>
+          <Dropdown.Toggle
+           variant="link"
+           style={{
+            display: 'flex',
+            alignItems: 'center', // Align items vertically centered
+            color: '#fff', // Text color
+          }}
+           >
+            <div className="img-wrapper">
+              <div className="circle">
+                <Image
+                  src={user}
+                  alt="Profile"
+                  width={32}
+                  height={32}
+                />
               </div>
-              <span className="ms-2">Amelia Joseph</span>
-            </button>
-            <ul
-              className="dropdown-menu dropdown-menu-end"
-              aria-labelledby="profileDropdown"
-            >
-              {isLoading && <li>Loading profiles...</li>}
-              {error && <li>Error loading profiles</li>}
-              {!isLoading && !error && profiles.length === 0 && (
-                <li>No profiles found</li>
-              )}
-              {!isLoading &&
-                !error &&
-                profiles.map((profile) => (
-                  <li
+            </div>
+            <span className="ms-2">Amelia Joseph</span>
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu style={{translate:"-35px"}}>
+            {isLoading && <Dropdown.Item>Loading profiles...</Dropdown.Item>}
+            {error && <Dropdown.Item>Error loading profiles</Dropdown.Item>}
+            {!isLoading && !error && profiles.length === 0 && (
+              <Dropdown.Item>No profiles found</Dropdown.Item>
+            )}
+            {!isLoading &&
+              !error &&
+              profiles.map((profile) => (
+                <Dropdown.Item
                   key={profile.idspProfiles}
-                  className="dropdown-item d-flex align-items-center"
-                  onClick={() => alert(`Profile ID: ${profile.idspProfiles}`)} // Show ID on click
-                  style={{ cursor: "pointer" }} // Add pointer cursor for better UX
+                  onClick={() => alert(`Profile ID: ${profile.idspProfiles}`)}
+                  style={{ cursor: "pointer", display: "flex" }}
                 >
                   <img
-                    src={profile.spProfilePic || "/images/user-placeholder.png"} // Use profile picture or placeholder
+                    src={profile.spProfilePic || "/images/user-placeholder.png"}
                     alt={profile.spProfileName}
                     className="rounded-circle me-2"
-                    style={{ width: "40px", height: "40px", objectFit: "cover" }} // Styling for image
+                    style={{ width: "40px", height: "40px", objectFit: "cover" }}
                   />
                   <div className="d-flex flex-column">
-                    <strong>{profile.spProfileName}</strong> {/* Display profile name */}
-                    <small className="text-muted">{profile.profile_type.spProfileTypeName}</small> {/* Display profile type */}
+                    <strong>{profile.spProfileName}</strong>
+                    <small className="text-muted">
+                      {profile.profile_type.spProfileTypeName}
+                    </small>
                   </div>
-                </li>
-                
-                ))}
-            </ul>
-          </li>
-        </div>
+                </Dropdown.Item>
+              ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       </div>
     </div>
   );
