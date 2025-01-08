@@ -4,7 +4,7 @@
 import React from 'react';
 import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
 
-const CustomEditor = ({data,setData}) => {
+const Editor = ({data,setData}) => {
     const cloud = useCKEditorCloud( {
         version: '44.1.0',
         premium: true
@@ -52,4 +52,4 @@ const CustomEditor = ({data,setData}) => {
     );
 };
 
-export default CustomEditor;
+export default Editor;

@@ -1,5 +1,5 @@
 "use client";
-import React, {useMemo, useState} from "react";
+import React, {useMemo, useState,useEffect} from "react";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import {Box, Modal, Typography} from "@mui/material";
 import {toast, ToastContainer} from "react-toastify";
@@ -10,6 +10,7 @@ import useFetchData from "../../../hooks/useFetchData";
 import {getEventCategories, getSponsors} from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
 import dynamic from 'next/dynamic';
+import Editor from "../../../../components/ui/TextEditor/Editor";
 const CustomEditor = dynamic( () => import( '../../../../components/ui/TextEditor/Editor' ), { ssr: false } );
 
 const initialValues = {
@@ -52,8 +53,10 @@ const Page = () => {
     const [modalContent, setModalContent] = useState("");
     const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
     const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
-    const {data, loading, error} = useFetchData(apiRequests);
-
+    const {data,} = useFetchData(apiRequests);
+    useEffect(() => {
+        getSponsors();
+      }, [sponsorModalOpen]);
     const handleSubmit = (values, {resetForm}) => {
         console.log("Form data:", values);
         toast.success("Event submitted successfully!");
@@ -183,7 +186,7 @@ const Page = () => {
                             </label>
                             <Field name="description">
                                 {({field}) => (
-                                    <CustomEditor
+                                    <Editor
                                         data={values.description || ""}
                                         setData={(data) => setFieldValue("description", data)}
                                     />
@@ -198,7 +201,7 @@ const Page = () => {
                             </label>
                             <Field name="policy">
                                 {({field}) => (
-                                    <CustomEditor
+                                    <Editor
                                         data={values.policy || ""}
                                         setData={(data) => setFieldValue("policy", data)}
                                     />
