@@ -1,9 +1,9 @@
 "use client";
-import {react,useMemo} from "react";
+import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import logo from "../public/images/logo.svg";
 import user from "../public/images/user-01.svg";
-import { FaBars, FaTimes } from "react-icons/fa"; // Import React Icons
+import { FaBars, FaTimes } from "react-icons/fa";
 import searchIcon from "../public/images/search-2.svg";
 import handShake from "../public/images/hand-shake.svg";
 import personIcon from "../public/images/person-2.svg";
@@ -14,20 +14,16 @@ import settingIcon from "../public/images/setting.svg";
 import threeDotIcon from "../public/images/three-dot.svg";
 import Link from "next/link";
 import { useSidebar } from "../Context/SidebarContext";
-import { useState, useEffect } from "react";
-import { LuCircleUser } from "react-icons/lu";
-import { MdOutlineArrowDropDown } from "react-icons/md";
 import useFetchData from "../app/hooks/useFetchData";
 import { userProfiles } from "../app/services/api";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown } from "react-bootstrap";
+import { CgProfile } from "react-icons/cg";
 
 const Header = () => {
-  if (typeof window === undefined) {
-    return false;
-  }
   const { isOpen, toggleSidebar } = useSidebar();
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -36,14 +32,30 @@ const Header = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   const apiRequests = useMemo(() => [userProfiles], []);
   const { data, isLoading, error } = useFetchData(apiRequests);
   const profiles = data?.[0]?.data || [];
+
+  useEffect(() => {
+    if (!selectedProfile && profiles.length > 0) {
+      const defaultProfile =
+        profiles.find(
+          (profile) => profile.spProfilesDefault === 1
+        ) || profiles[0];
+      setSelectedProfile(defaultProfile);
+    }
+  }, [profiles, selectedProfile]);
+
+  const handleProfileSelect = (profile) => {
+    setSelectedProfile(profile);
+  };
+
   return (
     <div className="nav-bar">
       <div className="logo-menu">
         <div className="logo-wrapper">
-          <Link href={"/"}>
+          <Link href="/">
             <Image src={logo} alt="Logo" loading="lazy" />
           </Link>
         </div>
@@ -110,59 +122,85 @@ const Header = () => {
         </div>
         <div className="line" />
         <div className="profile-section">
-        <Dropdown>
-          <Dropdown.Toggle
-           variant="link"
-           style={{
-            display: 'flex',
-            alignItems: 'center', // Align items vertically centered
-            color: '#fff', // Text color
-          }}
-           >
-            <div className="img-wrapper">
-              <div className="circle">
-                <Image
-                  src={user}
-                  alt="Profile"
-                  width={32}
-                  height={32}
-                />
+          <Dropdown>
+            <Dropdown.Toggle
+              variant="link"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                color: "#fff",
+                textDecoration: "none",
+              }}
+            >
+              <div className="profileWrapper d-flex align-items-center justify-space-between gap-2">
+                <div className="figure">
+                  {selectedProfile?.spProfilePic ? (
+                    <img
+                      src={selectedProfile.spProfilePic}
+                      width={32}
+                      height={32}
+                      style={{ borderRadius: "50%" }}
+                    />
+                  ) : (
+                    <CgProfile size={32} style={{ color: "#ccc" }} />
+                  )}
+                </div>
+                <div className="figDetails d-flex flex-column align-items-end">
+                  <strong>{selectedProfile?.spProfileName}</strong>
+                  <span style={{marginTop:"-10px", fontSize:"14px"}}>{selectedProfile?.profile_type?.spProfileTypeName}</span>
+                </div>
               </div>
-            </div>
-            <span className="ms-2">Amelia Joseph</span>
-          </Dropdown.Toggle>
+            </Dropdown.Toggle>
 
-          <Dropdown.Menu style={{translate:"-35px"}}>
-            {isLoading && <Dropdown.Item>Loading profiles...</Dropdown.Item>}
-            {error && <Dropdown.Item>Error loading profiles</Dropdown.Item>}
-            {!isLoading && !error && profiles.length === 0 && (
-              <Dropdown.Item>No profiles found</Dropdown.Item>
-            )}
-            {!isLoading &&
-              !error &&
-              profiles.map((profile) => (
-                <Dropdown.Item
-                  key={profile.idspProfiles}
-                  onClick={() => alert(`Profile ID: ${profile.idspProfiles}`)}
-                  style={{ cursor: "pointer", display: "flex" }}
-                >
-                  <img
-                    src={profile.spProfilePic || "/images/user-placeholder.png"}
-                    alt={profile.spProfileName}
-                    className="rounded-circle me-2"
-                    style={{ width: "40px", height: "40px", objectFit: "cover" }}
-                  />
-                  <div className="d-flex flex-column">
-                    <strong>{profile.spProfileName}</strong>
-                    <small className="text-muted">
-                      {profile.profile_type.spProfileTypeName}
-                    </small>
-                  </div>
-                </Dropdown.Item>
-              ))}
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
+            <Dropdown.Menu style={{ translate: "-35px" }}>
+              {isLoading && <Dropdown.Item>Loading profiles...</Dropdown.Item>}
+              {error && <Dropdown.Item>Error loading profiles</Dropdown.Item>}
+              {!isLoading && !error && profiles.length === 0 && (
+                <Dropdown.Item>No profiles found</Dropdown.Item>
+              )}
+              {!isLoading &&
+                !error &&
+                profiles.map((profile) => (
+                  <Dropdown.Item
+                    key={profile.idspProfiles}
+                    onClick={() => handleProfileSelect(profile)}
+                    style={{
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      borderBottom: "1px solid #d9d9d9",
+                    }}
+                  >
+                    {profile.spProfilePic ? (
+                      <img
+                        src={profile.spProfilePic}
+                        alt={profile.spProfileName}
+                        className="rounded-circle me-2"
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <CgProfile
+                        size={40}
+                        className="rounded-circle me-2"
+                        style={{ color: "#ccc" }}
+                      />
+                    )}
+                    <div className="d-flex flex-column align-items-end">
+                      <strong>{profile.spProfileName}</strong>
+                      <small className="text-muted">
+                        {profile.profile_type.spProfileTypeName}
+                      </small>
+                    </div>
+                  </Dropdown.Item>
+                ))}
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       </div>
     </div>
   );
