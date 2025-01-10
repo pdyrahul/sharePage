@@ -77,7 +77,7 @@ const EventsPage = () => {
               <div className="heading_home">Educational</div>
               
             </div>
-            <Event /> <br/>
+            <Event /> 
             <Event />
           </div>
         </div>

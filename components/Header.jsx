@@ -122,7 +122,7 @@ const Header = () => {
         </div>
         <div className="line" />
         <div className="profile-section">
-          <Dropdown>
+          <Dropdown style={{width:"200px"}}>
             <Dropdown.Toggle
               variant="link"
               style={{
@@ -132,7 +132,7 @@ const Header = () => {
                 textDecoration: "none",
               }}
             >
-              <div className="profileWrapper d-flex align-items-center justify-space-between gap-2">
+              <div className="profileWrapper d-flex align-items-center justify-space-between gap-2 w-full">
                 <div className="figure">
                   {selectedProfile?.spProfilePic ? (
                     <img
@@ -145,9 +145,9 @@ const Header = () => {
                     <CgProfile size={32} style={{ color: "#ccc" }} />
                   )}
                 </div>
-                <div className="figDetails d-flex flex-column align-items-end">
-                  <strong>{selectedProfile?.spProfileName}</strong>
-                  <span style={{marginTop:"-10px", fontSize:"14px"}}>{selectedProfile?.profile_type?.spProfileTypeName}</span>
+                <div className="figDetails d-flex flex-column align-items-end ">
+                  <strong style={{fontSize:"14px"}}>{selectedProfile?.spProfileName}</strong>
+                  <span style={{marginTop:"-5px", fontSize:"12px", maxWidth:"200px"}}>{selectedProfile?.profile_type?.spProfileTypeName}</span>
                 </div>
               </div>
             </Dropdown.Toggle>
