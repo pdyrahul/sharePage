@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { Box, Modal, Typography } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
@@ -10,7 +10,8 @@ import useFetchData from "../../../hooks/useFetchData";
 import { getEventCategories, getSponsors } from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
 import Editor from "../../../../components/ui/TextEditor/Editor";
-
+import AddressAutocomplete from "./component/AddressInput";
+import { LoadScript, Autocomplete } from "@react-google-maps/api";
 
 const initialValues = {
   category: "",
@@ -42,14 +43,18 @@ const initialValues = {
 };
 
 const Page = () => {
-
   if (typeof window === undefined) {
     return false;
   }
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [tickets, setTickets] = useState([]);
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
+  const [address, setAddress] = useState("");
+  const autocompleteRef = useRef(null);
+  const libraries = ["places"];
+
   const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
   const { data } = useFetchData(apiRequests);
   useEffect(() => {
@@ -92,6 +97,13 @@ const Page = () => {
       id: sponsor.id,
       name: sponsor.sponsorName,
     })) || [];
+  const handlePlaceSelect = (setFieldValue) => {
+    const place = autocompleteRef.current.getPlace();
+    if (place && place.formatted_address) {
+      setAddress(place.formatted_address); // Update local state
+      setFieldValue("address", place.formatted_address); // Update Formik state
+    }
+  };
 
   return (
     <div className="event-body">
@@ -214,21 +226,40 @@ const Page = () => {
             </div>
 
             {/* Address */}
-            <div className="input-group in-0-5-col">
-              <label>
-                Event Address<span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <Field
-                type="text"
-                name="address"
-                placeholder="Enter Venue Name"
-              />
-              <ErrorMessage
-                name="address"
-                component="span"
-                style={errorStyles}
-              />
+            <div className="input-group in-0-5-col" >
+              <LoadScript
+                googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                libraries={libraries} // Use the static libraries array
+              >
+                <label>
+                  Event Address<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Autocomplete
+                  onLoad={(autocomplete) =>
+                    (autocompleteRef.current = autocomplete)
+                  }
+                  onPlaceChanged={() => handlePlaceSelect(setFieldValue)}
+                >
+                  <Field 
+                    type="text"
+                    name="address"
+                    placeholder="Enter Venue Name"
+                    value={address}
+                    onChange={(e) => {
+                      setAddress(e.target.value);
+                      setFieldValue("address", e.target.value);
+                    }}
+                    
+                  />
+                </Autocomplete>
+                <ErrorMessage
+                  name="address"
+                  component="span"
+                  style={errorStyles}
+                />
+              </LoadScript>
             </div>
+
             {/* Venue Name */}
             <div className="input-group in-0-5-col">
               <label>
@@ -646,7 +677,7 @@ const Page = () => {
                 submit
               </button>
             </div>
-            <ToastContainer/>
+            <ToastContainer />
           </Form>
         )}
       </Formik>

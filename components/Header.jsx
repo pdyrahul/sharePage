@@ -122,7 +122,7 @@ const Header = () => {
         </div>
         <div className="line" />
         <div className="profile-section">
-          <Dropdown style={{width:"200px"}}>
+          <Dropdown style={{width:"220px", textTransform:"capitalize"}}>
             <Dropdown.Toggle
               variant="link"
               style={{
@@ -130,9 +130,10 @@ const Header = () => {
                 alignItems: "center",
                 color: "#fff",
                 textDecoration: "none",
+                width:"100%"
               }}
             >
-              <div className="profileWrapper d-flex align-items-center justify-space-between gap-2 w-full">
+              <div className="profileWrapper d-flex align-items-center  w-100" style={{justifyContent:"space-between"}}>
                 <div className="figure">
                   {selectedProfile?.spProfilePic ? (
                     <img
@@ -146,7 +147,7 @@ const Header = () => {
                   )}
                 </div>
                 <div className="figDetails d-flex flex-column align-items-end ">
-                  <strong style={{fontSize:"14px"}}>{selectedProfile?.spProfileName}</strong>
+                  <strong style={{fontSize:"14px", textTransform:"capitalize"}}>{selectedProfile?.spProfileName}</strong>
                   <span style={{marginTop:"-5px", fontSize:"12px", maxWidth:"200px"}}>{selectedProfile?.profile_type?.spProfileTypeName}</span>
                 </div>
               </div>
