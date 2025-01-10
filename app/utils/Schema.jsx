@@ -6,15 +6,18 @@ const validationSchema = Yup.object({
   eventTitle: Yup.string()
     .max(60, 'Event Title must be at most 60 characters')
     .required('Event Title is required'),
-  event: Yup.string()
-    .max(100, 'Catchy phrase must be at most 100 characters')
-    .required('Catchy phrase is required'),
+  // event: Yup.string()
+  //   .max(100, 'Catchy phrase must be at most 100 characters')
+  //   .required('Catchy phrase is required'),
       description: Yup.string()
     .required("Description is required")
     .min(10, "Description must be at least 10 characters"),
   policy: Yup.string()
     .required("Policy is required")
     .min(10, "Policy must be at least 10 characters"),
+    amenities: Yup.string()
+    .required("amenities is required")
+    .min(10, "amenities must be at least 10 characters"),
   address: Yup.string().required('Event Address is required'),
   place: Yup.string().required('Name of Place is required'),
 
@@ -34,9 +37,9 @@ const validationSchema = Yup.object({
     otherwise: (schema) => schema.notRequired(),
   }),
 
-  registrationRequired: Yup.string().required(
-    'Registration Needed is required'
-  ),
+  // registrationRequired: Yup.string().required(
+  //   'Registration Needed is required'
+  // ),
 
   // Capacity validations
   capacity: Yup.number()
@@ -45,11 +48,11 @@ const validationSchema = Yup.object({
     .required('Capacity is required'),
 
   // Organizer details validations
-  organizerName: Yup.string().required('Organizer Name is required'),
-  organizerEmail: Yup.string()
-    .email('Invalid email format')
-    .required('Organizer Email is required'),
-  organizerPhone: Yup.string().required('Organizer Phone is required'),
+  // organizerName: Yup.string().required('Organizer Name is required'),
+  // organizerEmail: Yup.string()
+  //   .email('Invalid email format')
+  //   .required('Organizer Email is required'),
+  // organizerPhone: Yup.string().required('Organizer Phone is required'),
 
   // Dates and Times validations
   startDate: Yup.date()

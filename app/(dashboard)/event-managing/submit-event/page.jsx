@@ -10,24 +10,25 @@ import useFetchData from "../../../hooks/useFetchData";
 import { getEventCategories, getSponsors } from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
 import Editor from "../../../../components/ui/TextEditor/Editor";
-import AddressAutocomplete from "./component/AddressInput";
+// import AddressAutocomplete from "./component/AddressInput";
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 
 const initialValues = {
   category: "",
   ethnicity: "",
   eventTitle: "",
-  event: "",
+  // event: "",
   description: null,
   policy: null,
+  amenities: null,
   address: "",
   place: "",
   eventType: "free",
-  registrationRequired: "yes",
+  // registrationRequired: "yes",
   capacity: "",
-  organizerName: "",
-  organizerEmail: "",
-  organizerPhone: "",
+  // organizerName: "",
+  // organizerEmail: "",
+  // organizerPhone: "",
   startDate: "",
   endDate: "",
   startTime: "",
@@ -57,6 +58,7 @@ const Page = () => {
 
   const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
   const { data } = useFetchData(apiRequests);
+
   useEffect(() => {
     getSponsors();
   }, [sponsorModalOpen]);
@@ -97,6 +99,19 @@ const Page = () => {
       id: sponsor.id,
       name: sponsor.sponsorName,
     })) || [];
+
+  // let sponsorList = []; // Declare sponsorList in the appropriate scope
+  // if (
+  //   sponsorData?.data &&
+  //   Array.isArray(sponsorData.data) &&
+  //   sponsorData.data.length > 0
+  // ) {
+  //   sponsorList = sponsorData.data.map((sponsor) => ({
+  //     id: sponsor?.id || null,
+  //     name: sponsor?.sponsorName || "Unknown",
+  //   }));
+  // }
+
   const handlePlaceSelect = (setFieldValue) => {
     const place = autocompleteRef.current.getPlace();
     if (place && place.formatted_address) {
@@ -118,7 +133,7 @@ const Page = () => {
         {({ setFieldValue, values }) => (
           <Form className="submit-an-event">
             {/* Title Field */}
-            <div className="input-group in-0-5-col">
+            <div className="input-group in-1-col">
               <label>
                 Event Title (Max 60 characters)
                 <span style={{ color: "#EF1D26" }}>*</span>
@@ -136,9 +151,9 @@ const Page = () => {
             </div>
 
             {/* Sub Category Field */}
-            <div className="input-group in-0-5-col">
+            {/* <div className="input-group in-0-5-col">
               <label>
-              Sub Category
+                Sub Category
                 <span style={{ color: "#EF1D26" }}>*</span>
               </label>
               <Field
@@ -147,7 +162,7 @@ const Page = () => {
                 placeholder="Enter Sub Category"
               />
               <ErrorMessage name="event" component="span" style={errorStyles} />
-            </div>
+            </div> */}
 
             {/* Category Field */}
             <div className="input-group in-0-5-col">
@@ -188,84 +203,112 @@ const Page = () => {
                 style={errorStyles}
               />
             </div>
-
-            {/* Description */}
-            <div className="input-group in-1-col">
-              <label>
-                Description<span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <Field name="description">
-                {() => (
-                  <Editor
-                    data={values.description || ""}
-                    setData={(data) => setFieldValue("description", data)}
-                  />
-                )}
-              </Field>
-              <ErrorMessage
-                name="description"
-                component="div"
-                style={errorStyles}
-              />
-            </div>
-
-            {/* Policy */}
-            <div className="input-group in-1-col">
-              <label>
-                Policy<span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <Field name="policy">
-                {() => (
-                  <Editor
-                    data={values.policy || ""}
-                    setData={(data) => setFieldValue("policy", data)}
-                  />
-                )}
-              </Field>
-              <ErrorMessage name="policy" component="div" style={errorStyles} />
-            </div>
-
             {/* Address */}
-            <div className="input-group in-0-5-col">
+            <div className="input-group in-1-col">
               <LoadScript
                 googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
                 libraries={libraries} // Use the static libraries array
               >
-                <label>
-                  Event Address<span style={{ color: "#EF1D26" }}>*</span>
-                </label>
-                <Autocomplete
-                  onLoad={(autocomplete) =>
-                    (autocompleteRef.current = autocomplete)
-                  }
-                  onPlaceChanged={() => handlePlaceSelect(setFieldValue)}
-                >
-                  <Field
-                    type="text"
+                <div style={{ display: "inline-block", width: "100%" }}>
+                  <label>
+                    Event Address<span style={{ color: "#EF1D26" }}>*</span>
+                  </label>
+                  <Autocomplete
+                    onLoad={(autocomplete) =>
+                      (autocompleteRef.current = autocomplete)
+                    }
+                    onPlaceChanged={() => handlePlaceSelect(setFieldValue)}
+                  >
+                    <Field
+                      type="text"
+                      name="address"
+                      placeholder="Enter Venue Name"
+                      value={address}
+                      onChange={(e) => {
+                        setAddress(e.target.value);
+                        setFieldValue("address", e.target.value);
+                      }}
+                    />
+                  </Autocomplete>
+                  <ErrorMessage
                     name="address"
-                    placeholder="Enter Venue Name"
-                    value={address}
-                    onChange={(e) => {
-                      setAddress(e.target.value);
-                      setFieldValue("address", e.target.value);
-                    }}
+                    component="span"
+                    style={errorStyles}
                   />
-                </Autocomplete>
-                <ErrorMessage
-                  name="address"
-                  component="span"
-                  style={errorStyles}
-                />
+                </div>
               </LoadScript>
             </div>
-
             {/* Venue Name */}
-            <div className="input-group in-0-5-col">
+            <div className="input-group in-0-75-col">
               <label>
-                Name Of Place<span style={{ color: "#EF1D26" }}>*</span>
+                Venue<span style={{ color: "#EF1D26" }}>*</span>
               </label>
               <Field type="text" name="place" placeholder="Enter Venue Name" />
               <ErrorMessage name="place" component="span" style={errorStyles} />
+            </div>
+            {/* Capacity Field */}
+            <div className="input-group in-3-col">
+              <label>
+                Capacity<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field
+                type="number"
+                name="capacity"
+                placeholder="Enter Capacity"
+              />
+              <ErrorMessage
+                name="capacity"
+                component="span"
+                style={errorStyles}
+              />
+            </div>
+
+            {/* Dates and Times */}
+
+            <div className="input-group  in-0-25-col ">
+              <label>
+                Start Date<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field type="date" name="startDate" />
+              <ErrorMessage
+                name="startDate"
+                component="span"
+                style={errorStyles}
+              />
+            </div>
+            <div className="input-group in-0-25-col ">
+              <label>
+                Start Time<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field type="time" name="startTime" />
+              <ErrorMessage
+                name="startTime"
+                component="span"
+                style={errorStyles}
+              />
+            </div>
+
+            <div className="input-group  in-0-25-col ">
+              <label>
+                End Date<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field type="date" name="endDate" />
+              <ErrorMessage
+                name="endDate"
+                component="span"
+                style={errorStyles}
+              />
+            </div>
+            <div className="input-group in-0-25-col ">
+              <label>
+                End Time<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field type="time" name="endTime" />
+              <ErrorMessage
+                name="endTime"
+                component="span"
+                style={errorStyles}
+              />
             </div>
 
             {/* Event Type - Radio Buttons */}
@@ -294,7 +337,7 @@ const Page = () => {
             </div>
 
             {/* Registration Needed - Radio Buttons */}
-            <div className="input-group in-3-col">
+            {/* <div className="input-group in-3-col">
               <label>
                 Registration Needed<span style={{ color: "#EF1D26" }}>*</span>
               </label>
@@ -318,24 +361,7 @@ const Page = () => {
                 component="div"
                 style={errorStyles}
               />
-            </div>
-
-            {/* Capacity Field */}
-            <div className="input-group in-3-col">
-              <label>
-                Capacity<span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <Field
-                type="number"
-                name="capacity"
-                placeholder="Enter Capacity"
-              />
-              <ErrorMessage
-                name="capacity"
-                component="span"
-                style={errorStyles}
-              />
-            </div>
+            </div> */}
 
             {/* Conditional rendering for ticket link if event is paid */}
             {values.eventType === "paid" && (
@@ -380,7 +406,7 @@ const Page = () => {
 
                   {/* Conditional Rendering Based on Ticket Link Type */}
                   {values.ticketLinkType === "external" && (
-                    <div className="input-group in-3-col">
+                    <div className="input-group in-0-75-col">
                       <label>
                         Ticket URL<span style={{ color: "#EF1D26" }}>*</span>
                       </label>
@@ -408,7 +434,7 @@ const Page = () => {
             )}
 
             {/* Organizer Fields */}
-            <div className="submit-an-event my-3">
+            {/* <div className="submit-an-event my-3">
               <div className="input-group in-3-col">
                 <label>
                   Organizer Name<span style={{ color: "#EF1D26" }}>*</span>
@@ -425,7 +451,7 @@ const Page = () => {
                 />
               </div>
 
-              {/* Organizer Email Field */}
+         
               <div className="input-group in-3-col">
                 <label>
                   Organizer Email<span style={{ color: "#EF1D26" }}>*</span>
@@ -442,7 +468,7 @@ const Page = () => {
                 />
               </div>
 
-              {/* Organizer Phone Field */}
+           
               <div className="input-group in-3-col">
                 <label>
                   Organizer Phone<span style={{ color: "#EF1D26" }}>*</span>
@@ -458,58 +484,63 @@ const Page = () => {
                   style={errorStyles}
                 />
               </div>
-
-              {/* Dates and Times */}
-              <div className="input-group  in-0-25-col ">
-                <label>
-                  Start Date<span style={{ color: "#EF1D26" }}>*</span>
-                </label>
-                <Field type="date" name="startDate" />
-                <ErrorMessage
-                  name="startDate"
-                  component="span"
-                  style={errorStyles}
-                />
-              </div>
-
-              <div className="input-group  in-0-25-col ">
-                <label>
-                  End Date<span style={{ color: "#EF1D26" }}>*</span>
-                </label>
-                <Field type="date" name="endDate" />
-                <ErrorMessage
-                  name="endDate"
-                  component="span"
-                  style={errorStyles}
-                />
-              </div>
-
-              <div className="input-group in-0-25-col ">
-                <label>
-                  Start Time<span style={{ color: "#EF1D26" }}>*</span>
-                </label>
-                <Field type="time" name="startTime" />
-                <ErrorMessage
-                  name="startTime"
-                  component="span"
-                  style={errorStyles}
-                />
-              </div>
-
-              <div className="input-group in-0-25-col ">
-                <label>
-                  End Time<span style={{ color: "#EF1D26" }}>*</span>
-                </label>
-                <Field type="time" name="endTime" />
-                <ErrorMessage
-                  name="endTime"
-                  component="span"
-                  style={errorStyles}
-                />
-              </div>
+            </div> */}
+            {/* Description */}
+            <div className="input-group in-1-col">
+              <label>
+                Description<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field name="description">
+                {() => (
+                  <Editor
+                    data={values.description || ""}
+                    setData={(data) => setFieldValue("description", data)}
+                  />
+                )}
+              </Field>
+              <ErrorMessage
+                name="description"
+                component="div"
+                style={errorStyles}
+              />
             </div>
 
-            {/* Featured Artist For This Event */}
+            {/* Policy */}
+            <div className="input-group in-1-col">
+              <label>
+                Refund Policy<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field name="policy">
+                {() => (
+                  <Editor
+                    data={values.policy || ""}
+                    setData={(data) => setFieldValue("policy", data)}
+                  />
+                )}
+              </Field>
+              <ErrorMessage name="policy" component="div" style={errorStyles} />
+            </div>
+            {/* Amenities */}
+            <div className="input-group in-1-col">
+              <label>
+                Amenities<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field name="amenities">
+                {() => (
+                  <Editor
+                    data={values.amenities || ""}
+                    setData={(data) => setFieldValue("amenities", data)}
+                  />
+                )}
+              </Field>
+              <ErrorMessage
+                name="amenities"
+                component="div"
+                style={errorStyles}
+              />
+            </div>
+            {/* 
+            Featured Artist For This Event
             <div className="input-group in-3-col">
               <label className="py-2">Featured Artist For This Event</label>
               <button
@@ -524,10 +555,10 @@ const Page = () => {
               >
                 Select Friends
               </button>
-            </div>
+            </div> */}
 
             {/* Co-Host Name */}
-            <div className="input-group in-3-col">
+            {/* <div className="input-group in-3-col">
               <label className="py-2">Co-Host Name</label>
               <button
                 type="button"
@@ -541,7 +572,7 @@ const Page = () => {
               >
                 Select Friends
               </button>
-            </div>
+            </div> */}
             {/* Uploader Component for Posters */}
             <div className="input-group in-1-col">
               <label>
@@ -672,10 +703,18 @@ const Page = () => {
 
             {/* Submit Button */}
             <div className="main-btn">
+            <button type="button" className="submit-button">
+                Preview
+              </button>
+              <button type="button" className="submit-button">
+                Save as Draft
+              </button>
               <button type="submit" className="submit-button">
                 submit
               </button>
+             
             </div>
+           
             <ToastContainer />
           </Form>
         )}

@@ -21,6 +21,10 @@ input[type="radio"] {
         align-items: center;
     }
 }
+.input-group .gm-style {
+    width: auto; /* Override Google Maps default styling */
+  }
+  
 label{font-weight: 600 !important;}
 .radiobttn >label{display: flex; gap:4px; align-items: center;}
 .ck-editor__editable{height: 150px;}

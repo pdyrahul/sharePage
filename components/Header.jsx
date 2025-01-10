@@ -15,7 +15,7 @@ import threeDotIcon from "../public/images/three-dot.svg";
 import Link from "next/link";
 import { useSidebar } from "../Context/SidebarContext";
 import useFetchData from "../app/hooks/useFetchData";
-import { userProfiles } from "../app/services/api";
+import { userProfiles,setProfile } from "../app/services/api";
 import { Dropdown } from "react-bootstrap";
 import { CgProfile } from "react-icons/cg";
 
@@ -36,21 +36,35 @@ const Header = () => {
   const apiRequests = useMemo(() => [userProfiles], []);
   const { data, isLoading, error } = useFetchData(apiRequests);
   const profiles = data?.[0]?.data || [];
-
+  
   useEffect(() => {
     if (!selectedProfile && profiles.length > 0) {
       const defaultProfile =
-        profiles.find(
-          (profile) => profile.spProfilesDefault === 1
-        ) || profiles[0];
+        profiles.find((profile) => profile.spProfilesDefault === 1) ||
+        profiles[0];
       setSelectedProfile(defaultProfile);
     }
   }, [profiles, selectedProfile]);
 
-  const handleProfileSelect = (profile) => {
-    setSelectedProfile(profile);
+  const handleProfileSelect = async (profile) => {
+    try {
+      // Set selected profile
+      setSelectedProfile(profile);
+  
+      // Call the API to set the selected profile as default
+      const response = await setProfile(profile.idspProfiles);
+      
+      // Log success
+      console.log("Profile set as default:", response.data);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      // Handle error
+      console.error("Error setting default profile:", error.response?.data || error.message);
+      alert("Failed to set default profile. Please try again.");
+    }
   };
-
+  
+  
   return (
     <div className="nav-bar">
       <div className="logo-menu">
@@ -122,7 +136,7 @@ const Header = () => {
         </div>
         <div className="line" />
         <div className="profile-section">
-          <Dropdown style={{width:"220px", textTransform:"capitalize"}}>
+          <Dropdown style={{ width: "220px", textTransform: "capitalize" }}>
             <Dropdown.Toggle
               variant="link"
               style={{
@@ -130,10 +144,13 @@ const Header = () => {
                 alignItems: "center",
                 color: "#fff",
                 textDecoration: "none",
-                width:"100%"
+                width: "100%",
               }}
             >
-              <div className="profileWrapper d-flex align-items-center  w-100" style={{justifyContent:"space-between"}}>
+              <div
+                className="profileWrapper d-flex align-items-center  w-100"
+                style={{ justifyContent: "space-between" }}
+              >
                 <div className="figure">
                   {selectedProfile?.spProfilePic ? (
                     <img
@@ -147,20 +164,26 @@ const Header = () => {
                   )}
                 </div>
                 <div className="figDetails d-flex flex-column align-items-end ">
-                  <strong style={{fontSize:"14px", textTransform:"capitalize"}}>{selectedProfile?.spProfileName}</strong>
-                  <span style={{marginTop:"-5px", fontSize:"12px", maxWidth:"200px"}}>{selectedProfile?.profile_type?.spProfileTypeName}</span>
+                  <strong
+                    style={{ fontSize: "14px", textTransform: "capitalize" }}
+                  >
+                    {selectedProfile?.spProfileName}
+                  </strong>
+                  <span
+                    style={{
+                      marginTop: "-5px",
+                      fontSize: "12px",
+                      maxWidth: "200px",
+                    }}
+                  >
+                    {selectedProfile?.profile_type?.spProfileTypeName}
+                  </span>
                 </div>
               </div>
             </Dropdown.Toggle>
 
             <Dropdown.Menu style={{ translate: "-35px" }}>
-              {isLoading && <Dropdown.Item>Loading profiles...</Dropdown.Item>}
-              {error && <Dropdown.Item>Error loading profiles</Dropdown.Item>}
-              {!isLoading && !error && profiles.length === 0 && (
-                <Dropdown.Item>No profiles found</Dropdown.Item>
-              )}
-              {!isLoading &&
-                !error &&
+              {
                 profiles.map((profile) => (
                   <Dropdown.Item
                     key={profile.idspProfiles}

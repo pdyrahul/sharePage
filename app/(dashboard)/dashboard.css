@@ -525,7 +525,7 @@
           }
         }
         .in-0-25-col {
-          width: calc(20% - 10px);
+          width: calc(24% - 2px);
           
           @media (max-width: 1076px) {
             width: calc(50% - 7.5px); 
