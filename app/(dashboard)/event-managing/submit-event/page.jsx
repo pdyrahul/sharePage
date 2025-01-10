@@ -117,6 +117,38 @@ const Page = () => {
       >
         {({ setFieldValue, values }) => (
           <Form className="submit-an-event">
+            {/* Title Field */}
+            <div className="input-group in-0-5-col">
+              <label>
+                Event Title (Max 60 characters)
+                <span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field
+                type="text"
+                name="eventTitle"
+                placeholder="Enter Event Title"
+              />
+              <ErrorMessage
+                name="eventTitle"
+                component="span"
+                style={errorStyles}
+              />
+            </div>
+
+            {/* Sub Category Field */}
+            <div className="input-group in-0-5-col">
+              <label>
+              Sub Category
+                <span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field
+                type="text"
+                name="event"
+                placeholder="Enter Sub Category"
+              />
+              <ErrorMessage name="event" component="span" style={errorStyles} />
+            </div>
+
             {/* Category Field */}
             <div className="input-group in-0-5-col">
               <label>
@@ -157,38 +189,6 @@ const Page = () => {
               />
             </div>
 
-            {/* Title Field */}
-            <div className="input-group in-0-5-col">
-              <label>
-                Event Title (Max 60 characters)
-                <span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <Field
-                type="text"
-                name="eventTitle"
-                placeholder="Enter Event Title"
-              />
-              <ErrorMessage
-                name="eventTitle"
-                component="span"
-                style={errorStyles}
-              />
-            </div>
-
-            {/* Sub Category Field */}
-            <div className="input-group in-0-5-col">
-              <label>
-                Write a catchy phrase for your event (Max 100 characters)
-                <span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <Field
-                type="text"
-                name="event"
-                placeholder="Enter Sub Category"
-              />
-              <ErrorMessage name="event" component="span" style={errorStyles} />
-            </div>
-
             {/* Description */}
             <div className="input-group in-1-col">
               <label>
@@ -226,7 +226,7 @@ const Page = () => {
             </div>
 
             {/* Address */}
-            <div className="input-group in-0-5-col" >
+            <div className="input-group in-0-5-col">
               <LoadScript
                 googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
                 libraries={libraries} // Use the static libraries array
@@ -240,7 +240,7 @@ const Page = () => {
                   }
                   onPlaceChanged={() => handlePlaceSelect(setFieldValue)}
                 >
-                  <Field 
+                  <Field
                     type="text"
                     name="address"
                     placeholder="Enter Venue Name"
@@ -249,7 +249,6 @@ const Page = () => {
                       setAddress(e.target.value);
                       setFieldValue("address", e.target.value);
                     }}
-                    
                   />
                 </Autocomplete>
                 <ErrorMessage
