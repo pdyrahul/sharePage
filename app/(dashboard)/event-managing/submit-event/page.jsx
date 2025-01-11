@@ -61,7 +61,8 @@ const Page = () => {
 
   useEffect(() => {
     getSponsors();
-  }, [sponsorModalOpen]);
+  }, [sponsorModalOpen, getSponsors]); // Add getSponsors if it's not stable
+  
   const handleSubmit = (values, { resetForm }) => {
     console.log("Form data:", values);
     toast.success("Event submitted successfully!");
@@ -206,7 +207,7 @@ const Page = () => {
             {/* Address */}
             <div className="input-group in-1-col">
               <LoadScript
-                googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                googleMapsApiKey="AIzaSyAPpH4FGQaj_JIJOViHAeHGAjl7RDeW8OQ"
                 libraries={libraries} // Use the static libraries array
               >
                 <div style={{ display: "inline-block", width: "100%" }}>
