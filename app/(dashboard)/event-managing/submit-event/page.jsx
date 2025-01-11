@@ -366,7 +366,7 @@ const Page = () => {
 
             {/* Conditional rendering for ticket link if event is paid */}
             {values.eventType === "paid" && (
-              <div className="submit-an-event">
+              <div className="sellTicket" style={{ border:"2px solid #d9dce0", padding:"15px", width:"100%"}}>
                 {/* Add Ticket Link Field */}
                 <div className="input-group in-1-col">
                   <label>
