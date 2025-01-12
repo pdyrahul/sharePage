@@ -173,10 +173,10 @@ const SponsorsPage = () => {
                           />
                         </TableCell>
                         <TableCell align="center" style={{ display: "flex", gap: "15px" }}>
-                          <button type="button" style={{ background: "none" }}>
+                          <button type="button" style={{ background: "none" , fontSize:"1.5rem" }}>
                             <CiEdit />
                           </button>
-                          <button type="button" style={{ background: "none" }}>
+                          <button type="button" style={{ background: "none" , fontSize:"1.5rem" }}>
                             <MdDelete />
                           </button>
                         </TableCell>
