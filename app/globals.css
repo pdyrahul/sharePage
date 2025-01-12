@@ -7,9 +7,10 @@
     user-select: none;
     font-family: "Karla", serif !important;
     font-style: normal;
+    scroll-behavior: smooth;
 }
 
-
+.css-14y13q2-MuiTableCell-root{border: none;}
 .tox .tox-edit-area::before {
     border: 1px solid #c11 !important;
 }
@@ -330,6 +331,11 @@ body,p {
             .down-icon {
                 cursor: pointer;
             }
+        }
+    }
+    .profile-section{
+        @media (max-width: 767px) {
+          display: none;
         }
     }
 }

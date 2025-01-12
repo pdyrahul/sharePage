@@ -82,7 +82,8 @@ const Page = () => {
     setIsModalOpen(false);
   };
 
-  const [eventData, sponsorData] = data;
+  const [eventData = {}, sponsorData = {}] = Array.isArray(data) ? data : [];
+
 
   const eventCategories =
     eventData?.data?.event_category.map((event) => ({

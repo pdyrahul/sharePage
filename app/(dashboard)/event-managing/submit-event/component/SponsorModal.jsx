@@ -43,50 +43,26 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
+  
     const newSponsor = new FormData();
     newSponsor.append("sponsorTitle", formData.company);
     newSponsor.append("sponsorWebsite", formData.companyWebsite);
-    newSponsor.append("spsponsorPrice", formData.price);
+    newSponsor.append("spsponsorPrice", formData.price); // Typo here: `spsponsorPrice`?
     newSponsor.append("sponsorCategory", formData.category);
     newSponsor.append("sponsorDesc", formData.shortDescription);
-
     if (formData.image) {
       newSponsor.append("sponsorImg", formData.image);
     }
-
+  
+    // Debugging: Log all fields before making the API call
+    for (let [key, value] of newSponsor.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+  
     createSponsor(newSponsor)
-      .then((response) => {
-        const { status, message } = response.data;
-
-        if (status === "Success") {
-          alert(message);
-          CloseModal();
-          setFormData({
-            company: "",
-            companyWebsite: "",
-            price: "",
-            category: "",
-            shortDescription: "",
-            image: null,
-          });
-        } else {
-          alert("Failed to create sponsor. Please try again.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error creating sponsor:", error);
-        alert("Error creating sponsor. Please try again.");
-      });
-      getSponsors();
+      .then((response) => console.log("Response:", response))
+      .catch((error) => console.error("Error:", error));
   };
-
   return (
     <Modal
       open={sponsorModalOpen}

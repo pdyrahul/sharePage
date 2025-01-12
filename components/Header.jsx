@@ -15,7 +15,7 @@ import threeDotIcon from "../public/images/three-dot.svg";
 import Link from "next/link";
 import { useSidebar } from "../Context/SidebarContext";
 import useFetchData from "../app/hooks/useFetchData";
-import { userProfiles,setProfile } from "../app/services/api";
+import { userProfiles, setProfile } from "../app/services/api";
 import { Dropdown } from "react-bootstrap";
 import { CgProfile } from "react-icons/cg";
 
@@ -36,7 +36,7 @@ const Header = () => {
   const apiRequests = useMemo(() => [userProfiles], []);
   const { data, isLoading, error } = useFetchData(apiRequests);
   const profiles = data?.[0]?.data || [];
-  
+
   useEffect(() => {
     if (!selectedProfile && profiles.length > 0) {
       const defaultProfile =
@@ -48,23 +48,19 @@ const Header = () => {
 
   const handleProfileSelect = async (profile) => {
     try {
-      // Set selected profile
       setSelectedProfile(profile);
-  
-      // Call the API to set the selected profile as default
       const response = await setProfile(profile.idspProfiles);
-      
-      // Log success
       console.log("Profile set as default:", response.data);
       alert("Profile updated successfully!");
     } catch (error) {
-      // Handle error
-      console.error("Error setting default profile:", error.response?.data || error.message);
+      console.error(
+        "Error setting default profile:",
+        error.response?.data || error.message
+      );
       alert("Failed to set default profile. Please try again.");
     }
   };
-  
-  
+
   return (
     <div className="nav-bar">
       <div className="logo-menu">
@@ -135,7 +131,7 @@ const Header = () => {
           <Image src={threeDotIcon} alt="Three Dot" height={30} width={30} />
         </div>
         <div className="line" />
-        <div className="profile-section">
+        <div className="profile-section ">
           <Dropdown style={{ width: "220px", textTransform: "capitalize" }}>
             <Dropdown.Toggle
               variant="link"
@@ -183,45 +179,44 @@ const Header = () => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu style={{ translate: "-35px" }}>
-              {
-                profiles.map((profile) => (
-                  <Dropdown.Item
-                    key={profile.idspProfiles}
-                    onClick={() => handleProfileSelect(profile)}
-                    style={{
-                      cursor: "pointer",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      borderBottom: "1px solid #d9d9d9",
-                    }}
-                  >
-                    {profile.spProfilePic ? (
-                      <img
-                        src={profile.spProfilePic}
-                        alt={profile.spProfileName}
-                        className="rounded-circle me-2"
-                        style={{
-                          width: "40px",
-                          height: "40px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <CgProfile
-                        size={40}
-                        className="rounded-circle me-2"
-                        style={{ color: "#ccc" }}
-                      />
-                    )}
-                    <div className="d-flex flex-column align-items-end">
-                      <strong>{profile.spProfileName}</strong>
-                      <small className="text-muted">
-                        {profile.profile_type.spProfileTypeName}
-                      </small>
-                    </div>
-                  </Dropdown.Item>
-                ))}
+              {profiles.map((profile) => (
+                <Dropdown.Item
+                  key={profile.idspProfiles}
+                  onClick={() => handleProfileSelect(profile)}
+                  style={{
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    borderBottom: "1px solid #d9d9d9",
+                  }}
+                >
+                  {profile.spProfilePic ? (
+                    <img
+                      src={profile.spProfilePic}
+                      alt={profile.spProfileName}
+                      className="rounded-circle me-2"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <CgProfile
+                      size={40}
+                      className="rounded-circle me-2"
+                      style={{ color: "#ccc" }}
+                    />
+                  )}
+                  <div className="d-flex flex-column align-items-end">
+                    <strong>{profile.spProfileName}</strong>
+                    <small className="text-muted">
+                      {profile.profile_type.spProfileTypeName}
+                    </small>
+                  </div>
+                </Dropdown.Item>
+              ))}
             </Dropdown.Menu>
           </Dropdown>
         </div>
