@@ -54,6 +54,7 @@ const TicketList = ({ name, setTicketList }) => {
               padding: '5px 10px',
               cursor: 'pointer',
               marginTop: '10px',
+              float: 'right',
             }}
           >
           Add <LuTicketPlus />

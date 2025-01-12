@@ -12,7 +12,8 @@ import SponsorModal from "./component/SponsorModal";
 import Editor from "../../../../components/ui/TextEditor/Editor";
 // import AddressAutocomplete from "./component/AddressInput";
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const initialValues = {
   category: "",
   ethnicity: "",
@@ -707,11 +708,11 @@ const Page = () => {
             <button type="button" className="submit-button">
                 Preview
               </button>
-              <button type="button" className="submit-button">
-                Save as Draft
-              </button>
               <button type="submit" className="submit-button">
                 submit
+              </button>
+              <button type="button" className="submit-button">
+                Save as Draft
               </button>
              
             </div>
