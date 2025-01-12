@@ -4,9 +4,9 @@ import { MdDelete } from "react-icons/md";
 import React, { useMemo, useState } from "react";
 import { getSponsors } from "../../../services/api";
 import useFetchData from "../../../hooks/useFetchData";
-import Skeleton from "react-loading-skeleton"; // Import Skeleton
-import "react-loading-skeleton/dist/skeleton.css"; // Import the skeleton styles
-import SponsorModal from "../submit-event/component/SponsorModal"; // Import the SponsorModal component
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import SponsorModal from "../submit-event/component/SponsorModal";
 import {
   Table,
   TableBody,
@@ -17,14 +17,23 @@ import {
   TablePagination,
   Paper,
   Button,
+  TextField,
+  Box,
 } from "@mui/material";
 
 const SponsorsPage = () => {
   const apiRequests = useMemo(() => [getSponsors], []);
   const { data, loading, error } = useFetchData(apiRequests);
 
-  // Modal state
+  // State Variables
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  // Handle Modal
+  const handleAddSponsor = () => setSponsorModalOpen(true);
+  const CloseModal = () => setSponsorModalOpen(false);
 
   // Error Handling
   if (error) {
@@ -40,10 +49,8 @@ const SponsorsPage = () => {
     );
   }
 
-  // Extracting data safely
+  // Sponsor Data
   const sponsorData = data?.[0] || {};
-
-  // Transforming sponsor data
   const sponsorList =
     sponsorData?.data?.map((sponsor) => ({
       id: sponsor.id,
@@ -56,27 +63,20 @@ const SponsorsPage = () => {
       logo: sponsor.sponsorImg,
     })) || [];
 
-  // Pagination state
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  // Filtered and Paginated Data
+  const filteredSponsors = sponsorList.filter((sponsor) =>
+    sponsor.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const paginatedSponsors = filteredSponsors.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
+  // Pagination Handlers
+  const handleChangePage = (event, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  // Handle add sponsor (Open modal)
-  const handleAddSponsor = () => {
-    setSponsorModalOpen(true); // Open the modal
-  };
-
-  // Close modal
-  const CloseModal = () => {
-    setSponsorModalOpen(false); // Close the modal
   };
 
   return (
@@ -84,16 +84,25 @@ const SponsorsPage = () => {
       <div className="heading">Sponsors List</div>
       <div className="event-page">
         <div className="table-wrapper">
-          {/* Right Align Add Sponsor Button */}
-          <div style={{ textAlign: "right", marginBottom: "20px" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddSponsor}
-            >
+          {/* Search and Add Sponsor */}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            marginBottom="20px"
+          >
+            <TextField
+              label="Search Sponsors"
+              variant="outlined"
+              size="small"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              sx={{ flex: 1, marginRight: "10px" }}
+            />
+            <Button variant="contained" color="primary" onClick={handleAddSponsor}>
               Add Sponsor
             </Button>
-          </div>
+          </Box>
 
           <TableContainer component={Paper}>
             <Table>
@@ -110,7 +119,7 @@ const SponsorsPage = () => {
               </TableHead>
               <TableBody>
                 {loading
-                  ? // Display Skeletons until data is fetched
+                  ? // Skeleton for Loading
                     Array.from(new Array(rowsPerPage)).map((_, index) => (
                       <TableRow key={index}>
                         <TableCell align="center">
@@ -136,68 +145,50 @@ const SponsorsPage = () => {
                         </TableCell>
                       </TableRow>
                     ))
-                  : sponsorList
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      .map((sponsor) => (
-                        <TableRow key={sponsor.id}>
-                          <TableCell align="center">{sponsor.name}</TableCell>
-                          <TableCell align="center">
-                            <a
-                              href={sponsor.website}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {sponsor.website}
-                            </a>
-                          </TableCell>
-                          <TableCell align="center">
-                            {sponsor.category}
-                          </TableCell>
-                          <TableCell align="center">
-                            {sponsor.profileName}
-                          </TableCell>
-                          <TableCell align="center">{sponsor.price}</TableCell>
-                          <TableCell align="center">
-                            <img
-                              src={sponsor.logo}
-                              alt="Sponsor Logo"
-                              height={30}
-                              width={30}
-                            />
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            style={{
-                              display: "flex",
-                              gap: "15px",
-                              fontSize: "21px",
-                            }}
+                  : paginatedSponsors.map((sponsor) => (
+                      <TableRow key={sponsor.id}>
+                        <TableCell align="center">{sponsor.name}</TableCell>
+                        <TableCell align="center">
+                          <a
+                            href={sponsor.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
                           >
-                            <button
-                              type="button"
-                              style={{ background: "none" }}
-                            >
-                              <CiEdit />
-                            </button>
-                            <button
-                              type="button"
-                              style={{ background: "none" }}
-                            >
-                              <MdDelete />
-                            </button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                            {sponsor.website}
+                          </a>
+                        </TableCell>
+                        <TableCell align="center">
+                          {sponsor.category}
+                        </TableCell>
+                        <TableCell align="center">
+                          {sponsor.profileName}
+                        </TableCell>
+                        <TableCell align="center">{sponsor.price}</TableCell>
+                        <TableCell align="center">
+                          <img
+                            src={sponsor.logo}
+                            alt="Sponsor Logo"
+                            height={30}
+                            width={30}
+                          />
+                        </TableCell>
+                        <TableCell align="center" style={{ display: "flex", gap: "15px" }}>
+                          <button type="button" style={{ background: "none" }}>
+                            <CiEdit />
+                          </button>
+                          <button type="button" style={{ background: "none" }}>
+                            <MdDelete />
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={sponsorList.length}
+            count={filteredSponsors.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -207,10 +198,7 @@ const SponsorsPage = () => {
       </div>
 
       {/* Add Sponsor Modal */}
-      <SponsorModal
-        sponsorModalOpen={sponsorModalOpen}
-        CloseModal={CloseModal}
-      />
+      <SponsorModal sponsorModalOpen={sponsorModalOpen} CloseModal={CloseModal} />
     </div>
   );
 };
