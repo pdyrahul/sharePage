@@ -27,6 +27,7 @@ const initialValues = {
   eventType: "free",
   // registrationRequired: "yes",
   capacity: "",
+  youtubeUrl:"",
   // organizerName: "",
   // organizerEmail: "",
   // organizerPhone: "",
@@ -63,7 +64,7 @@ const Page = () => {
   useEffect(() => {
     getSponsors();
   }, [sponsorModalOpen, getSponsors]); // Add getSponsors if it's not stable
-  
+
   const handleSubmit = (values, { resetForm }) => {
     console.log("Form data:", values);
     toast.success("Event submitted successfully!");
@@ -83,7 +84,6 @@ const Page = () => {
   };
 
   const [eventData = {}, sponsorData = {}] = Array.isArray(data) ? data : [];
-
 
   const eventCategories =
     eventData?.data?.event_category.map((event) => ({
@@ -265,9 +265,24 @@ const Page = () => {
                 style={errorStyles}
               />
             </div>
+            {/* YouTube URL Field */}
+            <div className="input-group in-1-col">
+              <label>
+                YouTube URL<span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field
+                type="url"
+                name="youtubeUrl"
+                placeholder="Enter YouTube URL"
+              />
+              <ErrorMessage
+                name="youtubeUrl"
+                component="span"
+                style={errorStyles}
+              />
+            </div>
 
             {/* Dates and Times */}
-
             <div className="input-group  in-0-25-col ">
               <label>
                 Start Date<span style={{ color: "#EF1D26" }}>*</span>
@@ -368,7 +383,14 @@ const Page = () => {
 
             {/* Conditional rendering for ticket link if event is paid */}
             {values.eventType === "paid" && (
-              <div className="sellTicket" style={{ border:"2px solid #d9dce0", padding:"15px", width:"100%"}}>
+              <div
+                className="sellTicket"
+                style={{
+                  border: "2px solid #d9dce0",
+                  padding: "15px",
+                  width: "100%",
+                }}
+              >
                 {/* Add Ticket Link Field */}
                 <div className="input-group in-1-col">
                   <label>
@@ -706,18 +728,17 @@ const Page = () => {
 
             {/* Submit Button */}
             <div className="main-btn">
-            <button type="button" className="submit-button">
+              <button type="button" className="submit-button">
                 Preview
-              </button>
-              <button type="submit" className="submit-button">
-                submit
               </button>
               <button type="button" className="submit-button">
                 Save as Draft
               </button>
-             
+              <button type="submit" className="submit-button">
+                submit
+              </button>
             </div>
-           
+
             <ToastContainer />
           </Form>
         )}

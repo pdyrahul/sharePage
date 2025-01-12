@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 
 const validationSchema = Yup.object({
   category: Yup.string().required('Category is required'),
+  youtubeUrl: Yup.string().required('Youtube Url is required'),
   ethnicity: Yup.string().required('Ethnicity is required'),
   eventTitle: Yup.string()
     .max(60, 'Event Title must be at most 60 characters')
