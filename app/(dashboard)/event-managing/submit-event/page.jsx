@@ -59,7 +59,7 @@ const Page = () => {
   const libraries = ["places"];
 
   const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
-  const { data } = useFetchData(apiRequests);
+  const { data, refetch } = useFetchData(apiRequests);
 
   useEffect(() => {
     getSponsors();
