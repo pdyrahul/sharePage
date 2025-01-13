@@ -1129,7 +1129,7 @@
               color: #1f1216;
               font-size: 14px;
               font-weight: 500;
-              text-align: center;
+              /* text-align: center; */
               .title {
                 font-size: 10px;
                 color: #909090;
@@ -1795,7 +1795,7 @@
                   color: #1f1216;
                   font-size: 14px;
                   font-weight: 500;
-                  text-align: center;
+                  /* text-align: center; */
                   .title {
                     font-size: 10px;
                     color: #909090;

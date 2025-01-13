@@ -1,11 +1,12 @@
-"use client";
-import { CiEdit } from "react-icons/ci";
-import { MdDelete } from "react-icons/md";
+"use client"
 import React, { useMemo, useState } from "react";
-import { getSponsors } from "../../../services/api";
+import { CiEdit } from "react-icons/ci";
+import { MdDelete } from 'react-icons/md';
+import { getSponsors, deleteSponsor } from "../../../services/api";
 import useFetchData from "../../../hooks/useFetchData";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { toast, ToastContainer } from "react-toastify";
 import SponsorModal from "../submit-event/component/SponsorModal";
 import {
   Table,
@@ -23,33 +24,15 @@ import {
 
 const SponsorsPage = () => {
   const apiRequests = useMemo(() => [getSponsors], []);
-  const { data, loading, error } = useFetchData(apiRequests);
+  const { data, loading, error, refetch } = useFetchData(apiRequests);
 
   // State Variables
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  // Handle Modal
   const handleAddSponsor = () => setSponsorModalOpen(true);
   const CloseModal = () => setSponsorModalOpen(false);
-
-  // Error Handling
-  if (error) {
-    return (
-      <div>
-        <h3>Error(s):</h3>
-        <ul>
-          {error.map((err, idx) => (
-            <li key={idx}>{err.message || "Unknown error occurred"}</li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
-
-  // Sponsor Data
   const sponsorData = data?.[0] || {};
   const sponsorList =
     sponsorData?.data?.map((sponsor) => ({
@@ -78,6 +61,16 @@ const SponsorsPage = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const handleDelete = async (sponsorId) => {
+    try {
+      await deleteSponsor(sponsorId);
+      toast.success("Sponsor deleted successfully!");
+      refetch(); // Refetch after deleting a sponsor
+    } catch (err) {
+      console.error("Failed to delete sponsor:", err);
+      alert("Failed to delete the sponsor. Please try again.");
+    }
+  };
 
   return (
     <div className="event-body">
@@ -99,22 +92,26 @@ const SponsorsPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               sx={{ flex: 1, marginRight: "10px" }}
             />
-            <Button variant="contained" color="primary" onClick={handleAddSponsor}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddSponsor}
+            >
               Add Sponsor
             </Button>
           </Box>
 
-          <TableContainer component={Paper}>
+          <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell align="center">Sponsor Name</TableCell>
-                  <TableCell align="center">Website</TableCell>
-                  <TableCell align="center">Category</TableCell>
-                  <TableCell align="center">Profile</TableCell>
-                  <TableCell align="center">Price</TableCell>
-                  <TableCell align="center">Logo</TableCell>
-                  <TableCell align="center">Actions</TableCell>
+                  <TableCell>Sponsor Name</TableCell>
+                  <TableCell>Website</TableCell>
+                  <TableCell>Category</TableCell>
+                  <TableCell>Profile</TableCell>
+                  <TableCell>Price</TableCell>
+                  <TableCell>Logo</TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -122,33 +119,33 @@ const SponsorsPage = () => {
                   ? // Skeleton for Loading
                     Array.from(new Array(rowsPerPage)).map((_, index) => (
                       <TableRow key={index}>
-                        <TableCell align="center">
+                        <TableCell>
                           <Skeleton width={150} />
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell>
                           <Skeleton width={150} />
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell>
                           <Skeleton width={150} />
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell>
                           <Skeleton width={150} />
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell>
                           <Skeleton width={100} />
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell>
                           <Skeleton width={30} height={30} />
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell>
                           <Skeleton width={60} height={30} />
                         </TableCell>
                       </TableRow>
                     ))
                   : paginatedSponsors.map((sponsor) => (
                       <TableRow key={sponsor.id}>
-                        <TableCell align="center">{sponsor.name}</TableCell>
-                        <TableCell align="center">
+                        <TableCell>{sponsor.name}</TableCell>
+                        <TableCell>
                           <a
                             href={sponsor.website}
                             target="_blank"
@@ -157,26 +154,32 @@ const SponsorsPage = () => {
                             {sponsor.website}
                           </a>
                         </TableCell>
-                        <TableCell align="center">
-                          {sponsor.category}
-                        </TableCell>
-                        <TableCell align="center">
-                          {sponsor.profileName}
-                        </TableCell>
-                        <TableCell align="center">{sponsor.price}</TableCell>
-                        <TableCell align="center">
-                          <img
+                        <TableCell>{sponsor.category}</TableCell>
+                        <TableCell>{sponsor.profileName}</TableCell>
+                        <TableCell>{sponsor.price}</TableCell>
+                        <TableCell>
+                          {loading?  <Skeleton width={100} />:<img
                             src={sponsor.logo}
                             alt="Sponsor Logo"
                             height={30}
                             width={30}
-                          />
+                          />}
                         </TableCell>
-                        <TableCell align="center" style={{ display: "flex", gap: "15px" }}>
-                          <button type="button" style={{ background: "none" , fontSize:"1.5rem" }}>
+                        <TableCell
+                          align="right"
+                          style={{ display: "flex", gap: "15px" }}
+                        >
+                          <button
+                            type="button"
+                            style={{ background: "none", fontSize: "1.5rem" }}
+                          >
                             <CiEdit />
                           </button>
-                          <button type="button" style={{ background: "none" , fontSize:"1.5rem" }}>
+                          <button
+                            type="button"
+                            style={{ background: "none", fontSize: "1.5rem" }}
+                            onClick={() => handleDelete(sponsor.id)}
+                          >
                             <MdDelete />
                           </button>
                         </TableCell>
@@ -196,9 +199,25 @@ const SponsorsPage = () => {
           />
         </div>
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
 
       {/* Add Sponsor Modal */}
-      <SponsorModal sponsorModalOpen={sponsorModalOpen} CloseModal={CloseModal} />
+      <SponsorModal
+        sponsorModalOpen={sponsorModalOpen}
+        CloseModal={CloseModal}
+        refetch={refetch} // Pass refetch function to modal
+      />
     </div>
   );
 };

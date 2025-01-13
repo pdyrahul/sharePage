@@ -7,18 +7,15 @@ const validationSchema = Yup.object({
   eventTitle: Yup.string()
     .max(60, 'Event Title must be at most 60 characters')
     .required('Event Title is required'),
-  // event: Yup.string()
-  //   .max(100, 'Catchy phrase must be at most 100 characters')
-  //   .required('Catchy phrase is required'),
-      description: Yup.string()
-    .required("Description is required")
-    .min(10, "Description must be at least 10 characters"),
+  description: Yup.string()
+    .required('Description is required')
+    .min(10, 'Description must be at least 10 characters'),
   policy: Yup.string()
-    .required("Policy is required")
-    .min(10, "Policy must be at least 10 characters"),
-    amenities: Yup.string()
-    .required("amenities is required")
-    .min(10, "amenities must be at least 10 characters"),
+    .required('Policy is required')
+    .min(10, 'Policy must be at least 10 characters'),
+  amenities: Yup.string()
+    .required('Amenities are required')
+    .min(10, 'Amenities must be at least 10 characters'),
   address: Yup.string().required('Event Address is required'),
   place: Yup.string().required('Name of Place is required'),
 
@@ -38,22 +35,10 @@ const validationSchema = Yup.object({
     otherwise: (schema) => schema.notRequired(),
   }),
 
-  // registrationRequired: Yup.string().required(
-  //   'Registration Needed is required'
-  // ),
-
-  // Capacity validations
   capacity: Yup.number()
     .positive('Capacity must be a positive number')
     .integer('Capacity must be an integer')
     .required('Capacity is required'),
-
-  // Organizer details validations
-  // organizerName: Yup.string().required('Organizer Name is required'),
-  // organizerEmail: Yup.string()
-  //   .email('Invalid email format')
-  //   .required('Organizer Email is required'),
-  // organizerPhone: Yup.string().required('Organizer Phone is required'),
 
   // Dates and Times validations
   startDate: Yup.date()
@@ -68,6 +53,14 @@ const validationSchema = Yup.object({
 
   // Featured event selection
   featuredEvent: Yup.string().required('Featured Event selection is required'),
+
+  // Sponsor modal validation
+  company: Yup.string().required('Company name is required'),
+  companyWebsite: Yup.string().url('Must be a valid URL').required('Company website is required'),
+  companyPrice: Yup.number().required('Price is required').positive('Price must be a positive number'),
+  companyCategory: Yup.string().required('Category is required'),
+  shortDescription: Yup.string().required('Short description is required').min(10, 'Short description must be at least 10 characters'),
+  image: Yup.mixed().required('Image is required')
 });
 
 export default validationSchema;

@@ -1,68 +1,69 @@
-import React, { useState } from "react";
+import React from "react";
 import { Modal, Box, Typography, Button, TextField, FormControl, InputLabel, Select, MenuItem, Grid, IconButton } from "@mui/material";
-import {getSponsors, createSponsor } from "../../../../services/api";
-import CancelIcon from '@mui/icons-material/Cancel';  // Importing the cancel icon
+import { createSponsor } from "../../../../services/api";
+import CancelIcon from '@mui/icons-material/Cancel';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import Swal from 'sweetalert2';
 
-const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
-  const [formData, setFormData] = useState({
+const SponsorModal = ({ sponsorModalOpen, CloseModal,refetch }) => {
+  const initialValues = {
     company: "",
     companyWebsite: "",
-    price: "",
-    category: "",
+    companyPrice: "",
+    companyCategory: "",
     shortDescription: "",
     image: null,
+  };
+
+  const validationSchema = Yup.object({
+    company: Yup.string().required('Company name is required'),
+    companyWebsite: Yup.string().url('Must be a valid URL').required('Company website is required'),
+    companyPrice: Yup.number().required('Price is required').positive('Price must be a positive number'),
+    companyCategory: Yup.string().required('Category is required'),
+    shortDescription: Yup.string().required('Short description is required').min(10, 'Short description must be at least 10 characters'),
+    image: Yup.mixed()
+      .required('Image is required')
+      .test('fileSize', 'Image size must be less than 500KB', value => {
+        return value && value.size <= 500000; // 500KB = 500000 bytes
+      })
   });
+  
 
-  const [errors, setErrors] = useState({});
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error when user types
-  };
-
-  const handleFileChange = (e) => {
+  const handleFileChange = (e, setFieldValue) => {
     const file = e.target.files[0];
-    setFormData({ ...formData, image: file });
-    setErrors((prev) => ({ ...prev, image: "" })); // Clear file error
+    setFieldValue("image", file); // Update Formik field value
   };
 
-  const handleRemoveImage = () => {
-    setFormData({ ...formData, image: null }); // Remove image on cancel
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.company.trim()) newErrors.company = "Company name is required";
-    if (!formData.companyWebsite.trim()) newErrors.companyWebsite = "Company website is required";
-    if (!formData.price.trim()) newErrors.price = "Price is required";
-    if (!formData.category.trim()) newErrors.category = "Category is required";
-    if (!formData.shortDescription.trim()) newErrors.shortDescription = "Short description is required";
-    return newErrors;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (values, { resetForm }) => {
+    console.log("Form values before API call:", values);  // Debugging log
   
     const newSponsor = new FormData();
-    newSponsor.append("sponsorTitle", formData.company);
-    newSponsor.append("sponsorWebsite", formData.companyWebsite);
-    newSponsor.append("spsponsorPrice", formData.price); // Typo here: `spsponsorPrice`?
-    newSponsor.append("sponsorCategory", formData.category);
-    newSponsor.append("sponsorDesc", formData.shortDescription);
-    if (formData.image) {
-      newSponsor.append("sponsorImg", formData.image);
-    }
-  
-    // Debugging: Log all fields before making the API call
-    for (let [key, value] of newSponsor.entries()) {
-      console.log(`${key}: ${value}`);
+    newSponsor.append("sponsorTitle", values.company);
+    newSponsor.append("sponsorWebsite", values.companyWebsite);
+    newSponsor.append("spsponsorPrice", values.companyPrice);
+    newSponsor.append("sponsorCategory", values.companyCategory);
+    newSponsor.append("sponsorDesc", values.shortDescription);
+    if (values.image) {
+      newSponsor.append("sponsorImg", values.image);
     }
   
     createSponsor(newSponsor)
-      .then((response) => console.log("Response:", response))
-      .catch((error) => console.error("Error:", error));
+      .then((response) => {
+        console.log("Response:", response);
+        resetForm(); // Reset the form after submission
+        CloseModal(); // Close the modal
+        Swal.fire('Success', 'Sponsor added successfully!', 'success'); // Success alert
+  
+        // Refetch the sponsor list from SponsorsPage
+        refetch();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire('Error', 'Something went wrong. Please try again.', 'error'); // Error alert
+      });
   };
+  
   return (
     <Modal
       open={sponsorModalOpen}
@@ -74,142 +75,141 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal }) => {
         <Typography id="sponsor-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
           Add Sponsor
         </Typography>
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <TextField
-                label="Company"
-                name="company"
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ setFieldValue, errors, touched, values }) => (
+            <Form>
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
+                  <Field
+                    name="company"
+                    as={TextField}
+                    label="Company"
+                    fullWidth
+                    size="small"
+                    error={touched.company && !!errors.company}
+                    helperText={touched.company && errors.company}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Field
+                    name="companyWebsite"
+                    as={TextField}
+                    label="Company Website"
+                    fullWidth
+                    size="small"
+                    error={touched.companyWebsite && !!errors.companyWebsite}
+                    helperText={touched.companyWebsite && errors.companyWebsite}
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={1} sx={{ mt: 1 }}>
+                <Grid item xs={6}>
+                  <Field
+                    name="companyPrice"
+                    as={TextField}
+                    label="Price"
+                    fullWidth
+                    size="small"
+                    type="number"
+                    error={touched.companyPrice && !!errors.companyPrice}
+                    helperText={touched.companyPrice && errors.companyPrice}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl fullWidth size="small" error={touched.companyCategory && !!errors.companyCategory}>
+                    <InputLabel>Category</InputLabel>
+                    <Field
+                      name="companyCategory"
+                      as={Select}
+                      label="Category"
+                    >
+                      <MenuItem value="">Select Category</MenuItem>
+                      <MenuItem value="General">General</MenuItem>
+                      <MenuItem value="Prime">Prime</MenuItem>
+                      <MenuItem value="Platinum">Platinum</MenuItem>
+                      <MenuItem value="Gold">Gold</MenuItem>
+                      <MenuItem value="Silver">Silver</MenuItem>
+                      <MenuItem value="Media">Media</MenuItem>
+                    </Field>
+                    <ErrorMessage name="companyCategory" component="div" style={{ color: 'red' }} />
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Field
+                name="shortDescription"
+                as={TextField}
+                label="Short Description"
                 fullWidth
                 size="small"
-                value={formData.company}
-                onChange={handleInputChange}
-                error={!!errors.company}
-                helperText={errors.company}
+                multiline
+                rows={4}
+                error={touched.shortDescription && !!errors.shortDescription}
+                helperText={touched.shortDescription && errors.shortDescription}
+                sx={{ mt: 1 }}
               />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Company Website"
-                name="companyWebsite"
-                fullWidth
-                size="small"
-                value={formData.companyWebsite}
-                onChange={handleInputChange}
-                error={!!errors.companyWebsite}
-                helperText={errors.companyWebsite}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={1} sx={{ mt: 1 }}>
-            <Grid item xs={6}>
-              <TextField
-                label="Price"
-                name="price"
-                fullWidth
-                size="small"
-                type="number"
-                value={formData.price}
-                onChange={handleInputChange}
-                error={!!errors.price}
-                helperText={errors.price}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <FormControl fullWidth size="small" error={!!errors.category}>
-                <InputLabel>Category</InputLabel>
-                <Select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  label="Category"
-                >
-                  <MenuItem value="">Select Category</MenuItem>
-                  <MenuItem value="General">General</MenuItem>
-                  <MenuItem value="Prime">Prime</MenuItem>
-                  <MenuItem value="Platinum">Platinum</MenuItem>
-                  <MenuItem value="Gold">Gold</MenuItem>
-                  <MenuItem value="Silver">Silver</MenuItem>
-                  <MenuItem value="Media">Media</MenuItem>
-                </Select>
-                {errors.category && (
-                  <Typography variant="caption" color="error">
-                    {errors.category}
-                  </Typography>
-                )}
-              </FormControl>
-            </Grid>
-          </Grid>
-          <TextField
-            label="Short Description"
-            name="shortDescription"
-            fullWidth
-            size="small"
-            multiline
-            rows={4}
-            value={formData.shortDescription}
-            onChange={handleInputChange}
-            error={!!errors.shortDescription}
-            helperText={errors.shortDescription}
-            sx={{ mt: 1 }}
-          />
-          <Button variant="outlined" component="label" fullWidth sx={{ mt: 2, mb: 1 }}>
-            Upload Logo
-            <input
-              type="file"
-              name="image"
-              hidden
-              onChange={handleFileChange}
-              accept="image/*"
-            />
-          </Button>
-          {formData.image && (
-            <Box sx={{ position: "relative", textAlign: "center", mb: 1 }}>
-              <img
-                src={URL.createObjectURL(formData.image)}
-                alt="Image Preview"
-                style={{ width: "100%", maxHeight: "200px", objectFit: "contain" }}
-              />
-              <IconButton
-                onClick={handleRemoveImage}
-                sx={{
-                  position: "absolute",
-                  top: "8px",
-                  right: "8px",
-                  backgroundColor: "rgba(255, 255, 255, 0.5)",
-                  "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.7)" },
-                }}
-              >
-                <CancelIcon sx={{ color: "#ff0000" }} />
-              </IconButton>
-            </Box>
-          )}
-          {errors.image && (
-            <Typography variant="caption" color="error" align="center">
-              {errors.image}
-            </Typography>
-          )}
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Button
-                onClick={CloseModal}
-                variant="contained"
-                fullWidth
-                sx={{
-                  backgroundColor: "#c11",
-                  "&:hover": { backgroundColor: "#a00" },
-                }}
-              >
-                Close
+              <Button variant="outlined" component="label" fullWidth sx={{ mt: 2, mb: 1 }}>
+                Upload Logo
+                <input
+                  type="file"
+                  name="image"
+                  hidden
+                  onChange={(e) => handleFileChange(e, setFieldValue)}
+                  accept="image/*"
+                />
               </Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Button type="submit" variant="contained" color="primary" fullWidth>
-                Save
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
+              {values.image && (
+                <Box sx={{ position: "relative", textAlign: "center", mb: 1 }}>
+                  <img
+                    src={URL.createObjectURL(values.image)}
+                    alt="Image Preview"
+                    style={{ width: "100%", maxHeight: "200px", objectFit: "contain" }}
+                  />
+                  <IconButton
+                    onClick={() => setFieldValue("image", null)}
+                    sx={{
+                      position: "absolute",
+                      top: "8px",
+                      right: "8px",
+                      backgroundColor: "rgba(255, 255, 255, 0.5)",
+                      "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.7)" },
+                    }}
+                  >
+                    <CancelIcon sx={{ color: "#ff0000" }} />
+                  </IconButton>
+                </Box>
+              )}
+              {errors.image && (
+                <Typography variant="caption" color="error" align="center">
+                  {errors.image}
+                </Typography>
+              )}
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Button
+                    onClick={CloseModal}
+                    variant="contained"
+                    fullWidth
+                    sx={{
+                      backgroundColor: "#c11",
+                      "&:hover": { backgroundColor: "#a00" },
+                    }}
+                  >
+                    Close
+                  </Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button type="submit" variant="contained" color="primary" fullWidth>
+                    Save
+                  </Button>
+                </Grid>
+              </Grid>
+            </Form>
+          )}
+        </Formik>
       </Box>
     </Modal>
   );

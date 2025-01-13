@@ -11,9 +11,12 @@ const api = axios.create({
 export const getEventCategories = () => api.get('/event/ethnicity-category');
 export const getSponsors = () => api.get('/event/sponsored');
 export const createSponsor = (data) => api.post('/event/sponsored', data);
+export const deleteSponsor = (userId) =>{
+  return api.delete(`/event/sponsored/${userId}`);
+} 
 export const userProfiles = () => api.get('/event/user/profiles');
 export const setProfile = (userId) => {
   return api.get(`/event/user/set-profile/${userId}`);
 };
-// More API calls can be added as needed
+
 export default api;

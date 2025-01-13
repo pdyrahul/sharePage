@@ -59,7 +59,7 @@ const Page = () => {
   const libraries = ["places"];
 
   const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
-  const { data } = useFetchData(apiRequests);
+  const { data,refetch } = useFetchData(apiRequests);
 
   useEffect(() => {
     getSponsors();
@@ -71,10 +71,7 @@ const Page = () => {
     setTickets([]);
     resetForm();
   };
-  const openModal = (content) => {
-    setModalContent(content); // Set the modal content dynamically
-    setIsModalOpen(true);
-  };
+
   const handleOpenModal = () => {
     setSponsorModalOpen(true);
   };
@@ -101,7 +98,7 @@ const Page = () => {
     sponsorData?.data?.map((sponsor) => ({
       id: sponsor.id,
       name: sponsor.sponsorName,
-    })) || [];
+    })) || [refetch()];
 
   // let sponsorList = []; // Declare sponsorList in the appropriate scope
   // if (
@@ -764,6 +761,7 @@ const Page = () => {
       <SponsorModal
         sponsorModalOpen={sponsorModalOpen}
         CloseModal={CloseModal}
+        refetch={refetch}
       />
     </div>
   );
