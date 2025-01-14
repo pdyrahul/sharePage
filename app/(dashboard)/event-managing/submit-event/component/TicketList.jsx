@@ -2,7 +2,8 @@ import React from 'react';
 import { Field, ErrorMessage, FieldArray } from 'formik';
 import { AiOutlineDelete } from "react-icons/ai";
 import { LuTicketPlus } from "react-icons/lu";
-const TicketList = ({ name, setTicketList }) => {
+
+const TicketList = ({ name, setFieldValue }) => {
   return (
     <FieldArray name={name}>
       {({ push, remove, form }) => (
@@ -46,7 +47,7 @@ const TicketList = ({ name, setTicketList }) => {
 
           <button
             type="button"
-            onClick={() => push()}
+            onClick={() => push({ Ticket_type: '', Ticket_price: '', Quantity: '' })}
             style={{
               backgroundColor: 'green',
               color: 'white',

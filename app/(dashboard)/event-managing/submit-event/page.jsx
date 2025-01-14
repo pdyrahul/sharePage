@@ -1,13 +1,17 @@
 "use client";
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { Box, Modal, Typography } from "@mui/material";
+import { Box, Modal, Typography, CircularProgress } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import validationSchema from "../../../utils/Schema";
 import ImageUpload from "./component/ImageUpload";
 import TicketList from "./component/TicketList";
 import useFetchData from "../../../hooks/useFetchData";
-import { getEventCategories, getSponsors, saveEvent } from "../../../services/api";
+import {
+  getEventCategories,
+  getSponsors,
+  saveEvent,
+} from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
 import Editor from "../../../../components/ui/TextEditor/Editor";
 import Swal from "sweetalert2";
@@ -26,7 +30,7 @@ const initialValues = {
   eventType: "free",
   // registrationRequired: "yes",
   capacity: "",
-  youtubeUrl:"",
+  youtubeUrl: "",
   // organizerName: "",
   // organizerEmail: "",
   // organizerPhone: "",
@@ -36,7 +40,7 @@ const initialValues = {
   endTime: "",
   ticketLinkType: "",
   ticketUrl: "",
-  tickets: [{}],
+  tickets: [{ Ticket_type: '', Ticket_price: '', Quantity: '' }],
   featuredEvent: "no",
   posterUpload: null,
   galleryUpload: [],
@@ -48,9 +52,8 @@ const Page = () => {
   if (typeof window === undefined) {
     return false;
   }
- const[isLoading, setIsLoading]=useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState("");
   const [tickets, setTickets] = useState([]);
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
   const [address, setAddress] = useState("");
@@ -66,7 +69,7 @@ const Page = () => {
 
   const handleSubmit = (values, { resetForm }) => {
     setIsLoading(true); // Start loading
-  
+
     const submitData = {
       eventTitle: values.eventTitle,
       category: values.category,
@@ -89,7 +92,7 @@ const Page = () => {
       selectedSponsor: values.selectedSponsor,
       featuredEvent: values.featuredEvent,
     };
-  
+
     // If the event is paid, add ticket-related fields
     if (values.eventType === "paid") {
       submitData.ticketLinkType = values.ticketLinkType;
@@ -99,7 +102,7 @@ const Page = () => {
         submitData.tickets = values.tickets; // Assuming tickets is an array
       }
     }
-  
+
     saveEvent(submitData)
       .then((response) => {
         resetForm(); // Reset the form after successful submission
@@ -114,7 +117,6 @@ const Page = () => {
         setIsLoading(false); // Stop loading
       });
   };
-  
 
   const handleOpenModal = () => {
     setSponsorModalOpen(true);
@@ -169,7 +171,7 @@ const Page = () => {
       <div className="heading">Submit an Event</div>
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        // validationSchema={validationSchema}
         validateOnBlur={true} // Enable validation on blur (when user clicks out of a field)
         validateOnChange={true} // Enable validation on field change
         onSubmit={handleSubmit}
@@ -775,8 +777,17 @@ const Page = () => {
               <button type="button" className="submit-button">
                 Save as Draft
               </button>
-              <button type="submit" className="submit-button">
-                submit
+              <button
+                type="submit"
+                className="submit-button"
+                disabled={isLoading}
+              >
+                {" "}
+                {isLoading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Submit"
+                )}{" "}
               </button>
             </div>
 
@@ -794,7 +805,7 @@ const Page = () => {
       >
         <Box sx={style}>
           <Typography id="modal-title" variant="h6">
-            Select {modalContent}
+            Select {}
           </Typography>
           <div className="friends-list">
             <p>Friends list goes here...</p>

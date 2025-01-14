@@ -9,29 +9,28 @@ import Swal from "sweetalert2";
 const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false, existingSponsor = null }) => {
   const [isLoading, setIsLoading] = useState(false); // Loading state
 
-  const initialValues = existingSponsor || {
-    company: "",
-    companyWebsite: "",
-    companyPrice: "",
-    companyCategory: "",
-    shortDescription: "",
-    image: null,
+  const initialValues = {
+    name: existingSponsor?.name || "",
+    website: existingSponsor?.website || "",
+    price: existingSponsor?.price || "",
+    category: existingSponsor?.category || "",
+    shortDescription: existingSponsor?.shortDescription || "",
+    image: existingSponsor?.logo || null, // Pre-fill image URL if provided
   };
 
   const validationSchema = Yup.object({
-    company: Yup.string().required("Company name is required"),
-    companyWebsite: Yup.string()
+    name: Yup.string().required("Company name is required"),
+    website: Yup.string()
       .url("Must be a valid URL")
       .required("Company website is required"),
-    companyPrice: Yup.number()
+    price: Yup.number()
       .required("Price is required")
       .positive("Price must be a positive number"),
-    companyCategory: Yup.string().required("Category is required"),
+    category: Yup.string().required("Category is required"),
     shortDescription: Yup.string()
       .required("Short description is required")
       .min(10, "Short description must be at least 10 characters"),
     image: Yup.mixed()
-      .required("Image is required")
       .test("fileSize", "Image size must be less than 500KB", (value) => value && value.size <= 500000),
   });
 
@@ -43,12 +42,14 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
   const handleSubmit = (values, { resetForm }) => {
     setIsLoading(true); // Start loading
     const sponsorData = new FormData();
-    sponsorData.append("sponsorTitle", values.company);
-    sponsorData.append("sponsorWebsite", values.companyWebsite);
-    sponsorData.append("spsponsorPrice", values.companyPrice);
-    sponsorData.append("sponsorCategory", values.companyCategory);
+    sponsorData.append("sponsorTitle", values.name);
+    sponsorData.append("sponsorWebsite", values.website);
+    sponsorData.append("sponsorPrice", values.price);
+    sponsorData.append("sponsorCategory", values.category);
     sponsorData.append("sponsorDesc", values.shortDescription);
-    if (values.image) {
+    if (values.image instanceof File) {
+      sponsorData.append("sponsorImg", values.image);
+    } else if (typeof values.image === 'string') {
       sponsorData.append("sponsorImg", values.image);
     }
 
@@ -91,47 +92,49 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
               <Grid container spacing={1}>
                 <Grid item xs={6}>
                   <Field
-                    name="company"
+                    name="name"
                     as={TextField}
-                    label="Company"
+                    label="Name"
                     fullWidth
                     size="small"
-                    error={touched.company && !!errors.company}
-                    helperText={touched.company && errors.company}
+                    error={touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <Field
-                    name="companyWebsite"
+                    name="website"
                     as={TextField}
                     label="Company Website"
                     fullWidth
                     size="small"
-                    error={touched.companyWebsite && !!errors.companyWebsite}
-                    helperText={touched.companyWebsite && errors.companyWebsite}
+                    error={touched.website && !!errors.website}
+                    helperText={touched.website && errors.website}
                   />
                 </Grid>
               </Grid>
               <Grid container spacing={1} sx={{ mt: 1 }}>
                 <Grid item xs={6}>
                   <Field
-                    name="companyPrice"
+                    name="price"
                     as={TextField}
                     label="Price"
                     fullWidth
                     size="small"
                     type="number"
-                    error={touched.companyPrice && !!errors.companyPrice}
-                    helperText={touched.companyPrice && errors.companyPrice}
+                    error={touched.price && !!errors.price}
+                    helperText={touched.price && errors.price}
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <FormControl fullWidth size="small" error={touched.companyCategory && !!errors.companyCategory}>
+                  <FormControl fullWidth size="small" error={touched.category && !!errors.category}>
                     <InputLabel>Category</InputLabel>
                     <Field
-                      name="companyCategory"
+                      name="category"
                       as={Select}
                       label="Category"
+                      value={values.category}
+                      onChange={(e) => setFieldValue("category", e.target.value)}
                     >
                       <MenuItem value="">Select Category</MenuItem>
                       <MenuItem value="General">General</MenuItem>
@@ -141,7 +144,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
                       <MenuItem value="Silver">Silver</MenuItem>
                       <MenuItem value="Media">Media</MenuItem>
                     </Field>
-                    <ErrorMessage name="companyCategory" component="div" style={{ color: "red" }} />
+                    <ErrorMessage name="category" component="div" style={{ color: "red" }} />
                   </FormControl>
                 </Grid>
               </Grid>
@@ -170,7 +173,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
               {values.image && (
                 <Box sx={{ position: "relative", textAlign: "center", mb: 1 }}>
                   <img
-                    src={URL.createObjectURL(values.image)}
+                    src={typeof values.image === 'string' ? values.image : URL.createObjectURL(values.image)}
                     alt="Image Preview"
                     style={{ width: "100%", maxHeight: "200px", objectFit: "contain" }}
                   />
@@ -214,9 +217,17 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
                     color="primary"
                     fullWidth
                     disabled={isLoading} // Disable button when loading
-                    startIcon={isLoading && <CircularProgress size={20} color="inherit" />}
                   >
-                    {isLoading ? "Saving..." : isUpdate ? "Update" : "Save"}
+                    {isLoading ? (
+                      <>
+                        <CircularProgress size={20} color="inherit" />
+                        {" Saving..."}
+                      </>
+                    ) : isUpdate ? (
+                      "Update"
+                    ) : (
+                      "Save"
+                    )}
                   </Button>
                 </Grid>
               </Grid>
@@ -243,4 +254,4 @@ const modalStyle = {
   overflowY: "auto",
 };
 
-export default SponsorModal;
+export default SponsorModal

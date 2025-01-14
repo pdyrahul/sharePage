@@ -7,15 +7,15 @@ const validationSchema = Yup.object({
   eventTitle: Yup.string()
     .max(60, 'Event Title must be at most 60 characters')
     .required('Event Title is required'),
-  // description: Yup.string()
-  //   .required('Description is required')
-  //   .min(10, 'Description must be at least 10 characters'),
-  // policy: Yup.string()
-  //   .required('Policy is required')
-  //   .min(10, 'Policy must be at least 10 characters'),
-  // amenities: Yup.string()
-  //   .required('Amenities are required')
-  //   .min(10, 'Amenities must be at least 10 characters'),
+  description: Yup.string()
+    .required('Description is required')
+    .min(10, 'Description must be at least 10 characters'),
+  policy: Yup.string()
+    .required('Policy is required')
+    .min(10, 'Policy must be at least 10 characters'),
+  amenities: Yup.string()
+    .required('Amenities are required')
+    .min(10, 'Amenities must be at least 10 characters'),
   address: Yup.string().required('Event Address is required'),
   place: Yup.string().required('Name of Place is required'),
 
