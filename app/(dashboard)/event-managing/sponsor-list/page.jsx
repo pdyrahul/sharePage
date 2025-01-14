@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from 'react-icons/md';
-import { getSponsors, deleteSponsor, updateSponsor } from "../../../services/api";
+import { getSponsors, deleteSponsor } from "../../../services/api";
 import useFetchData from "../../../hooks/useFetchData";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -113,7 +113,9 @@ const SponsorsPage = () => {
                   <TableCell>Profile</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Logo</TableCell>
+                  <TableCell>Description</TableCell>
                   <TableCell>Actions</TableCell>
+                 
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -125,6 +127,7 @@ const SponsorsPage = () => {
                       <TableCell><Skeleton width={150} /></TableCell>
                       <TableCell><Skeleton width={150} /></TableCell>
                       <TableCell><Skeleton width={100} /></TableCell>
+                      <TableCell><Skeleton width={200} /></TableCell>
                       <TableCell><Skeleton width={30} height={30} /></TableCell>
                       <TableCell><Skeleton width={60} height={30} /></TableCell>
                     </TableRow>
@@ -141,9 +144,11 @@ const SponsorsPage = () => {
                       <TableCell>{sponsor.category}</TableCell>
                       <TableCell>{sponsor.profileName}</TableCell>
                       <TableCell>{sponsor.price}</TableCell>
+                     
                       <TableCell>
                         <img src={sponsor.logo} alt="Sponsor Logo" height={30} width={30} />
                       </TableCell>
+                      <TableCell>{sponsor.description}</TableCell>
                       <TableCell align="right" style={{ display: "flex", gap: "15px" }}>
                         <button
                           type="button"

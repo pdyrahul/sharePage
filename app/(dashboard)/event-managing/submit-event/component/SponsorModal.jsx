@@ -14,7 +14,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
     website: existingSponsor?.website || "",
     price: existingSponsor?.price || "",
     category: existingSponsor?.category || "",
-    shortDescription: existingSponsor?.shortDescription || "",
+    description: existingSponsor?.description || "",
     image: existingSponsor?.logo || null, // Pre-fill image URL if provided
   };
 
@@ -27,7 +27,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
       .required("Price is required")
       .positive("Price must be a positive number"),
     category: Yup.string().required("Category is required"),
-    shortDescription: Yup.string()
+    description: Yup.string()
       .required("Short description is required")
       .min(10, "Short description must be at least 10 characters"),
     image: Yup.mixed()
@@ -42,20 +42,25 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
   const handleSubmit = (values, { resetForm }) => {
     setIsLoading(true); // Start loading
     const sponsorData = new FormData();
-    sponsorData.append("sponsorTitle", values.name);
-    sponsorData.append("sponsorWebsite", values.website);
-    sponsorData.append("sponsorPrice", values.price);
-    sponsorData.append("sponsorCategory", values.category);
-    sponsorData.append("sponsorDesc", values.shortDescription);
+    sponsorData.append("spsponsorTitle", values.name);
+    sponsorData.append("spsponsorWebsite", values.website);
+    sponsorData.append("spsponsorPrice", values.price);
+    sponsorData.append("spsponsorCategory", values.category);
+    sponsorData.append("spsponsorDesc", values.description);
     if (values.image instanceof File) {
-      sponsorData.append("sponsorImg", values.image);
-    } else if (typeof values.image === 'string') {
-      sponsorData.append("sponsorImg", values.image);
+      sponsorData.append("spsponsorImg", values.image);
+    } else if (typeof values.image === "string") {
+      sponsorData.append("spsponsorImg", values.image);
     }
-
-    const sponsorAction = isUpdate ? updateSponsor : createSponsor;
-    const successMessage = isUpdate ? "Sponsor updated successfully!" : "Sponsor added successfully!";
-
+  
+    const sponsorAction = isUpdate
+      ? (data) => updateSponsor(existingSponsor.id, data) // Use userId and data
+      : createSponsor;
+  
+    const successMessage = isUpdate
+      ? "Sponsor updated successfully!"
+      : "Sponsor added successfully!";
+  
     sponsorAction(sponsorData)
       .then((response) => {
         resetForm(); // Reset the form after submission
@@ -64,12 +69,18 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
         refetch();
       })
       .catch((error) => {
-        Swal.fire("Error", "Something went wrong. Please try again.", "error"); // Error alert
+        Swal.fire(
+          "Error",
+          error?.response?.data?.message || "Something went wrong. Please try again.",
+          "error"
+        ); // Error alert
       })
       .finally(() => {
         setIsLoading(false); // Stop loading
       });
   };
+  
+  
 
   return (
     <Modal
@@ -149,15 +160,15 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
                 </Grid>
               </Grid>
               <Field
-                name="shortDescription"
+                name="description"
                 as={TextField}
                 label="Short Description"
                 fullWidth
                 size="small"
                 multiline
                 rows={4}
-                error={touched.shortDescription && !!errors.shortDescription}
-                helperText={touched.shortDescription && errors.shortDescription}
+                error={touched.description && !!errors.description}
+                helperText={touched.description && errors.description}
                 sx={{ mt: 1 }}
               />
               <Button variant="outlined" component="label" fullWidth sx={{ mt: 2, mb: 1 }}>
