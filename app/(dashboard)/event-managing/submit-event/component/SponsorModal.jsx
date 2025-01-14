@@ -30,8 +30,13 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
     description: Yup.string()
       .required("Short description is required")
       .min(10, "Short description must be at least 10 characters"),
-    image: Yup.mixed()
-      .test("fileSize", "Image size must be less than 500KB", (value) => value && value.size <= 500000),
+      image: Yup.mixed()
+      .test("fileTypeOrUrl", "Invalid file or URL", (value) => {
+        if (!value) return false; // No value provided
+        if (typeof value === "string") return true; // Allow string (e.g., pre-filled URL)
+        if (value instanceof File) return value.size <= 500000; // Allow file under 500KB
+        return false;
+      }),
   });
 
   const handleFileChange = (e, setFieldValue) => {

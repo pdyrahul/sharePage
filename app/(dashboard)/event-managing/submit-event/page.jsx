@@ -36,12 +36,11 @@ const initialValues = {
   ticketLinkType: "",
   ticketUrl: "",
   tickets: [{ Ticket_type: "", Ticket_price: "", Quantity: "" }],
-  // status: "", // Default set to empty string to align with "The status field is required."
   poster: "",
-  galleryImages: [], // No change needed
+  galleryImages: [],
   seatingLayout: "",
   sponsor: "",
-  isFeatured: "", // Default set to empty string
+  isFeatured: "",
 };
 
 
@@ -54,6 +53,17 @@ const Page = () => {
   const [tickets, setTickets] = useState([]);
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
   const [address, setAddress] = useState("");
+  const [status, setStatus] = useState(null);
+
+  const handleSaveAsDraft = () => {
+    setStatus(1); // Set status to 1 for Draft
+    // handleSubmit(onSubmit)(); // Trigger the form submission
+  };
+
+  const handleSubmitForm = () => {
+    setStatus(2); // Set status to 2 for Final Submit
+    // handleSubmit(onSubmit)(); // Trigger the form submission
+  };
   const autocompleteRef = useRef(null);
   const libraries = ["places"];
 
@@ -66,7 +76,7 @@ const Page = () => {
 
   const handleSubmit = (values, { resetForm }) => {
     setIsLoading(true); // Start loading
-
+    console.log("form value", values);
     const submitData = {
       eventTitle: values.eventTitle,
       category: values.category,
@@ -88,6 +98,7 @@ const Page = () => {
       galleryUpload: values.galleryUpload,
       selectedSponsor: values.selectedSponsor,
       featuredEvent: values.featuredEvent,
+      status: status, // Add status here (1 for Draft, 2 for Final)
     };
 
     // If the event is paid, add ticket-related fields
@@ -192,6 +203,20 @@ const Page = () => {
                 style={errorStyles}
               />
             </div>
+
+            {/* Sub Category Field */}
+            {/* <div className="input-group in-0-5-col">
+              <label>
+                Sub Category
+                <span style={{ color: "#EF1D26" }}>*</span>
+              </label>
+              <Field
+                type="text"
+                name="event"
+                placeholder="Enter Sub Category"
+              />
+              <ErrorMessage name="event" component="span" style={errorStyles} />
+            </div> */}
 
             {/* Category Field */}
             <div className="input-group in-0-5-col">
@@ -379,6 +404,137 @@ const Page = () => {
                 style={errorStyles}
               />
             </div>
+
+            {/* Conditional rendering for ticket link if event is paid */}
+            {values.eventType === "paid" && (
+              <div
+                className="sellTicket"
+                style={{
+                  border: "2px solid #d9dce0",
+                  padding: "15px",
+                  width: "100%",
+                }}
+              >
+                {/* Add Ticket Link Field */}
+                <div className="input-group in-1-col">
+                  <label>
+                    Add Ticket Link<span style={{ color: "#EF1D26" }}>*</span>
+                  </label>
+                  <div
+                    className="in-0-5-col radiobttn"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                    role="group"
+                    aria-labelledby="radio-group"
+                  >
+                    <label>
+                      <Field
+                        type="radio"
+                        name="ticketLinkType"
+                        value="external"
+                      />
+                      External
+                    </label>
+                    <label>
+                      <Field
+                        type="radio"
+                        name="ticketLinkType"
+                        value="sharePage"
+                      />
+                      Sell Ticket on TheSharePage
+                    </label>
+                  </div>
+                  <ErrorMessage
+                    name="ticketLinkType"
+                    component="div"
+                    style={errorStyles}
+                  />
+
+                  {/* Conditional Rendering Based on Ticket Link Type */}
+                  {values.ticketLinkType === "external" && (
+                    <div className="input-group in-0-75-col">
+                      <label>
+                        Ticket URL<span style={{ color: "#EF1D26" }}>*</span>
+                      </label>
+                      <Field
+                        type="url"
+                        name="ticketUrl"
+                        placeholder="Enter Ticket URL"
+                        style={{ marginRight: "8px", width: "100%" }}
+                      />
+                      <ErrorMessage
+                        name="ticketUrl"
+                        component="span"
+                        style={errorStyles}
+                      />
+                    </div>
+                  )}
+                  {values.ticketLinkType === "sharePage" && (
+                    <TicketList
+                      name="tickets"
+                      setStudentValue={setFieldValue}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Organizer Fields */}
+            {/* <div className="submit-an-event my-3">
+              <div className="input-group in-3-col">
+                <label>
+                  Organizer Name<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Field
+                  type="text"
+                  name="organizerName"
+                  placeholder="Enter Organizer Name"
+                />
+                <ErrorMessage
+                  name="organizerName"
+                  component="span"
+                  style={errorStyles}
+                />
+              </div>
+
+         
+              <div className="input-group in-3-col">
+                <label>
+                  Organizer Email<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Field
+                  type="email"
+                  name="organizerEmail"
+                  placeholder="Enter Organizer Email"
+                />
+                <ErrorMessage
+                  name="organizerEmail"
+                  component="span"
+                  style={errorStyles}
+                />
+              </div>
+
+           
+              <div className="input-group in-3-col">
+                <label>
+                  Organizer Phone<span style={{ color: "#EF1D26" }}>*</span>
+                </label>
+                <Field
+                  type="text"
+                  name="organizerPhone"
+                  placeholder="Enter Organizer Phone"
+                />
+                <ErrorMessage
+                  name="organizerPhone"
+                  component="span"
+                  style={errorStyles}
+                />
+              </div>
+            </div> */}
+            {/* Description */}
             <div className="input-group in-1-col">
               <label>
                 Description<span style={{ color: "#EF1D26" }}>*</span>
@@ -436,7 +592,40 @@ const Page = () => {
                 style={errorStyles}
               />
             </div>
-          
+            {/* 
+            Featured Artist For This Event
+            <div className="input-group in-3-col">
+              <label className="py-2">Featured Artist For This Event</label>
+              <button
+                type="button"
+                onClick={() => openModal("Featured Artist")}
+                style={{
+                  color: "#fff",
+                  background: "#c11",
+                  padding: "5px 10px",
+                  borderRadius: "5px",
+                }}
+              >
+                Select Friends
+              </button>
+            </div> */}
+
+            {/* Co-Host Name */}
+            {/* <div className="input-group in-3-col">
+              <label className="py-2">Co-Host Name</label>
+              <button
+                type="button"
+                onClick={() => openModal("Co-Host Name")}
+                style={{
+                  color: "#fff",
+                  background: "#c11",
+                  padding: "5px 10px",
+                  borderRadius: "5px",
+                }}
+              >
+                Select Friends
+              </button>
+            </div> */}
             {/* Uploader Component for Posters */}
             <div className="input-group in-1-col">
               <label>
@@ -570,13 +759,14 @@ const Page = () => {
               <button type="button" className="submit-button">
                 Preview
               </button>
-              <button type="button" className="submit-button">
+              <button type="button" className="submit-button" onClick={handleSaveAsDraft}>
                 Save as Draft
               </button>
               <button
                 type="submit"
                 className="submit-button"
                 disabled={isLoading}
+                onClick={handleSubmitForm}
               >
                 {" "}
                 {isLoading ? (
@@ -601,7 +791,7 @@ const Page = () => {
       >
         <Box sx={style}>
           <Typography id="modal-title" variant="h6">
-            Select {}
+            Select { }
           </Typography>
           <div className="friends-list">
             <p>Friends list goes here...</p>

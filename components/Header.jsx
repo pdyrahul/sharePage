@@ -101,32 +101,28 @@ const Header = () => {
           <Image src={searchIcon} alt="Search Icon" height={30} width={30} />
         </div>
         <div className="utilityIcons">
-          <div className="hand-shake link">
-            <Image src={handShake} alt="Hand Shake" height={30} width={30} />
-          </div>
-          <div className="persons link">
-            <Image src={personIcon} alt="Person Icon" height={30} width={30} />
-            <div className="count">1</div>
-          </div>
-          <div className="help link">
-            <Image src={helpIcon} alt="Help" />
-          </div>
-          <div className="notification link">
-            <Image
-              src={notificationIcon}
-              alt="Notification"
-              height={30}
-              width={30}
-            />
-            <div className="count">2</div>
-          </div>
-          <div className="cart link">
-            <Image src={cartIcon} alt="Cart" height={30} width={30} />
-          </div>
-          <div className="setting link">
-            <Image src={settingIcon} alt="Setting" height={30} width={30} />
-          </div>
-        </div>
+  <div className="hand-shake link">
+    <Image src={handShake} alt="Hand Shake" height={30} width="auto" />
+  </div>
+  <div className="persons link">
+    <Image src={personIcon} alt="Person Icon" height={30} width="auto" />
+    <div className="count">1</div>
+  </div>
+  <div className="help link">
+    <Image src={helpIcon} alt="Help" height={30} width="auto" />
+  </div>
+  <div className="notification link">
+    <Image src={notificationIcon} alt="Notification" height={30} width="auto" />
+    <div className="count">2</div>
+  </div>
+  <div className="cart link">
+    <Image src={cartIcon} alt="Cart" height={30} width="auto" />
+  </div>
+  <div className="setting link">
+    <Image src={settingIcon} alt="Setting" height={30} width="auto" />
+  </div>
+</div>
+
         <div className="three-dot link">
           <Image src={threeDotIcon} alt="Three Dot" height={30} width={30} />
         </div>
