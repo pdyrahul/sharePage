@@ -16,8 +16,8 @@ const validationSchema = Yup.object({
   amenities: Yup.string()
     .required('Amenities are required')
     .min(10, 'Amenities must be at least 10 characters'),
-  address: Yup.string().required('Event Address is required'),
-  place: Yup.string().required('Name of Place is required'),
+   address: Yup.string().required('Event Address is required'),
+   place: Yup.string().required('Name of Place is required'),
 
   ticketLinkType: Yup.string().when('eventType', {
     is: (value) => value === 'Paid',
@@ -47,8 +47,9 @@ const validationSchema = Yup.object({
     .min(Yup.ref('startDate'), 'End Date must be after Start Date'),
   startTime: Yup.string().required('Start Time is required'),
   endTime: Yup.string().required('End Time is required'),
-
-  featuredEvent: Yup.string().required('Featured Event selection is required'),
+  featuredEvent: Yup.string()
+      .required('Please select')
+      .oneOf(['1', '0'], 'Please select Yes or No'),
 
  
 });

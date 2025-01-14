@@ -40,7 +40,7 @@ const initialValues = {
   galleryImages: [],
   seatingLayout: "",
   sponsor: "",
-  isFeatured: "",
+  featuredEvent: null,
 };
 
 
@@ -60,10 +60,10 @@ const Page = () => {
     // handleSubmit(onSubmit)(); // Trigger the form submission
   };
 
-  const handleSubmitForm = () => {
-    setStatus(2); // Set status to 2 for Final Submit
-    // handleSubmit(onSubmit)(); // Trigger the form submission
-  };
+  // const handleSubmitForm = () => {
+  //    // Set status to 2 for Final Submit
+  //   // handleSubmit(onSubmit)(); // Trigger the form submission
+  // };
   const autocompleteRef = useRef(null);
   const libraries = ["places"];
 
@@ -75,8 +75,9 @@ const Page = () => {
   }, [sponsorModalOpen, getSponsors]); // Add getSponsors if it's not stable
 
   const handleSubmit = (values, { resetForm }) => {
-    setIsLoading(true); // Start loading
     console.log("form value", values);
+    setStatus(2);
+    setIsLoading(true); // Start loading
     const submitData = {
       eventTitle: values.eventTitle,
       category: values.category,
@@ -91,15 +92,16 @@ const Page = () => {
       endTime: values.endTime,
       eventType: values.eventType,
       description: values.description,
-      policy: values.policy,
+      refundPolicy: values.refundPolicy,
       amenities: values.amenities,
-      posterUpload: values.posterUpload, // Assuming it's a file or array of files
-      layoutUpload: values.layoutUpload,
-      galleryUpload: values.galleryUpload,
-      selectedSponsor: values.selectedSponsor,
-      featuredEvent: values.featuredEvent,
+      poster: values.poster, // Assuming it's a file or array of files
+      seatingLayout: values.seatingLayout,
+      galleryImages: values.galleryImages,
+      isFeatured: values.featuredEvent,
+      sponsor:values.sponsor,
       status: status, // Add status here (1 for Draft, 2 for Final)
     };
+    console.log("form value", submitData);
 
     // If the event is paid, add ticket-related fields
     if (values.eventType === "paid") {
@@ -739,16 +741,16 @@ const Page = () => {
                 aria-labelledby="radio-group"
               >
                 <label>
-                  <Field type="radio" name="isFeatured" value="1" />
+                  <Field type="radio" name="featuredEvent" value="1" />
                   Yes
                 </label>
                 <label>
-                  <Field type="radio" name="isFeatured" value="0" />
+                  <Field type="radio" name="featuredEvent" value="0" />
                   No
                 </label>
               </div>
               <ErrorMessage
-                name="isFeatured"
+                name="featuredEvent"
                 component="div"
                 style={errorStyles}
               />
@@ -766,7 +768,6 @@ const Page = () => {
                 type="submit"
                 className="submit-button"
                 disabled={isLoading}
-                onClick={handleSubmitForm}
               >
                 {" "}
                 {isLoading ? (
