@@ -1,52 +1,43 @@
+'use client';
 
-'use client' 
-import React from 'react';
-import { CKEditor, useCKEditorCloud } from '@ckeditor/ckeditor5-react';
+import React, { useRef, useEffect } from 'react';
+import JoditEditor from 'jodit-react';
 
-const Editor = ({data,setData}) => {
-    const cloud = useCKEditorCloud( {
-        version: '44.1.0',
-        premium: true
-    } );
+const Editor = ({ data, setData }) => {
+    const editor = useRef(null);
+    const contentRef = useRef(data); // Ref to hold the editor's content
 
-    if ( cloud.status === 'error' ) {
-        return <div>Error!</div>;
-    }
+    // Update the ref value when `data` changes externally
+    useEffect(() => {
+        contentRef.current = data;
+    }, [data]);
 
-    if ( cloud.status === 'loading' ) {
-        return <div>Loading...</div>;
-    }
-
-    const {
-        ClassicEditor,
-        Essentials,
-        Paragraph,
-        Bold,
-        Italic
-    } = cloud.CKEditor;
-
-    const { FormatPainter } = cloud.CKEditorPremiumFeatures;
+    const handleBlur = (newContent) => {
+        // Update the state only when the editor loses focus (blur event)
+        setData(newContent);
+        contentRef.current = newContent;
+    };
 
     return (
-        <div style={{ width: '100%',}}>
-        <CKEditor
-            editor={ ClassicEditor }
-            data={ data }
-            onChange={ ( event, editor ) => {
-                const data = editor.getData();
-                setData(data);
-            }}
-            config={ {
-                licenseKey: process.env.NEXT_PUBLIC_CKEDITOR_LICENSE_KEY,
-                plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
-                toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ],
-                editorConfig: {
-                    height: '150px', // Set height of the editable area
-                    bodyClass: 'ck-editor-body', // Add class to editable area if needed
-                },
-                
-            } }
-        />
+        <div style={{ width: '100%' }}>
+            <JoditEditor
+                ref={editor}
+                value={contentRef.current}
+                onBlur={handleBlur} // Use onBlur for state update
+                config={{
+                    readonly: false,
+                    height: 150,
+                    toolbarSticky: false,
+                    buttons: [
+                        'undo', 'redo', '|',
+                        'bold', 'italic', '|',
+                        'ul', 'ol', '|',
+                        'align', '|',
+                        'outdent', 'indent',
+                    ],
+                    placeholder: 'Start typing here...',
+                }}
+            />
         </div>
     );
 };

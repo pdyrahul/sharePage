@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from 'react-icons/md';
-import { getSponsors, deleteSponsor } from "../../../services/api";
+import { getSponsors, deleteSponsor, updateSponsor} from "../../../services/api";
 import useFetchData from "../../../hooks/useFetchData";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -71,6 +71,16 @@ const SponsorsPage = () => {
       alert("Failed to delete the sponsor. Please try again.");
     }
   };
+  const handleUpdate= async (sponsorId)=>{
+    try {
+      await updateSponsor(sponsorId);
+      toast.success("Sponsor updated successfully!");
+      refetch();
+    } catch (err) {
+      console.error("Failed to update sponsor");
+      alert("Failed to update the sponsor. Please try again.");
+    }
+  }
 
   return (
     <div className="event-body">
@@ -168,6 +178,7 @@ const SponsorsPage = () => {
                         <TableCell
                           align="right"
                           style={{ display: "flex", gap: "15px" }}
+                          onClick={() => handleUpdate(sponsor.id)}
                         >
                           <button
                             type="button"
@@ -216,7 +227,7 @@ const SponsorsPage = () => {
       <SponsorModal
         sponsorModalOpen={sponsorModalOpen}
         CloseModal={CloseModal}
-        refetch={refetch} // Pass refetch function to modal
+        refetch={refetch}
       />
     </div>
   );

@@ -1,13 +1,15 @@
-import React from "react";
-import { Modal, Box, Typography, Button, TextField, FormControl, InputLabel, Select, MenuItem, Grid, IconButton } from "@mui/material";
-import { createSponsor } from "../../../../services/api";
-import CancelIcon from '@mui/icons-material/Cancel';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import Swal from 'sweetalert2';
+import React, { useState } from "react";
+import { Modal, Box, Typography, Button, TextField, FormControl, InputLabel, Select, MenuItem, Grid, IconButton, CircularProgress } from "@mui/material";
+import { createSponsor, updateSponsor } from "../../../../services/api";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import Swal from "sweetalert2";
 
-const SponsorModal = ({ sponsorModalOpen, CloseModal,refetch }) => {
-  const initialValues = {
+const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false, existingSponsor = null }) => {
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+
+  const initialValues = existingSponsor || {
     company: "",
     companyWebsite: "",
     companyPrice: "",
@@ -17,18 +19,21 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal,refetch }) => {
   };
 
   const validationSchema = Yup.object({
-    company: Yup.string().required('Company name is required'),
-    companyWebsite: Yup.string().url('Must be a valid URL').required('Company website is required'),
-    companyPrice: Yup.number().required('Price is required').positive('Price must be a positive number'),
-    companyCategory: Yup.string().required('Category is required'),
-    shortDescription: Yup.string().required('Short description is required').min(10, 'Short description must be at least 10 characters'),
+    company: Yup.string().required("Company name is required"),
+    companyWebsite: Yup.string()
+      .url("Must be a valid URL")
+      .required("Company website is required"),
+    companyPrice: Yup.number()
+      .required("Price is required")
+      .positive("Price must be a positive number"),
+    companyCategory: Yup.string().required("Category is required"),
+    shortDescription: Yup.string()
+      .required("Short description is required")
+      .min(10, "Short description must be at least 10 characters"),
     image: Yup.mixed()
-      .required('Image is required')
-      .test('fileSize', 'Image size must be less than 500KB', value => {
-        return value && value.size <= 500000; // 500KB = 500000 bytes
-      })
+      .required("Image is required")
+      .test("fileSize", "Image size must be less than 500KB", (value) => value && value.size <= 500000),
   });
-  
 
   const handleFileChange = (e, setFieldValue) => {
     const file = e.target.files[0];
@@ -36,34 +41,35 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal,refetch }) => {
   };
 
   const handleSubmit = (values, { resetForm }) => {
-    console.log("Form values before API call:", values);  // Debugging log
-  
-    const newSponsor = new FormData();
-    newSponsor.append("sponsorTitle", values.company);
-    newSponsor.append("sponsorWebsite", values.companyWebsite);
-    newSponsor.append("spsponsorPrice", values.companyPrice);
-    newSponsor.append("sponsorCategory", values.companyCategory);
-    newSponsor.append("sponsorDesc", values.shortDescription);
+    setIsLoading(true); // Start loading
+    const sponsorData = new FormData();
+    sponsorData.append("sponsorTitle", values.company);
+    sponsorData.append("sponsorWebsite", values.companyWebsite);
+    sponsorData.append("spsponsorPrice", values.companyPrice);
+    sponsorData.append("sponsorCategory", values.companyCategory);
+    sponsorData.append("sponsorDesc", values.shortDescription);
     if (values.image) {
-      newSponsor.append("sponsorImg", values.image);
+      sponsorData.append("sponsorImg", values.image);
     }
-  
-    createSponsor(newSponsor)
+
+    const sponsorAction = isUpdate ? updateSponsor : createSponsor;
+    const successMessage = isUpdate ? "Sponsor updated successfully!" : "Sponsor added successfully!";
+
+    sponsorAction(sponsorData)
       .then((response) => {
-        console.log("Response:", response);
         resetForm(); // Reset the form after submission
         CloseModal(); // Close the modal
-        Swal.fire('Success', 'Sponsor added successfully!', 'success'); // Success alert
-  
-        // Refetch the sponsor list from SponsorsPage
+        Swal.fire("Success", successMessage, "success"); // Success alert
         refetch();
       })
       .catch((error) => {
-        console.error("Error:", error);
-        Swal.fire('Error', 'Something went wrong. Please try again.', 'error'); // Error alert
+        Swal.fire("Error", "Something went wrong. Please try again.", "error"); // Error alert
+      })
+      .finally(() => {
+        setIsLoading(false); // Stop loading
       });
   };
-  
+
   return (
     <Modal
       open={sponsorModalOpen}
@@ -73,7 +79,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal,refetch }) => {
     >
       <Box sx={modalStyle}>
         <Typography id="sponsor-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
-          Add Sponsor
+          {isUpdate ? "Update Sponsor" : "Add Sponsor"}
         </Typography>
         <Formik
           initialValues={initialValues}
@@ -135,7 +141,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal,refetch }) => {
                       <MenuItem value="Silver">Silver</MenuItem>
                       <MenuItem value="Media">Media</MenuItem>
                     </Field>
-                    <ErrorMessage name="companyCategory" component="div" style={{ color: 'red' }} />
+                    <ErrorMessage name="companyCategory" component="div" style={{ color: "red" }} />
                   </FormControl>
                 </Grid>
               </Grid>
@@ -202,8 +208,15 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal,refetch }) => {
                   </Button>
                 </Grid>
                 <Grid item xs={6}>
-                  <Button type="submit" variant="contained" color="primary" fullWidth>
-                    Save
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    disabled={isLoading} // Disable button when loading
+                    startIcon={isLoading && <CircularProgress size={20} color="inherit" />}
+                  >
+                    {isLoading ? "Saving..." : isUpdate ? "Update" : "Save"}
                   </Button>
                 </Grid>
               </Grid>

@@ -7,12 +7,11 @@ import validationSchema from "../../../utils/Schema";
 import ImageUpload from "./component/ImageUpload";
 import TicketList from "./component/TicketList";
 import useFetchData from "../../../hooks/useFetchData";
-import { getEventCategories, getSponsors } from "../../../services/api";
+import { getEventCategories, getSponsors, saveEvent } from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
 import Editor from "../../../../components/ui/TextEditor/Editor";
-// import AddressAutocomplete from "./component/AddressInput";
+import Swal from "sweetalert2";
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 const initialValues = {
   category: "",
@@ -49,7 +48,7 @@ const Page = () => {
   if (typeof window === undefined) {
     return false;
   }
-
+ const[isLoading, setIsLoading]=useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [tickets, setTickets] = useState([]);
@@ -66,11 +65,56 @@ const Page = () => {
   }, [sponsorModalOpen, getSponsors]); // Add getSponsors if it's not stable
 
   const handleSubmit = (values, { resetForm }) => {
-    console.log("Form data:", values);
-    toast.success("Event submitted successfully!");
-    setTickets([]);
-    resetForm();
+    setIsLoading(true); // Start loading
+  
+    const submitData = {
+      eventTitle: values.eventTitle,
+      category: values.category,
+      ethnicity: values.ethnicity,
+      address: values.address,
+      place: values.place,
+      capacity: values.capacity,
+      youtubeUrl: values.youtubeUrl,
+      startDate: values.startDate,
+      startTime: values.startTime,
+      endDate: values.endDate,
+      endTime: values.endTime,
+      eventType: values.eventType,
+      description: values.description,
+      policy: values.policy,
+      amenities: values.amenities,
+      posterUpload: values.posterUpload, // Assuming it's a file or array of files
+      layoutUpload: values.layoutUpload,
+      galleryUpload: values.galleryUpload,
+      selectedSponsor: values.selectedSponsor,
+      featuredEvent: values.featuredEvent,
+    };
+  
+    // If the event is paid, add ticket-related fields
+    if (values.eventType === "paid") {
+      submitData.ticketLinkType = values.ticketLinkType;
+      if (values.ticketLinkType === "external") {
+        submitData.ticketUrl = values.ticketUrl;
+      } else if (values.ticketLinkType === "sharePage") {
+        submitData.tickets = values.tickets; // Assuming tickets is an array
+      }
+    }
+  
+    saveEvent(submitData)
+      .then((response) => {
+        resetForm(); // Reset the form after successful submission
+        CloseModal(); // Close the modal
+        Swal.fire("Success", "Event saved successfully!", "success"); // Success alert
+        refetch(); // Optional: to refetch event data after submission
+      })
+      .catch((error) => {
+        Swal.fire("Error", "Something went wrong. Please try again.", "error"); // Error alert
+      })
+      .finally(() => {
+        setIsLoading(false); // Stop loading
+      });
   };
+  
 
   const handleOpenModal = () => {
     setSponsorModalOpen(true);
