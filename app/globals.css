@@ -10,7 +10,7 @@
     scroll-behavior: smooth;
 }
 
-.css-14y13q2-MuiTableCell-root{border: none;}
+.css-14y13q2-MuiTableCell-root,.css-q403tl{border: none !important;}
 .tox .tox-edit-area::before {
     border: 1px solid #c11 !important;
 }

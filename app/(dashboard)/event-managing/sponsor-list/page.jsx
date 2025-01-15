@@ -113,9 +113,11 @@ const SponsorsPage = () => {
                   <TableCell>Profile</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Logo</TableCell>
-                  <TableCell>Description</TableCell>
+                  <TableCell style={{ display:'none'}}>
+                    Description
+                  </TableCell>
                   <TableCell>Actions</TableCell>
-                 
+
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -144,22 +146,22 @@ const SponsorsPage = () => {
                       <TableCell>{sponsor.category}</TableCell>
                       <TableCell>{sponsor.profileName}</TableCell>
                       <TableCell>{sponsor.price}</TableCell>
-                     
+
                       <TableCell>
                         <img src={sponsor.logo} alt="Sponsor Logo" height={30} width={30} />
                       </TableCell>
-                      <TableCell>{sponsor.description}</TableCell>
+                      <TableCell style={{ display:'none'}}>{sponsor.description}</TableCell>
                       <TableCell align="right" style={{ display: "flex", gap: "15px" }}>
                         <button
                           type="button"
-                          style={{ background: "none", fontSize: "1.5rem" }}
+                          style={{ background: "none", fontSize: "1rem" }}
                           onClick={() => handleEditSponsor(sponsor)}
                         >
                           <CiEdit />
                         </button>
                         <button
                           type="button"
-                          style={{ background: "none", fontSize: "1.5rem" }}
+                          style={{ background: "none", fontSize: "1rem" }}
                           onClick={() => handleDelete(sponsor.id)}
                         >
                           <MdDelete />
