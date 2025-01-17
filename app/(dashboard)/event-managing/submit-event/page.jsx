@@ -50,29 +50,20 @@ const Page = () => {
   }
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tickets, setTickets] = useState([]);
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
   const [address, setAddress] = useState("");
   const [status, setStatus] = useState(null);
 
   const handleSaveAsDraft = () => {
-    setStatus(1); // Set status to 1 for Draft
-    // handleSubmit(onSubmit)(); // Trigger the form submission
+    setStatus(1);
   };
 
-  // const handleSubmitForm = () => {
-  //    // Set status to 2 for Final Submit
-  //   // handleSubmit(onSubmit)(); // Trigger the form submission
-  // };
+
   const autocompleteRef = useRef(null);
   const libraries = ["places"];
 
   const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
   const { data, refetch } = useFetchData(apiRequests);
-
-  useEffect(() => {
-    getSponsors();
-  }, [sponsorModalOpen, getSponsors]); // Add getSponsors if it's not stable
 
   const handleSubmit = (values, { resetForm }) => {
     console.log("form value", values);
