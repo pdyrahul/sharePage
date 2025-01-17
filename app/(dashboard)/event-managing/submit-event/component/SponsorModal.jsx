@@ -57,7 +57,6 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
     } else if (typeof values.image === "string") {
       sponsorData.append("sponsorImg", values.image);
     }
-  
     const sponsorAction = isUpdate
       ? (data) => updateSponsor(existingSponsor.id, data) // Use userId and data
       : createSponsor;

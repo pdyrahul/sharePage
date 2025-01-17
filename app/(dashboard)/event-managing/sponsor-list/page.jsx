@@ -127,8 +127,8 @@ const SponsorsPage = () => {
                       <TableCell><Skeleton width={150} /></TableCell>
                       <TableCell><Skeleton width={150} /></TableCell>
                       <TableCell><Skeleton width={150} /></TableCell>
-                      <TableCell><Skeleton width={150} /></TableCell>
-                      <TableCell><Skeleton width={100} /></TableCell>
+                      <TableCell><Skeleton width={50} /></TableCell>
+                      <TableCell><Skeleton width={50} /></TableCell>
                       <TableCell><Skeleton width={200} /></TableCell>
                       <TableCell><Skeleton width={30} height={30} /></TableCell>
                       <TableCell><Skeleton width={60} height={30} /></TableCell>
