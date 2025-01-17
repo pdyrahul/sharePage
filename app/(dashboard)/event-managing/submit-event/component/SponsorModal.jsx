@@ -47,15 +47,15 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
   const handleSubmit = (values, { resetForm }) => {
     setIsLoading(true); // Start loading
     const sponsorData = new FormData();
-    sponsorData.append("spsponsorTitle", values.name);
-    sponsorData.append("spsponsorWebsite", values.website);
+    sponsorData.append("sponsorTitle", values.name);
+    sponsorData.append("sponsorWebsite", values.website);
     sponsorData.append("spsponsorPrice", values.price);
-    sponsorData.append("spsponsorCategory", values.category);
-    sponsorData.append("spsponsorDesc", values.description);
+    sponsorData.append("sponsorCategory", values.category);
+    sponsorData.append("sponsorDesc", values.description);
     if (values.image instanceof File) {
-      sponsorData.append("spsponsorImg", values.image);
+      sponsorData.append("sponsorImg", values.image);
     } else if (typeof values.image === "string") {
-      sponsorData.append("spsponsorImg", values.image);
+      sponsorData.append("sponsorImg", values.image);
     }
   
     const sponsorAction = isUpdate
@@ -74,6 +74,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
         refetch();
       })
       .catch((error) => {
+        CloseModal(); 
         Swal.fire(
           "Error",
           error?.response?.data?.message || "Something went wrong. Please try again.",

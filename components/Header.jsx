@@ -2,16 +2,8 @@
 import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import logo from "../public/images/logo.svg";
-import user from "../public/images/user-01.svg";
 import { FaBars, FaTimes } from "react-icons/fa";
-import searchIcon from "../public/images/search-2.svg";
-import handShake from "../public/images/hand-shake.svg";
-import personIcon from "../public/images/person-2.svg";
-import helpIcon from "../public/images/help.svg";
-import notificationIcon from "../public/images/notification.svg";
-import cartIcon from "../public/images/cart.svg";
-import settingIcon from "../public/images/setting.svg";
-import threeDotIcon from "../public/images/three-dot.svg";
+import {searchIcon,handShake,personIcon,helpIcon,notificationIcon,cartIcon,settingIcon, threeDotIcon,} from "../app/utils/ImgStore";
 import Link from "next/link";
 import { useSidebar } from "../Context/SidebarContext";
 import useFetchData from "../app/hooks/useFetchData";
@@ -21,29 +13,36 @@ import { CgProfile } from "react-icons/cg";
 
 const Header = () => {
   const { isOpen, toggleSidebar } = useSidebar();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [selectedProfile, setSelectedProfile] = useState(null);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const apiRequests = useMemo(() => [userProfiles], []);
   const { data, isLoading, error } = useFetchData(apiRequests);
   const profiles = data?.[0]?.data || [];
 
   useEffect(() => {
-    if (!selectedProfile && profiles.length > 0) {
-      const defaultProfile =
-        profiles.find((profile) => profile.spProfilesDefault === 1) ||
-        profiles[0];
-      setSelectedProfile(defaultProfile);
-    }
+    // Function to handle resizing
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Check for default profile selection
+    const initializeProfile = () => {
+      if (!selectedProfile && profiles.length > 0) {
+        const defaultProfile =
+          profiles.find((profile) => profile.spProfilesDefault === 1) ||
+          profiles[0];
+        setSelectedProfile(defaultProfile);
+      }
+    };
+
+    // Initialize profile and set up resize listener
+    initializeProfile();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [profiles, selectedProfile]);
 
   const handleProfileSelect = async (profile) => {
@@ -51,13 +50,11 @@ const Header = () => {
       setSelectedProfile(profile);
       const response = await setProfile(profile.idspProfiles);
       console.log("Profile set as default:", response.data);
-      alert("Profile updated successfully!");
     } catch (error) {
       console.error(
         "Error setting default profile:",
         error.response?.data || error.message
       );
-      alert("Failed to set default profile. Please try again.");
     }
   };
 
@@ -101,27 +98,32 @@ const Header = () => {
           <Image src={searchIcon} alt="Search Icon" height={30} width={30} />
         </div>
         <div className="utilityIcons">
-  <div className="hand-shake link">
-    <Image src={handShake} alt="Hand Shake" height={30} width="auto" />
-  </div>
-  <div className="persons link">
-    <Image src={personIcon} alt="Person Icon" height={30} width="auto" />
-    <div className="count">1</div>
-  </div>
-  <div className="help link">
-    <Image src={helpIcon} alt="Help" height={30} width="auto" />
-  </div>
-  <div className="notification link">
-    <Image src={notificationIcon} alt="Notification" height={30} width="auto" />
-    <div className="count">2</div>
-  </div>
-  <div className="cart link">
-    <Image src={cartIcon} alt="Cart" height={30} width="auto" />
-  </div>
-  <div className="setting link">
-    <Image src={settingIcon} alt="Setting" height={30} width="auto" />
-  </div>
-</div>
+          <div className="hand-shake link">
+            <Image src={handShake} alt="Hand Shake" height={30} width="auto" />
+          </div>
+          <div className="persons link">
+            <Image src={personIcon} alt="Person Icon" height={30} width="auto" />
+            <div className="count">1</div>
+          </div>
+          <div className="help link">
+            <Image src={helpIcon} alt="Help" height={30} width="auto" />
+          </div>
+          <div className="notification link">
+            <Image
+              src={notificationIcon}
+              alt="Notification"
+              height={30}
+              width="auto"
+            />
+            <div className="count">2</div>
+          </div>
+          <div className="cart link">
+            <Image src={cartIcon} alt="Cart" height={30} width="auto" />
+          </div>
+          <div className="setting link">
+            <Image src={settingIcon} alt="Setting" height={30} width="auto" />
+          </div>
+        </div>
 
         <div className="three-dot link">
           <Image src={threeDotIcon} alt="Three Dot" height={30} width={30} />
@@ -220,5 +222,4 @@ const Header = () => {
     </div>
   );
 };
-
 export default Header;
