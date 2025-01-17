@@ -69,42 +69,59 @@ const Page = () => {
     console.log("form value", values);
     setStatus(2);
     setIsLoading(true); // Start loading
-    const submitData = {
-      eventTitle: values.eventTitle,
-      category: values.category,
-      ethnicity: values.ethnicity,
-      address: values.address,
-      place: values.place,
-      capacity: values.capacity,
-      youtubeUrl: values.youtubeUrl,
-      startDate: values.startDate,
-      startTime: values.startTime,
-      endDate: values.endDate,
-      endTime: values.endTime,
-      eventType: values.eventType,
-      description: values.description,
-      refundPolicy: values.refundPolicy,
-      amenities: values.amenities,
-      poster: values.poster, // Assuming it's a file or array of files
-      seatingLayout: values.seatingLayout,
-      galleryImages: values.galleryImages,
-      isFeatured: values.featuredEvent,
-      sponsor:values.sponsor,
-      status: status, // Add status here (1 for Draft, 2 for Final)
-    };
-    console.log("form value", submitData);
-
-    // If the event is paid, add ticket-related fields
+  
+    const formData = new FormData();
+  
+    // Append text fields to formData
+    formData.append("eventTitle", values.eventTitle);
+    formData.append("category", values.category);
+    formData.append("ethnicity", values.ethnicity);
+    formData.append("address", values.address);
+    formData.append("place", values.place);
+    formData.append("capacity", values.capacity);
+    formData.append("youTubeUrl", values.youtubeUrl);
+    formData.append("startDate", values.startDate);
+    formData.append("startTime", values.startTime);
+    formData.append("endDate", values.endDate);
+    formData.append("endTime", values.endTime);
+    formData.append("eventType", values.eventType);
+    formData.append("description", values.description);
+    formData.append("refundPolicy", values.refundPolicy);
+    formData.append("amenities", values.amenities);
+    formData.append("isFeatured", values.featuredEvent);
+    formData.append("sponsor", values.sponsor);
+    formData.append("status", status); // Add status (1 for Draft, 2 for Final)
+  
+    // Append image files to formData
+    if (values.poster && values.poster[0]) {
+      formData.append("poster", values.poster[0]); // Assuming it's a file array
+    }
+  
+    if (values.seatingLayout && values.seatingLayout[0]) {
+      formData.append("seatingLayout", values.seatingLayout[0]); // File array
+    }
+  
+    if (values.galleryImages && values.galleryImages.length > 0) {
+      values.galleryImages.forEach((file, index) => {
+        formData.append(`galleryImages[${index}]`, file); // Append each image
+      });
+    }
+  
+    // Add ticket-related fields if the event is paid
     if (values.eventType === "paid") {
-      submitData.ticketLinkType = values.ticketLinkType;
+      formData.append("ticketLinkType", values.ticketLinkType);
       if (values.ticketLinkType === "external") {
-        submitData.ticketUrl = values.ticketUrl;
+        formData.append("ticketUrl", values.ticketUrl);
       } else if (values.ticketLinkType === "sharePage") {
-        submitData.tickets = values.tickets; // Assuming tickets is an array
+        values.tickets.forEach((ticket, index) => {
+          formData.append(`tickets[${index}]`, JSON.stringify(ticket)); // Convert ticket objects to strings
+        });
       }
     }
-
-    saveEvent(submitData)
+  
+    console.log("FormData values", formData);
+  
+    saveEvent(formData) // API call with formData
       .then((response) => {
         resetForm(); // Reset the form after successful submission
         CloseModal(); // Close the modal
@@ -118,7 +135,7 @@ const Page = () => {
         setIsLoading(false); // Stop loading
       });
   };
-
+  
   const handleOpenModal = () => {
     setSponsorModalOpen(true);
   };
