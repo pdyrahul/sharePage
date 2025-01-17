@@ -223,6 +223,8 @@ export function SideBar() {
                 {
                   name: "Active campaigns",
                   path: "/fund-raising/active-campaigns",
+                },
+                {
                   name: "Past campaigns",
                   path: "/fund-raising/past-campaigns",
                 },

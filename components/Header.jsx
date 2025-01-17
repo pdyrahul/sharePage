@@ -13,7 +13,8 @@ import { CgProfile } from "react-icons/cg";
 
 const Header = () => {
   const { isOpen, toggleSidebar } = useSidebar();
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  // const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(1024);
   const [selectedProfile, setSelectedProfile] = useState(null);
 
   const apiRequests = useMemo(() => [userProfiles], []);
