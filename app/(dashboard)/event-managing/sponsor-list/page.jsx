@@ -48,24 +48,32 @@ const SponsorsPage = () => {
   const CloseModal = () => setSponsorModalOpen(false);
 
   const sponsorData = data?.[0] || {};
-  const sponsorList = sponsorData?.data?.map((sponsor) => ({
-    id: sponsor.id,
-    name: sponsor.sponsorName,
-    description: sponsor.sponsorDescription,
-    category: sponsor.sponsorCategory,
-    website: sponsor.sponsorWebsite,
-    profileName: sponsor.profile_name,
-    price: sponsor.sponsorPrice,
-    logo: sponsor.sponsorImg,
-  })) || [];
 
-  const filteredSponsors = sponsorList.filter((sponsor) =>
-    sponsor.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  const paginatedSponsors = filteredSponsors.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+  const sponsorList = useMemo(() => (
+    sponsorData?.data?.map((sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.sponsorName,
+      description: sponsor.sponsorDescription,
+      category: sponsor.sponsorCategory,
+      website: sponsor.sponsorWebsite,
+      profileName: sponsor.profile_name,
+      price: sponsor.sponsorPrice,
+      logo: sponsor.sponsorImg,
+    })) || []
+  ), [sponsorData]);
+
+  const filteredSponsors = useMemo(() => (
+    sponsorList.filter((sponsor) =>
+      sponsor.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  ), [searchTerm, sponsorList]);
+
+  const paginatedSponsors = useMemo(() => (
+    filteredSponsors.slice(
+      page * rowsPerPage,
+      page * rowsPerPage + rowsPerPage
+    )
+  ), [filteredSponsors, page, rowsPerPage]);
 
   const handleChangePage = (event, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
@@ -113,11 +121,8 @@ const SponsorsPage = () => {
                   <TableCell>Profile</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Logo</TableCell>
-                  <TableCell style={{ display:'none'}}>
-                    Description
-                  </TableCell>
+                  <TableCell style={{ display:'none'}}>Description</TableCell>
                   <TableCell>Actions</TableCell>
-
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -139,14 +144,11 @@ const SponsorsPage = () => {
                     <TableRow key={sponsor.id}>
                       <TableCell>{sponsor.name}</TableCell>
                       <TableCell>
-                        <a href={sponsor.website} target="_blank" rel="noopener noreferrer">
-                          {sponsor.website}
-                        </a>
+                        <a href={sponsor.website} target="_blank" rel="noopener noreferrer">{sponsor.website}</a>
                       </TableCell>
                       <TableCell>{sponsor.category}</TableCell>
                       <TableCell>{sponsor.profileName}</TableCell>
                       <TableCell>{sponsor.price}</TableCell>
-
                       <TableCell>
                         <img src={sponsor.logo} alt="Sponsor Logo" height={30} width={30} />
                       </TableCell>
@@ -196,7 +198,6 @@ const SponsorsPage = () => {
         pauseOnHover
         theme="light"
       />
-
       <SponsorModal
         sponsorModalOpen={sponsorModalOpen}
         CloseModal={CloseModal}
@@ -207,5 +208,6 @@ const SponsorsPage = () => {
     </div>
   );
 };
+
 
 export default SponsorsPage;

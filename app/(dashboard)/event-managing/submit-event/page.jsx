@@ -710,7 +710,7 @@ const Page = () => {
                 <Field as="select" name="sponsor">
                   <option value="">Select Sponsor</option>
                   {sponsorList.map((sponsor) => (
-                    <option key={sponsor.id} value={sponsor.name}>
+                    <option key={sponsor.id} value={sponsor.id}>
                       {sponsor.name}
                     </option>
                   ))}

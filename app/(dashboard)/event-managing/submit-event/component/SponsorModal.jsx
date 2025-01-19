@@ -67,6 +67,8 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
   
     sponsorAction(sponsorData)
       .then((response) => {
+        console.log('Payload Sent:', sponsorData);
+        console.log('API Response:', response.data);
         resetForm(); // Reset the form after submission
         CloseModal(); // Close the modal
         Swal.fire("Success", successMessage, "success"); // Success alert
