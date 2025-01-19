@@ -16,11 +16,11 @@ import {
   ListItem,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 const styles = {
   sidebarOpen: {
     transform: "translateX(-100%)",
   },
-
   profileDetail: {
     textAlign: "center",
     margin: "20px",
@@ -68,11 +68,17 @@ const styles = {
 export function SideBar() {
   const { isOpen, closeSidebar } = useSidebar();
   const [activePath, setActivePath] = React.useState("");
+  const [expanded, setExpanded] = useState("panel2");  // State for controlling expanded accordion
 
   const handleItemClick = (path) => {
     setActivePath(path);
     closeSidebar();
   };
+
+  const handleAccordionChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const handleResize = () => {
@@ -110,7 +116,10 @@ export function SideBar() {
         <Divider />
 
         {/* My Events Accordion */}
-        <Accordion defaultExpanded>
+        <Accordion
+          expanded={expanded === "panel1"}  // Controlled Accordion state
+          onChange={handleAccordionChange("panel1")}  // Toggle the accordion state
+        >
           <AccordionSummary
             expandIcon={
               <div style={styles.expandIcon}>
@@ -123,18 +132,12 @@ export function SideBar() {
           <AccordionDetails sx={{ marginTop: -2, padding: 0 }}>
             <List sx={styles.subMenu}>
               {[
-                {
-                  name: "Tickets purchased",
-                  path: "/my-events/ticket-purchased",
-                },
+                { name: "Tickets purchased", path: "/my-events/ticket-purchased" },
                 { name: "Past Events Attended", path: "/my-events/past-event" },
                 { name: "Favorite Events", path: "/my-events/favorite-events" },
                 { name: "Upcoming Events", path: "/my-events/upcoming-event" },
                 { name: "Online Events", path: "/my-events/online-event" },
-                {
-                  name: "From Connections",
-                  path: "/my-events/from-connections",
-                },
+                { name: "From Connections", path: "/my-events/from-connections" },
                 { name: "My Interest", path: "/my-events/my-interest" },
               ].map((link, index) => (
                 <ListItem
@@ -142,10 +145,20 @@ export function SideBar() {
                   sx={{
                     ...styles.subMenuItem,
                     ...(activePath === link.path && styles.activeItem),
+                    padding: "8px 16px", // Add padding to ListItem
                   }}
                   onClick={() => handleItemClick(link.path)}
                 >
-                  <Link href={link.path} passHref>
+                  <Link
+                    href={link.path}
+                    passHref
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
                     <Typography>{link.name}</Typography>
                   </Link>
                 </ListItem>
@@ -155,7 +168,10 @@ export function SideBar() {
         </Accordion>
 
         {/* Event Managing Accordion */}
-        <Accordion defaultExpanded>
+        <Accordion
+          expanded={expanded === "panel2"}  // Controlled Accordion state
+          onChange={handleAccordionChange("panel2")}  // Toggle the accordion state
+        >
           <AccordionSummary
             expandIcon={
               <div style={styles.expandIcon}>
@@ -169,18 +185,12 @@ export function SideBar() {
             <List sx={styles.subMenu}>
               {[
                 { name: "Dashboard", path: "/event-managing/event-dashboard" },
-                {
-                  name: "Submit an Event",
-                  path: "/event-managing/submit-event",
-                },
+                { name: "Submit an Event", path: "/event-managing/submit-event" },
                 { name: "Active Events", path: "/event-managing/active-event" },
                 { name: "Past Events", path: "/event-managing/past-events" },
                 { name: "Draft Events", path: "/event-managing/draft-events" },
                 { name: "Sponsors List", path: "/event-managing/sponsor-list" },
-                {
-                  name: "Paid Sponsors",
-                  path: "/event-managing/paid-sponsors",
-                },
+                { name: "Paid Sponsors", path: "/event-managing/paid-sponsors" },
                 { name: "Paid Vendors", path: "/event-managing/paid-vendors" },
               ].map((link, index) => (
                 <ListItem
@@ -188,10 +198,20 @@ export function SideBar() {
                   sx={{
                     ...styles.subMenuItem,
                     ...(activePath === link.path && styles.activeItem),
+                    padding: "8px 16px", // Add padding to ListItem
                   }}
                   onClick={() => handleItemClick(link.path)}
                 >
-                  <Link href={link.path} passHref>
+                  <Link
+                    href={link.path}
+                    passHref
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
                     <Typography>{link.name}</Typography>
                   </Link>
                 </ListItem>
@@ -202,7 +222,10 @@ export function SideBar() {
         <Divider />
 
         {/* My Fund Raising Accordion */}
-        <Accordion defaultExpanded>
+        <Accordion
+          expanded={expanded === "panel3"}  // Controlled Accordion state
+          onChange={handleAccordionChange("panel3")}  // Toggle the accordion state
+        >
           <AccordionSummary
             expandIcon={
               <div style={styles.expandIcon}>
@@ -216,22 +239,10 @@ export function SideBar() {
             <List sx={styles.subMenu}>
               {[
                 { name: "Dashboard", path: "/fund-raising/dashboard" },
-                {
-                  name: "Create a campaign",
-                  path: "/fund-raising/create-campaign",
-                },
-                {
-                  name: "Active campaigns",
-                  path: "/fund-raising/active-campaigns",
-                },
-                {
-                  name: "Past campaigns",
-                  path: "/fund-raising/past-campaigns",
-                },
-                {
-                  name: "Draft campaigns",
-                  path: "/fund-raising/draft-campaigns",
-                },
+                { name: "Create a campaign", path: "/fund-raising/create-campaign" },
+                { name: "Active campaigns", path: "/fund-raising/active-campaigns" },
+                { name: "Past campaigns", path: "/fund-raising/past-campaigns" },
+                { name: "Draft campaigns", path: "/fund-raising/draft-campaigns" },
                 { name: "Updates", path: "/fund-raising/event-updates" },
               ].map((link, index) => (
                 <ListItem
@@ -239,10 +250,20 @@ export function SideBar() {
                   sx={{
                     ...styles.subMenuItem,
                     ...(activePath === link.path && styles.activeItem),
+                    padding: "8px 16px", // Add padding to ListItem
                   }}
                   onClick={() => handleItemClick(link.path)}
                 >
-                  <Link href={link.path} passHref>
+                  <Link
+                    href={link.path}
+                    passHref
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
                     <Typography>{link.name}</Typography>
                   </Link>
                 </ListItem>
@@ -251,6 +272,7 @@ export function SideBar() {
           </AccordionDetails>
         </Accordion>
         <Divider />
+
         <div className="return my-2">
           <Link href="/" passHref>
             <ArrowBackIcon style={{ color: "#c11" }} />

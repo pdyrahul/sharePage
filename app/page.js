@@ -78,7 +78,7 @@ const EventsPage = () => {
               
             </div>
             <Event /> 
-            <Event />
+            {/* <Event /> */}
           </div>
         </div>
       </div>

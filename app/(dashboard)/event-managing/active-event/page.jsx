@@ -1,5 +1,5 @@
-"use client"
-import React, { useState, useMemo } from 'react';
+"use client";
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -9,11 +9,11 @@ import {
   TableRow,
   TablePagination,
   Paper,
-  Skeleton, // Import Skeleton for loading state
 } from '@mui/material';
 import { AiOutlineBars } from 'react-icons/ai';
 import useFetchData from '../../../hooks/useFetchData'; // Custom hook to handle fetch requests
 import { getEventList } from '../../../services/api';
+import Skeleton from "react-loading-skeleton"; // Importing react-loading-skeleton
 
 const Page = () => {
   const [view, setView] = useState('list'); // Default view is 'list'
@@ -60,6 +60,11 @@ const Page = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  // Ensuring the skeleton loader is shown during the initial data fetch
+  useEffect(() => {
+    console.log("Loading state:", isLoading);
+  }, [isLoading]);
 
   return (
     <div className="event-body">
@@ -114,7 +119,7 @@ const Page = () => {
                   .fill(0)
                   .map((_, index) => (
                     <div className="event" key={index}>
-                      <Skeleton variant="rectangular" width="100%" height={150} />
+                      <Skeleton height={150} width="100%" />
                       <Skeleton width="60%" />
                       <Skeleton width="40%" />
                       <Skeleton width="80%" />
@@ -142,7 +147,7 @@ const Page = () => {
                         .map((_, index) => (
                           <TableRow key={index}>
                             <TableCell>
-                              <Skeleton variant="circle" width={50} height={50} />
+                              <Skeleton circle height={50} width={50} />
                             </TableCell>
                             <TableCell>
                               <Skeleton width="60%" />
@@ -209,7 +214,7 @@ const Page = () => {
                       <TableRow>
                         <TableCell>Image</TableCell>
                         <TableCell>Title</TableCell>
-                        <TableCell>Date</TableCell>
+                        <TableCell>Date/Time </TableCell>
                         <TableCell>Hosted By</TableCell>
                         <TableCell>Location</TableCell>
                         <TableCell>Price</TableCell>
