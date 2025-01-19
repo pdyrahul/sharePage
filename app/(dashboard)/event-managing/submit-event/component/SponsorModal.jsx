@@ -57,6 +57,7 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
     } else if (typeof values.image === "string") {
       sponsorData.append("sponsorImg", values.image);
     }
+ 
     const sponsorAction = isUpdate
       ? (data) => updateSponsor(existingSponsor.id, data) // Use userId and data
       : createSponsor;
@@ -71,8 +72,13 @@ const SponsorModal = ({ sponsorModalOpen, CloseModal, refetch, isUpdate = false,
         console.log('API Response:', response.data);
         resetForm(); // Reset the form after submission
         CloseModal(); // Close the modal
-        Swal.fire("Success", successMessage, "success"); // Success alert
-        refetch();
+        Swal.fire({
+          title: "Success",
+          text: successMessage,
+          icon: "success",
+        }).then(() => {
+          refetch(); // Refetch data after the alert is dismissed
+        });
       })
       .catch((error) => {
         CloseModal(); 

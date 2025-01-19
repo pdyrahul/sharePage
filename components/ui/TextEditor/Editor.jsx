@@ -37,9 +37,7 @@ const Editor = ({ data, setData }) => {
                     buttons: [
                         'undo', 'redo', '|',
                         'bold', 'italic', '|',
-                        'ul', 'ol', '|',
-                        'align', '|',
-                        'outdent', 'indent',
+                     
                     ],
                     placeholder: 'Start typing here...',
                 }}

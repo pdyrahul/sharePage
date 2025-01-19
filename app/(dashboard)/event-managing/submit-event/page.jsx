@@ -71,8 +71,6 @@ const Page = () => {
     setIsLoading(true); // Start loading
   
     const formData = new FormData();
-  
-    // Append text fields to formData
     formData.append("eventTitle", values.eventTitle);
     formData.append("category", values.category);
     formData.append("ethnicity", values.ethnicity);
@@ -485,7 +483,7 @@ const Page = () => {
                   {values.ticketLinkType === "sharePage" && (
                     <TicketList
                       name="tickets"
-                      setStudentValue={setFieldValue}
+                      setFieldValue={setFieldValue}
                     />
                   )}
                 </div>
@@ -549,14 +547,11 @@ const Page = () => {
               <label>
                 Description<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <Field name="description">
-                {() => (
-                  <Editor
+              <Editor
+                   name="description"
                     data={values.description || ""}
                     setData={(data) => setFieldValue("description", data)}
                   />
-                )}
-              </Field>
               <ErrorMessage
                 name="description"
                 component="div"
@@ -569,14 +564,11 @@ const Page = () => {
               <label>
                 Refund Policy<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <Field name="refundPolicy">
-                {() => (
-                  <Editor
+              <Editor
+              ame="refundPolicy"
                     data={values.refundPolicy || ""}
                     setData={(data) => setFieldValue("refundPolicy", data)}
                   />
-                )}
-              </Field>
               <ErrorMessage
                 name="refundPolicy"
                 component="div"
@@ -588,14 +580,11 @@ const Page = () => {
               <label>
                 Amenities<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <Field name="amenities">
-                {() => (
-                  <Editor
+              <Editor
+                name="amenities"
                     data={values.amenities || ""}
                     setData={(data) => setFieldValue("amenities", data)}
                   />
-                )}
-              </Field>
               <ErrorMessage
                 name="amenities"
                 component="div"
