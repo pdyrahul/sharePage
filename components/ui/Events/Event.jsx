@@ -74,7 +74,7 @@ const Event = () => {
 
     return (
         <Box className="event-wrapper" sx={{ position: 'relative', paddingTop: '40px', background:"#f2f2f240" }}>
-            <Box sx={{ position: 'absolute', top: "-5%", right: "5%", display: 'flex', }}>
+            <Box sx={{ position: 'absolute', top: "-10%", right: "5%", display: 'flex', }}>
                 <Box
                     className="swiper-button-prev"
                     sx={{
