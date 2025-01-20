@@ -1016,6 +1016,7 @@ p {
                 ul li {
                     font-size: 18px;
                     color: #454545;
+                    list-style: disc;
                 }
             }
 

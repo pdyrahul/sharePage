@@ -78,13 +78,13 @@ const EventDetail = ({ slug }) => {
                             <div className="date">{formatDateTime(event.startDate, event.startTime, event.endDate, event.endTime, event.address)}</div>
                             <div className="event-title">{event.eventTitle}</div>
                             <div className="text" dangerouslySetInnerHTML={{ __html: event.description }}></div>
-                            <div className="heading">Event Detail</div>
+                            <div className="heading" style={{padding:"none", textAlign:"left"}}>Event Detail</div>
                             <div className="title">Description</div>
                             <div className="text" dangerouslySetInnerHTML={{ __html: event.description }}></div>
                             <div className="title">Main Music Stage</div>
                             <ul>
                                 <li>Capacity: {event.capacity}</li>
-                                <li className='d-flex gap-12'>Highlights: <span dangerouslySetInnerHTML={{ __html: event.description }}></span></li>
+                                <li className=''>Highlights: <span dangerouslySetInnerHTML={{ __html: event.description }}></span></li>
                                 <li>Special Finale: Not Provided</li>
                                 <li>LINE-UP TO BE ANNOUNCED</li>
                             </ul>
