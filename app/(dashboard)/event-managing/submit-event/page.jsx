@@ -40,7 +40,7 @@ const initialValues = {
   galleryImages: [],
   seatingLayout: "",
   sponsor: "",
-  featuredEvent: null,
+  featuredEvent: "Yes",
 };
 
 
@@ -53,21 +53,12 @@ const Page = () => {
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
   const [address, setAddress] = useState("");
   const [status, setStatus] = useState(null);
-
-  const handleSaveAsDraft = () => {
-    setStatus(1);
-  };
-
-
   const autocompleteRef = useRef(null);
   const libraries = ["places"];
-
   const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
   const { data, refetch } = useFetchData(apiRequests);
 
-  const handleSubmit = (values, { resetForm }) => {
-    console.log("form value", values);
-    setStatus(2);
+  const handleFormSubmit = (isDraft, values, { resetForm }) => {
     setIsLoading(true); // Start loading
   
     const formData = new FormData();
@@ -77,7 +68,7 @@ const Page = () => {
     formData.append("address", values.address);
     formData.append("place", values.place);
     formData.append("capacity", values.capacity);
-    formData.append("youTubeUrl", values.youtubeUrl);
+    formData.append("youTubeUrl", values.youTubeUrl);
     formData.append("startDate", values.startDate);
     formData.append("startTime", values.startTime);
     formData.append("endDate", values.endDate);
@@ -88,7 +79,7 @@ const Page = () => {
     formData.append("amenities", values.amenities);
     formData.append("isFeatured", values.featuredEvent);
     formData.append("sponsor", values.sponsor);
-    formData.append("status", status); // Add status (1 for Draft, 2 for Final)
+    formData.append("status", isDraft ? 1 : 2);
   
     // Append image files to formData
     if (values.poster && values.poster[0]) {
@@ -123,7 +114,7 @@ const Page = () => {
       .then((response) => {
         resetForm(); // Reset the form after successful submission
         CloseModal(); // Close the modal
-        Swal.fire("Success", "Event saved successfully!", "success"); // Success alert
+        Swal.fire("Success", isDraft ? "Draft saved successfully!" : "Event submitted successfully!", "success"); // Success alert
         refetch(); // Optional: to refetch event data after submission
       })
       .catch((error) => {
@@ -133,7 +124,16 @@ const Page = () => {
         setIsLoading(false); // Stop loading
       });
   };
-  
+
+  // Function for saving as draft
+  const handleSaveAsDraft = (values, formikBag) => {
+    handleFormSubmit(true, values, formikBag);
+  };
+
+  // Function for final submission
+  const handleFinalSubmit = (values, formikBag) => {
+    handleFormSubmit(false, values, formikBag);
+  };
   const handleOpenModal = () => {
     setSponsorModalOpen(true);
   };
@@ -161,7 +161,6 @@ const Page = () => {
       id: sponsor.id,
       name: sponsor.sponsorName,
     })) || [];
-
   // let sponsorList = []; // Declare sponsorList in the appropriate scope
   // if (
   //   sponsorData?.data &&
@@ -190,14 +189,14 @@ const Page = () => {
         validationSchema={validationSchema}
         validateOnBlur={true} // Enable validation on blur (when user clicks out of a field)
         validateOnChange={true} // Enable validation on field change
-        onSubmit={handleSubmit}
+        onSubmit={handleFinalSubmit}
       >
         {({ setFieldValue, values }) => (
           <Form className="submit-an-event">
             {/* Title Field */}
             <div className="input-group in-1-col">
               <label>
-                Event Title (Max 60 characters)
+                Event Title
                 <span style={{ color: "#EF1D26" }}>*</span>
               </label>
               <Field
@@ -754,24 +753,34 @@ const Page = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="main-btn">
+           <div className="main-btn">
               <button type="button" className="submit-button">
                 Preview
               </button>
-              <button type="button" className="submit-button" onClick={handleSaveAsDraft}>
-                Save as Draft
+              <button type="button"
+               className="submit-button"
+                onClick={() => handleSaveAsDraft(values, { resetForm: () => {} })}
+                disabled={isLoading}
+                >
+                  
+                   {isLoading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Save as Draft"
+                )}
+                
               </button>
               <button
                 type="submit"
                 className="submit-button"
                 disabled={isLoading}
+                onClick={() => handleFinalSubmit(values, { resetForm: () => {} })}
               >
-                {" "}
                 {isLoading ? (
                   <CircularProgress size={20} color="inherit" />
                 ) : (
                   "Submit"
-                )}{" "}
+                )}
               </button>
             </div>
 

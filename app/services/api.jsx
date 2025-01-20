@@ -16,4 +16,11 @@ export const updateSponsor = (userId, data) => api.put(`/event/sponsored/${userI
 export const userProfiles = () => api.get("/event/user/profiles");
 export const setProfile = (userId) => api.get(`/event/user/set-profile/${userId}`);
 export const getEventList = () => api.get("/event");
+export const getEventBySlug = (slug) => {
+  if (!slug) {
+      throw new Error("Slug is required to fetch the event.");
+  }
+  return api.get(`/event/${slug}`);
+};
+
 export default api;

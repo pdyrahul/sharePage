@@ -17,7 +17,8 @@
 .swiper-button-prev:after, .swiper-button-next:after{font-size: 21px !important;}
 .tox .tox-edit-area::before {
     border: 1px solid #c11 !important;
-}.event-wrapper .swiper{padding: 10px 20px;}
+}
+.event-wrapper .swiper{padding: 10px 20px;}
 .swiper-button-next,
 .swiper-button-prev {
     position: absolute;
@@ -381,7 +382,7 @@ p {
 
 .event-wrapper {
     width: 100%;
-    padding: 10px;
+    /* padding: 10px; */
     position: relative;
 
     /* padding: 15px; */
