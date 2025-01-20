@@ -10,25 +10,61 @@
     scroll-behavior: smooth;
 }
 
-.css-14y13q2-MuiTableCell-root,.css-q403tl{border: none !important;}
+.css-14y13q2-MuiTableCell-root,
+.css-q403tl {
+    border: none !important;
+}
+.swiper-button-prev:after, .swiper-button-next:after{font-size: 21px !important;}
 .tox .tox-edit-area::before {
     border: 1px solid #c11 !important;
+}.event-wrapper .swiper{padding: 10px 20px;}
+.swiper-button-next,
+.swiper-button-prev {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    /* Adjust as needed */
+    background-color: rgba(255, 255, 255, 0.5);
+    /* Semi-transparent background */
+    border-radius: 50%;
+    padding: 5px;
+    z-index: 10;
 }
+
+.swiper-button-prev {
+    right: 35px;
+    /* Space between next and previous buttons */
+}
+
 input[type="radio"] {
     height: 12px !important;
     width: 12px !important;
+
     label {
         display: flex;
         align-items: center;
     }
 }
+
 .input-group .gm-style {
-    width: auto; /* Override Google Maps default styling */
-  }
-  
-label{font-weight: 600 !important;}
-.radiobttn >label{display: flex; gap:4px; align-items: center;}
-.ck-editor__editable{height: 150px;}
+    width: auto;
+    /* Override Google Maps default styling */
+}
+
+label {
+    font-weight: 600 !important;
+}
+
+.radiobttn>label {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.ck-editor__editable {
+    height: 150px;
+}
+
 ul.autocomplete-suggestions {
     /* position: absolute; */
     background: #f9fafb;
@@ -36,6 +72,7 @@ ul.autocomplete-suggestions {
     width: 100%;
     border-radius: 4px;
 }
+
 @media(min-width: 768px) {
     .menuIcon {
         display: none;
@@ -81,7 +118,8 @@ li {
     }
 }
 
-body,p {
+body,
+p {
     font-family: "Karla", serif !important;
     font-style: normal;
     margin: 0 !important;
@@ -333,15 +371,18 @@ body,p {
             }
         }
     }
-    .profile-section{
+
+    .profile-section {
         @media (max-width: 767px) {
-          display: none;
+            display: none;
         }
     }
 }
 
 .event-wrapper {
     width: 100%;
+    padding: 10px;
+    position: relative;
 
     /* padding: 15px; */
     .event-body {
