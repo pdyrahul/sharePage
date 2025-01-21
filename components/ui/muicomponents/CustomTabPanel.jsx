@@ -92,7 +92,6 @@ export default function BasicTabs({ data }) {
   const [value, setValue] = React.useState(0);
   const { register, handleSubmit, formState: { errors }, reset, watch } = useForm();
   const formData = watch(); // Watch the form data
-  console.log('event', data);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

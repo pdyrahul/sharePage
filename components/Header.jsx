@@ -56,7 +56,6 @@ const Header = () => {
   
       // Update the profile on the server
       const response = await setProfile(profile.idspProfiles);
-      console.log("Profile set as default:", response.data);
     } catch (error) {
       console.error(
         "Error setting default profile:",

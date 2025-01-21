@@ -3,7 +3,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { BounceLoader } from 'react-spinners'; // Import the loader
 import Event from './ui/Events/Event';
 import CustomTabPanel from './ui/muicomponents/CustomTabPanel';
-import Image from 'next/image';
+import Link from 'next/link';
 import TicketBooking from './Ticket/TicketBooking';
 import useFetchData from '../app/hooks/useFetchData';
 import { getEventBySlug } from '../app/services/api';
@@ -74,7 +74,7 @@ const EventDetail = ({ slug }) => {
                     <div className="event-detail">
                         <div className="detail-wrapper">
                             <div className="back">
-                                <MdKeyboardBackspace />
+                              <Link href={'/'}><MdKeyboardBackspace /></Link>  
                                 <span>Return To Home</span>
                             </div>
                             <div className="date">{formatDateTime(event.startDate, event.startTime, event.endDate, event.endTime, event.address)}</div>
