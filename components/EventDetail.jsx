@@ -3,8 +3,6 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { BounceLoader } from 'react-spinners'; // Import the loader
 import Event from './ui/Events/Event';
 import CustomTabPanel from './ui/muicomponents/CustomTabPanel';
-import banner from '../public/images/banner.svg';
-import vericle from '../public/images/vericle-banner.svg';
 import Image from 'next/image';
 import TicketBooking from './Ticket/TicketBooking';
 import useFetchData from '../app/hooks/useFetchData';
