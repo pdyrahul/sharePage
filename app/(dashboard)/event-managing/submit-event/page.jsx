@@ -7,13 +7,14 @@ import validationSchema from "../../../utils/Schema";
 import ImageUpload from "./component/ImageUpload";
 import TicketList from "./component/TicketList";
 import useFetchData from "../../../hooks/useFetchData";
+import { useRouter } from 'next/navigation';
 import {
   getEventCategories,
   getSponsors,
   saveEvent,
 } from "../../../services/api";
 import SponsorModal from "./component/SponsorModal";
-import Editor from "../../../../components/ui/TextEditor/Editor";
+import ShareEditor from "../../../../components/ui/TextEditor/ShareEditor";
 import Swal from "sweetalert2";
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import "react-datepicker/dist/react-datepicker.css";
@@ -45,6 +46,7 @@ const initialValues = {
 
 
 const Page = () => {
+  const router = useRouter();
   if (typeof window === undefined) {
     return false;
   }
@@ -52,7 +54,6 @@ const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
   const [address, setAddress] = useState("");
-  const [status, setStatus] = useState(null);
   const autocompleteRef = useRef(null);
   const libraries = ["places"];
   const apiRequests = useMemo(() => [getEventCategories, getSponsors], []);
@@ -60,7 +61,7 @@ const Page = () => {
 
   const handleFormSubmit = (isDraft, values, { resetForm }) => {
     setIsLoading(true); // Start loading
-  
+
     const formData = new FormData();
     formData.append("eventTitle", values.eventTitle);
     formData.append("category", values.category);
@@ -80,22 +81,22 @@ const Page = () => {
     formData.append("isFeatured", values.featuredEvent);
     formData.append("sponsor", values.sponsor);
     formData.append("status", isDraft ? 1 : 2);
-  
+
     // Append image files to formData
     if (values.poster && values.poster[0]) {
       formData.append("poster", values.poster[0]); // Assuming it's a file array
     }
-  
+
     if (values.seatingLayout && values.seatingLayout[0]) {
       formData.append("seatingLayout", values.seatingLayout[0]); // File array
     }
-  
+
     if (values.galleryImages && values.galleryImages.length > 0) {
       values.galleryImages.forEach((file, index) => {
         formData.append(`galleryImages[${index}]`, file); // Append each image
       });
     }
-  
+
     // Add ticket-related fields if the event is paid
     if (values.eventType === "paid") {
       formData.append("ticketLinkType", values.ticketLinkType);
@@ -107,9 +108,9 @@ const Page = () => {
         });
       }
     }
-  
+
     console.log("FormData values", formData);
-  
+
     saveEvent(formData) // API call with formData
       .then((response) => {
         resetForm(); // Reset the form after successful submission
@@ -127,9 +128,14 @@ const Page = () => {
 
   // Function for saving as draft
   const handleSaveAsDraft = (values, formikBag) => {
-    handleFormSubmit(true, values, formikBag);
+    handleFormSubmit(true, values, {
+      ...formikBag,
+      resetForm: () => {
+        formikBag.resetForm();
+        router.push('/event-managing/draft-events'); // Redirect after resetForm
+      }
+    });
   };
-
   // Function for final submission
   const handleFinalSubmit = (values, formikBag) => {
     handleFormSubmit(false, values, formikBag);
@@ -210,21 +216,6 @@ const Page = () => {
                 style={errorStyles}
               />
             </div>
-
-            {/* Sub Category Field */}
-            {/* <div className="input-group in-0-5-col">
-              <label>
-                Sub Category
-                <span style={{ color: "#EF1D26" }}>*</span>
-              </label>
-              <Field
-                type="text"
-                name="event"
-                placeholder="Enter Sub Category"
-              />
-              <ErrorMessage name="event" component="span" style={errorStyles} />
-            </div> */}
-
             {/* Category Field */}
             <div className="input-group in-0-5-col">
               <label>
@@ -488,69 +479,16 @@ const Page = () => {
                 </div>
               </div>
             )}
-
-            {/* Organizer Fields */}
-            {/* <div className="submit-an-event my-3">
-              <div className="input-group in-3-col">
-                <label>
-                  Organizer Name<span style={{ color: "#EF1D26" }}>*</span>
-                </label>
-                <Field
-                  type="text"
-                  name="organizerName"
-                  placeholder="Enter Organizer Name"
-                />
-                <ErrorMessage
-                  name="organizerName"
-                  component="span"
-                  style={errorStyles}
-                />
-              </div>
-
-         
-              <div className="input-group in-3-col">
-                <label>
-                  Organizer Email<span style={{ color: "#EF1D26" }}>*</span>
-                </label>
-                <Field
-                  type="email"
-                  name="organizerEmail"
-                  placeholder="Enter Organizer Email"
-                />
-                <ErrorMessage
-                  name="organizerEmail"
-                  component="span"
-                  style={errorStyles}
-                />
-              </div>
-
-           
-              <div className="input-group in-3-col">
-                <label>
-                  Organizer Phone<span style={{ color: "#EF1D26" }}>*</span>
-                </label>
-                <Field
-                  type="text"
-                  name="organizerPhone"
-                  placeholder="Enter Organizer Phone"
-                />
-                <ErrorMessage
-                  name="organizerPhone"
-                  component="span"
-                  style={errorStyles}
-                />
-              </div>
-            </div> */}
             {/* Description */}
             <div className="input-group in-1-col">
               <label>
                 Description<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <Editor
-                   name="description"
-                    data={values.description || ""}
-                    setData={(data) => setFieldValue("description", data)}
-                  />
+              <ShareEditor
+                name="description"
+                data={values.description || ""}
+                setData={(data) => setFieldValue("description", data)}
+              />
               <ErrorMessage
                 name="description"
                 component="div"
@@ -563,11 +501,11 @@ const Page = () => {
               <label>
                 Refund Policy<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <Editor
-              ame="refundPolicy"
-                    data={values.refundPolicy || ""}
-                    setData={(data) => setFieldValue("refundPolicy", data)}
-                  />
+              <ShareEditor
+                name="refundPolicy"
+                data={values.refundPolicy || ""}
+                setData={(data) => setFieldValue("refundPolicy", data)}
+              />
               <ErrorMessage
                 name="refundPolicy"
                 component="div"
@@ -579,51 +517,17 @@ const Page = () => {
               <label>
                 Amenities<span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <Editor
+              <ShareEditor
                 name="amenities"
-                    data={values.amenities || ""}
-                    setData={(data) => setFieldValue("amenities", data)}
-                  />
+                data={values.amenities || ""}
+                setData={(data) => setFieldValue("amenities", data)}
+              />
               <ErrorMessage
                 name="amenities"
                 component="div"
                 style={errorStyles}
               />
             </div>
-            {/* 
-            Featured Artist For This Event
-            <div className="input-group in-3-col">
-              <label className="py-2">Featured Artist For This Event</label>
-              <button
-                type="button"
-                onClick={() => openModal("Featured Artist")}
-                style={{
-                  color: "#fff",
-                  background: "#c11",
-                  padding: "5px 10px",
-                  borderRadius: "5px",
-                }}
-              >
-                Select Friends
-              </button>
-            </div> */}
-
-            {/* Co-Host Name */}
-            {/* <div className="input-group in-3-col">
-              <label className="py-2">Co-Host Name</label>
-              <button
-                type="button"
-                onClick={() => openModal("Co-Host Name")}
-                style={{
-                  color: "#fff",
-                  background: "#c11",
-                  padding: "5px 10px",
-                  borderRadius: "5px",
-                }}
-              >
-                Select Friends
-              </button>
-            </div> */}
             {/* Uploader Component for Posters */}
             <div className="input-group in-1-col">
               <label>
@@ -753,28 +657,31 @@ const Page = () => {
             </div>
 
             {/* Submit Button */}
-           <div className="main-btn">
-              <button type="button" className="submit-button">
+            <div className="main-btn">
+              <button type="button"
+               className="submit-button"
+               
+               >
                 Preview
               </button>
               <button type="button"
-               className="submit-button"
-                onClick={() => handleSaveAsDraft(values, { resetForm: () => {} })}
+                className="submit-button"
+                onClick={() => handleSaveAsDraft(values, { resetForm: () => { } })}
                 disabled={isLoading}
-                >
-                  
-                   {isLoading ? (
+              >
+
+                {isLoading ? (
                   <CircularProgress size={20} color="inherit" />
                 ) : (
                   "Save as Draft"
                 )}
-                
+
               </button>
               <button
                 type="submit"
                 className="submit-button"
                 disabled={isLoading}
-                onClick={() => handleFinalSubmit(values, { resetForm: () => {} })}
+                onClick={() => handleFinalSubmit(values, { resetForm: () => { } })}
               >
                 {isLoading ? (
                   <CircularProgress size={20} color="inherit" />

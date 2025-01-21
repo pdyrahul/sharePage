@@ -24,23 +24,23 @@ const EventDetail = ({ slug }) => {
     // Helper function to format date and time
     const formatDateTime = (startDateStr, startTimeStr, endDateStr, endTimeStr, address) => {
         if (!startDateStr || !startTimeStr) return 'Date/Time not available';
-    
+
         const startDate = new Date(`${startDateStr}T${startTimeStr}`);
         const endDate = endDateStr && endTimeStr ? new Date(`${endDateStr}T${endTimeStr}`) : null;
-    
+
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const formattedDate = startDate.toLocaleDateString('en-US', options);
-    
+
         const formatTime = (date) =>
             date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-    
+
         const formattedStartTime = formatTime(startDate);
         const formattedEndTime = endDate ? formatTime(endDate) : null;
-    
+
         const timeString = formattedEndTime
             ? `${formattedStartTime} - ${formattedEndTime}`
             : formattedStartTime;
-    
+
         return `${formattedDate} · ${timeString} · ${address || 'Address not available'}`;
     };
 
@@ -66,7 +66,11 @@ const EventDetail = ({ slug }) => {
             <div className="event-wrapper">
                 <div className="event-body">
                     <div className="banner-img">
-                        <Image src={banner} alt="" className='potraitImg' />
+                        <img
+                            src={event.poster}
+                            style={{height:"500px"}}
+                            alt=""
+                            className='potraitImg' />
                         <Image src={vericle} alt="" className='verticleImg d-none' />
                     </div>
                     <div className="event-detail">
@@ -78,7 +82,7 @@ const EventDetail = ({ slug }) => {
                             <div className="date">{formatDateTime(event.startDate, event.startTime, event.endDate, event.endTime, event.address)}</div>
                             <div className="event-title">{event.eventTitle}</div>
                             <div className="text" dangerouslySetInnerHTML={{ __html: event.description }}></div>
-                            <div className="heading" style={{padding:"none", textAlign:"left"}}>Event Detail</div>
+                            <div className="heading" style={{ padding: "none", textAlign: "left" }}>Event Detail</div>
                             <div className="title">Description</div>
                             <div className="text" dangerouslySetInnerHTML={{ __html: event.description }}></div>
                             <div className="title">Main Music Stage</div>
@@ -126,8 +130,11 @@ const EventDetail = ({ slug }) => {
                                     Become a Sponsors
                                 </button>
                             </div>
-                            <div className="verical-banner">
-                                <Image src={vericle} alt="" />
+                            <div className="vertical-banner">
+                                <img
+                                    src={event.poster}
+                                    aspect-ratio="16/9"
+                                    alt="" />
                             </div>
                             <div className="map-wrapper">
                                 <iframe
@@ -142,19 +149,11 @@ const EventDetail = ({ slug }) => {
                         </div>
                     </div>
                     <div className='my-2'>
-                        <CustomTabPanel />
+                        <CustomTabPanel data={event} />
                     </div>
                     <div className="event-box-wrapper">
                         <div className="main-heading">
-                            <div className="heading">Similar Events</div>
-                            <div className="icons">
-                                <div className="arrow" id="prev-btn">
-                                    <img src="./images/arrow-left.svg" alt="" />
-                                </div>
-                                <div className="arrow" id="next-btn">
-                                    <img src="./images/arrow-right.svg" alt="" />
-                                </div>
-                            </div>
+                            <div className="heading" style={{ textAlign: "left", padding: "0" }}>Similar Events</div>
                         </div>
                         <Event />
                     </div>

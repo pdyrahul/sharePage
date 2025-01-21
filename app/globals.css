@@ -913,7 +913,8 @@ p {
 
         .banner-img {
             width: 100%;
-
+            border: 3px solid #edf2fa;
+            border-radius: 20px;
             img {
                 width: 100%;
                 border-radius: 20px;
@@ -1125,12 +1126,15 @@ p {
                     }
                 }
 
-                .verical-banner {
+                .vertical-banner {
                     width: 100%;
-
+                    border: 3px solid #edf2fa;
+                    border-radius: 20px;
                     img {
                         border-radius: 20px;
                         width: 100%;
+                        transition: all 0.3s;
+                        & :hover{transform: scale(1.05);}
                     }
                 }
 

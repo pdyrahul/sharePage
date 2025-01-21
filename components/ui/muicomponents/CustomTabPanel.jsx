@@ -13,7 +13,6 @@ import { useForm } from 'react-hook-form';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
-
   return (
     <div
       role="tabpanel"
@@ -70,17 +69,15 @@ const videoData = [
   },
 ];
 
-export default function BasicTabs() {
+export default function BasicTabs({ data }) {
   const [value, setValue] = React.useState(0);
   const { register, handleSubmit, formState: { errors }, reset, watch } = useForm();
   const formData = watch(); // Watch the form data
+  console.log('event', data);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-
-
   const onSubmit = (data) => {
     toast.success('Message sent successfully!', {
       style: { width: '300px', marginTop: '10px' },
@@ -294,7 +291,7 @@ export default function BasicTabs() {
           ) : link.label === 'Artists' ? (
             <Artist />
           ) : link.label === 'Photos' ? (
-            <PhotosCard />
+            <PhotosCard data={data} />
           ) : link.label === 'Advertisers' ? (
             <AdvertiserCard />
           ) : (

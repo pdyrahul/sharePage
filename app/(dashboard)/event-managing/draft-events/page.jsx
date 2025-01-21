@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useMemo, useEffect } from 'react';
+import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -24,18 +25,18 @@ const Page = () => {
   // Fetching events from API
   const apiRequests = useMemo(() => [getDraftList], []);
   const { data, error, isLoading } = useFetchData(apiRequests);
-  console.log(data);
   const events = data?.[0]?.data.map((event) => ({
-      id: event.id || 'N/A',
-      title: event.eventTitle || 'Untitled Event',
-      date: event.startDate || 'Date not available',
-      time: event.startTime || 'Time not available',
-      hostedBy: event.sponsor?.sponsorName || 'Unknown Host',
-      location: event.address || 'Location not available',
-      price: `$${event.sponsor?.sponsorPrice || 0}`,
-      ticketsSold: event.capacity || 'Not Available',
-      image: event.poster || '/images/event-placeholder.svg', // Fallback image
-    })) || [];
+    id: event.id || 'N/A',
+    slug: event.slug || 'default-slug',
+    title: event.eventTitle || 'Untitled Event',
+    date: event.startDate || 'Date not available',
+    time: event.startTime || 'Time not available',
+    hostedBy: event.sponsor?.sponsorName || 'Unknown Host',
+    location: event.address || 'Location not available',
+    price: `$${event.sponsor?.sponsorPrice || 0}`,
+    ticketsSold: event.capacity || 'Not Available',
+    image: event.poster || '/images/event-placeholder.svg', // Fallback image
+  })) || [];
   console.log("Events", events);
   const filteredEvents = events.filter((event) =>
     event.title?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -182,12 +183,16 @@ const Page = () => {
             <div className="total-events">Total Draft Events: {filteredEvents.length}</div>
             {view === 'grid' ? (
               <div className="event-list grid">
-                {filteredEvents.map((event, index) => (
-                  <div className="event" key={index}>
+                {filteredEvents.map((event) => (
+                  <div className="event">
                     <div className="img-wrapper">
                       <img src={event.image} alt={event.title} />
                     </div>
-                    <div className="title">{event.title}</div>
+                    <div className="title">
+                      <Link href={`/event-managing/draft-events/${event.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
+                        {event.title}
+                      </Link>
+                    </div>
                     <div className="date">
                       {event.date}
                       <span>Started at {event.time}</span>
@@ -202,6 +207,7 @@ const Page = () => {
                     <div className="from">From {event.price}</div>
                     <div className="ticket-sold">Ticket Sold: {event.ticketsSold}</div>
                   </div>
+
                 ))}
               </div>
             ) : (
@@ -212,7 +218,7 @@ const Page = () => {
                       <TableRow>
                         <TableCell>Image</TableCell>
                         <TableCell>Title</TableCell>
-                        <TableCell>Date/Time </TableCell>
+                        <TableCell>Date/Time</TableCell>
                         <TableCell>Hosted By</TableCell>
                         <TableCell>Location</TableCell>
                         <TableCell>Price</TableCell>
@@ -222,8 +228,8 @@ const Page = () => {
                     <TableBody>
                       {filteredEvents
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((event, index) => (
-                          <TableRow key={index}>
+                        .map((event) => (
+                          <TableRow key={event.id}>
                             <TableCell>
                               <img
                                 src={event.image}
@@ -231,7 +237,11 @@ const Page = () => {
                                 style={{ width: '50px', height: '50px' }}
                               />
                             </TableCell>
-                            <TableCell>{event.title}</TableCell>
+                            <TableCell>
+                              <Link href={`/event-managing/draft-events/${event.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
+                                {event.title}
+                              </Link>
+                            </TableCell>
                             <TableCell>
                               {event.date} <p>Started at {event.time}</p>
                             </TableCell>
@@ -254,6 +264,9 @@ const Page = () => {
                   onRowsPerPageChange={handleChangeRowsPerPage}
                 />
               </Paper>
+
+
+
             )}
           </>
         )}
