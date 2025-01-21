@@ -1,7 +1,7 @@
 'use client'
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Tabs, Tab, Box, TextField, Button, Grid } from '@mui/material';
+import { Tabs, Tab, Box, TextField, Button, Grid, } from '@mui/material';
 import VideoCard from '../VideoCard'; // Import the VideoCard component
 import SeatingLayout from '../SeatingLayout'; // Import the SeatingLayout component
 import Sponsor from '../Sponsor';
@@ -10,6 +10,7 @@ import PhotosCard from '../../../components/PhotosCard';
 import AdvertiserCard from '../../../components/PhotosCard';
 import { ToastContainer, toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
+
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -25,7 +26,24 @@ function CustomTabPanel(props) {
     </div>
   );
 }
-
+function SpecificationItem({ label, value }) {
+  return (
+    <Grid item xs={4}>
+      <p style={{ color: '#c11' }}>
+        <strong>{label}:</strong>
+      </p>
+      <p>{value}</p>
+    </Grid>
+  );
+}
+function formatTimeTo12Hour(time) {
+  if (!time) return null; // Return null if time is not provided
+  const [hours, minutes] = time.split(':');
+  const hour = parseInt(hours, 10);
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const formattedHour = hour % 12 || 12; // Convert to 12-hour format
+  return `${formattedHour} ${period}`;
+}
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
@@ -38,6 +56,7 @@ function a11yProps(index) {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
+
 
 const navigationLinks = [
   { label: 'Photos', href: '#', data: 'Photos of our events and activities.' },
@@ -74,7 +93,6 @@ export default function BasicTabs({ data }) {
   const { register, handleSubmit, formState: { errors }, reset, watch } = useForm();
   const formData = watch(); // Watch the form data
   console.log('event', data);
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -119,7 +137,7 @@ export default function BasicTabs({ data }) {
             <Grid container spacing={2}>
               <Grid item md={6} xs={12}>
                 <h2>Contact Information</h2>
-                <p><strong style={{ color: '#c11' }}>Name:</strong> CICA Vancouver</p>
+                <p><strong style={{ color: '#c11' }}>Name:</strong>CICA</p>
                 <p><strong style={{ color: '#c11' }}>Phone:</strong> <span>+92323456456</span></p>
                 <p><strong style={{ color: '#c11' }}>Organizer Email:</strong>  <span>codegenio@gmail.com</span></p>
               </Grid>
@@ -237,59 +255,44 @@ export default function BasicTabs({ data }) {
                   <VideoCard
                     title={video.title}
                     description={video.description}
-                    videoUrl={video.videoUrl}
+                    videoUrl={data.youTubeUrl}
                   />
                 </Grid>
               ))}
             </Grid>
           ) : link.label === 'Seating Layout' ? (
-            <SeatingLayout /> // Render the SeatingLayout component
+            <SeatingLayout data={data}/> // Render the SeatingLayout component
           ) : link.label === 'Specification' ? (
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <h2 style={{ color: '#c11' }}>Event Specification</h2>
               </Grid>
-              <Grid item xs={4}>
-                <p style={{ color: '#c11' }}><strong>Venue Name:</strong></p>
-                <p>CICA Vancouver</p>
-              </Grid>
-              <Grid item xs={4}>
-                <p style={{ color: '#c11' }}><strong>Category:</strong></p>
-                <p>Music</p>
-              </Grid>
-              <Grid item xs={4}>
-                <p style={{ color: '#c11' }}><strong>Sub Category:</strong></p>
-                <p>Music</p>
-              </Grid>
-              <Grid item xs={4}>
-                <p style={{ color: '#c11' }}><strong>Ethnicity:</strong></p>
-                <p>American</p>
-              </Grid>
-              <Grid item xs={4}>
-                <p style={{ color: '#c11' }}><strong>Capacity:</strong></p>
-                <p>100</p>
-              </Grid>
-              <Grid item xs={4}>
-                <p style={{ color: '#c11' }}><strong>Time:</strong></p>
-                <p>05:00 PM - 06:00 PM</p>
-              </Grid>
-              <Grid item xs={4}>
-                <p style={{ color: '#c11' }}><strong>Start Date:</strong></p>
-                <p>2024-12-06</p>
-              </Grid>
-              <Grid item xs={4}>
-                <p style={{ color: '#c11' }}><strong>End Date:</strong></p>
-                <p>2024-12-06</p>
-              </Grid>
-              <Grid item xs={4}>
-                <p style={{ color: '#c11' }}><strong>Address:</strong></p>
-                <p>228 Abbott Street Vancouver, BC V6B 1C8 Canada</p>
-              </Grid>
+              <SpecificationItem label="Venue Name" value={data?.address || 'N/A'} />
+              <SpecificationItem label="Category" value={data?.category?.speventTitle || 'N/A'} />
+              <SpecificationItem label="Sub Category" value={data?.category?.speventTitle || 'N/A'} />
+              <SpecificationItem label="Ethnicity" value={data?.ethnicity?.ethnicity_name || 'N/A'} />
+              <SpecificationItem label="Capacity" value={data?.capacity?.toString() || 'N/A'} />
+              <SpecificationItem
+                label="Time"
+                value=
+                {data?.startTime && data?.endTime
+                  ? `${formatTimeTo12Hour(data.startTime)} - ${formatTimeTo12Hour(data.endTime)}`
+                  : data?.startTime
+                  ? `${formatTimeTo12Hour(data.startTime)} - End Time not specified`
+                  : data?.endTime
+                  ? `Start Time not specified - ${formatTimeTo12Hour(data.endTime)}`
+                  : 'Time not specified'}
+                
+              />
+              <SpecificationItem label="Start Date" value={data?.startDate || 'N/A'} />
+              <SpecificationItem label="End Date" value={data?.endDate || 'N/A'} />
+              <SpecificationItem label="Address" value={data?.address || 'N/A'} />
             </Grid>
+
           ) : link.label === 'Sponsors' ? (
-            <Sponsor />
-          ) : link.label === 'Artists' ? (
-            <Artist />
+            <Sponsor data={data} />
+          // ) : link.label === 'Artists' ? (
+          //   <Artist />
           ) : link.label === 'Photos' ? (
             <PhotosCard data={data} />
           ) : link.label === 'Advertisers' ? (
@@ -298,7 +301,7 @@ export default function BasicTabs({ data }) {
             <>
               <h2>{link.label}</h2>
               <p>{link.data}</p>
-              <p>No Data</p>
+              <p>Data Very Soon Available</p>
             </>
           )}
         </CustomTabPanel>

@@ -4,20 +4,14 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css'; // Effect for progressive loading
 
 const PhotosCard = ({ data }) => { 
-    console.log("Data received:", data);
-
     if (!data || !data.gallery) {
         console.error("Data is not structured properly");
         return null;
     }
-
     const photos = data.gallery.map((image, index) => ({
         id: `${data.id}-${index}`,
         image: image.image_url || '/images/event-placeholder.svg'
     }));
-
-    console.log("Photos array:", photos);
-
     return ( 
         <Box className="photos-wrapper"> 
             <ImageList cols={5} gap={15} sx={{ width: '100%', }}>

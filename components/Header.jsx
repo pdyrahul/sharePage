@@ -48,7 +48,13 @@ const Header = () => {
 
   const handleProfileSelect = async (profile) => {
     try {
+      // Set the selected profile locally
       setSelectedProfile(profile);
+  
+      // Store the selected profile in sessionStorage
+      sessionStorage.setItem("selectedProfile", JSON.stringify(profile));
+  
+      // Update the profile on the server
       const response = await setProfile(profile.idspProfiles);
       console.log("Profile set as default:", response.data);
     } catch (error) {
@@ -58,6 +64,7 @@ const Header = () => {
       );
     }
   };
+  
 
   return (
     <div className="nav-bar">
