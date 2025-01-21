@@ -7,7 +7,7 @@ import Image from 'next/image';
 import TicketBooking from './Ticket/TicketBooking';
 import useFetchData from '../app/hooks/useFetchData';
 import { getEventBySlug } from '../app/services/api';
-
+import { MdKeyboardBackspace } from "react-icons/md";
 const EventDetail = ({ slug }) => {
     const apiRequests = useMemo(() => [() => getEventBySlug(slug)], [slug]);
     const { data, isLoading, error } = useFetchData(apiRequests);
@@ -69,12 +69,12 @@ const EventDetail = ({ slug }) => {
                             style={{height:"500px"}}
                             alt=""
                             className='potraitImg' />
-                        <Image src={vericle} alt="" className='verticleImg d-none' />
+                        <img src={event.poster} alt="" className='verticleImg d-none' />
                     </div>
                     <div className="event-detail">
                         <div className="detail-wrapper">
                             <div className="back">
-                                <img src="./images/back.svg" alt="" />
+                                <MdKeyboardBackspace />
                                 <span>Return To Home</span>
                             </div>
                             <div className="date">{formatDateTime(event.startDate, event.startTime, event.endDate, event.endTime, event.address)}</div>
