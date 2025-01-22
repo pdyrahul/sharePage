@@ -24,4 +24,11 @@ export const getEventBySlug = (slug) => {
   return api.get(`/event/${slug}`);
 };
 
+export const updateEvent = (slug, data) => {
+    if (!slug) {
+        throw new Error("Slug is required to update the event.");
+    }
+    return api.post(`/event/${slug}`, data);
+}
+
 export default api;
