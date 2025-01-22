@@ -62,31 +62,13 @@ const navigationLinks = [
   { label: 'Photos', href: '#', data: 'Photos of our events and activities.' },
   { label: 'Videos', href: '#', data: 'Videos of our events and activities.' },
   { label: 'Sponsors', href: '#', data: 'Our sponsors who support us.' },
-  { label: 'Advertisers', href: '#', data: 'Our advertisers who promote their products.' },
-  { label: 'Artists', href: '#', data: 'Our artists who perform at our events.' },
+  // { label: 'Advertisers', href: '#', data: 'Our advertisers who promote their products.' },
+  // { label: 'Artists', href: '#', data: 'Our artists who perform at our events.' },
   { label: 'Seating Layout', href: '#', data: 'Seating layout of our events.' },
   { label: 'Specification', href: '#', data: 'Specification of our events.' },
   { label: 'Contact Organizer', href: '#', data: 'Contact information of our organizers.' },
 ];
 
-// Sample video data
-const videoData = [
-  {
-    title: 'Event Highlights',
-    description: 'Highlights from our recent event.',
-    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', // Demo video URL
-  },
-  {
-    title: 'Behind the Scenes',
-    description: 'A look behind the scenes of our events.',
-    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', // Demo video URL
-  },
-  {
-    title: 'Interviews with Artists',
-    description: 'Interviews with the artists who performed.',
-    videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', // Demo video URL
-  },
-];
 
 export default function BasicTabs({ data }) {
   const [value, setValue] = React.useState(0);
@@ -248,31 +230,19 @@ export default function BasicTabs({ data }) {
                 </form>
               </Grid>
             </Grid>
-          ) : link.label === 'Videos' ? (
-            <Grid container spacing={2}>
-              {videoData.map((video, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                  <VideoCard
-                    title={video.title}
-                    description={video.description}
-                    videoUrl={data.youTubeUrl}
-                   data={data}
-                   />
-                </Grid>
-              ))}
-            </Grid>
-          ) : link.label === 'Seating Layout' ? (
+          ) : link.label === 'Videos' ? (<VideoCard videoUrl={data.youTubeUrl}data={data}/>)
+           : link.label === 'Seating Layout' ? (
             <SeatingLayout data={data}/> // Render the SeatingLayout component
           ) : link.label === 'Specification' ? (
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <h2 style={{ color: '#c11' }}>Event Specification</h2>
               </Grid>
-              <SpecificationItem label="Venue Name" value={data?.address || 'N/A'} />
-              <SpecificationItem label="Category" value={data?.category?.speventTitle || 'N/A'} />
-              <SpecificationItem label="Sub Category" value={data?.category?.speventTitle || 'N/A'} />
-              <SpecificationItem label="Ethnicity" value={data?.ethnicity?.ethnicity_name || 'N/A'} />
+              <SpecificationItem label="Address" value={data?.address || 'N/A'} />
+              <SpecificationItem label="Venue Name" value={data?.place || 'N/A'} />
               <SpecificationItem label="Capacity" value={data?.capacity?.toString() || 'N/A'} />
+              <SpecificationItem label="Start Date" value={data?.startDate || 'N/A'} />
+              <SpecificationItem label="End Date" value={data?.endDate || 'N/A'} />
               <SpecificationItem
                 label="Time"
                 value=
@@ -283,11 +253,9 @@ export default function BasicTabs({ data }) {
                   : data?.endTime
                   ? `Start Time not specified - ${formatTimeTo12Hour(data.endTime)}`
                   : 'Time not specified'}
-                
               />
-              <SpecificationItem label="Start Date" value={data?.startDate || 'N/A'} />
-              <SpecificationItem label="End Date" value={data?.endDate || 'N/A'} />
-              <SpecificationItem label="Address" value={data?.address || 'N/A'} />
+              <SpecificationItem label="Ethnicity" value={data?.ethnicity?.ethnicity_name || 'N/A'} />
+              <SpecificationItem label="Category" value={data?.category?.speventTitle || 'N/A'} />
             </Grid>
 
           ) : link.label === 'Sponsors' ? (
@@ -296,9 +264,7 @@ export default function BasicTabs({ data }) {
           //   <Artist />
           ) : link.label === 'Photos' ? (
             <PhotosCard data={data} />
-          ) : link.label === 'Advertisers' ? (
-            <AdvertiserCard />
-          ) : (
+          ): (
             <>
               <h2>{link.label}</h2>
               <p>{link.data}</p>

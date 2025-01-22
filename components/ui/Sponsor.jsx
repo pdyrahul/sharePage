@@ -18,13 +18,12 @@ const Sponsor = ({data}) => {
             <img src={data.poster} alt="" style={{width:"100%"}}/>
           </div>
           <div className="sponsor-detail">
-            <div className="title">{data.sponsorName}</div>
-            <div className="sub-title">123 Follower</div>
-            <div className="icons">
-              <img src="./images/add-riend.svg" alt="" />
-              <img src="./images/message-2.svg" alt="" />
-              <img src="./images/like-2.svg" alt="" />
-            </div>
+         <ul className='m-0 p-0'>
+          <li><strong>Name:</strong> {data.sponsor.sponsorName}</li>
+          <li><strong>Website:</strong> {data.sponsor.sponsorWebsite}</li>
+          <li><strong>Description:</strong> {data.sponsor.sponsorDescription}</li>
+          {/* <li>{data.sponsorName}</li> */}
+         </ul>
           </div>
         </div>
       

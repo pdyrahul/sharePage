@@ -66,7 +66,7 @@ const EventDetail = ({ slug }) => {
                     <div className="banner-img">
                         <img
                             src={event.poster}
-                            style={{height:"500px"}}
+                            style={{ height: "500px" }}
                             alt=""
                             className='potraitImg' />
                         <img src={event.poster} alt="" className='verticleImg d-none' />
@@ -74,30 +74,30 @@ const EventDetail = ({ slug }) => {
                     <div className="event-detail">
                         <div className="detail-wrapper">
                             <div className="back">
-                              <Link href={'/'}><MdKeyboardBackspace /></Link>  
+                                <Link href={'/'}><MdKeyboardBackspace /></Link>
                                 <span>Return To Home</span>
                             </div>
-                            <div className="date">{formatDateTime(event.startDate, event.startTime, event.endDate, event.endTime, event.address)}</div>
+                            <div className="date">{formatDateTime(event.startDate, event.startTime, event.endDate, event.endTime, event.place)}</div>
                             <div className="event-title">{event.eventTitle}</div>
                             <div className="text" dangerouslySetInnerHTML={{ __html: event.description }}></div>
                             <div className="heading" style={{ padding: "none", textAlign: "left" }}>Event Detail</div>
                             <div className="title">Description</div>
                             <div className="text" dangerouslySetInnerHTML={{ __html: event.description }}></div>
-                            <div className="title">Main Music Stage</div>
+                            {/* <div className="title">Main Music Stage</div>
                             <ul>
                                 <li>Capacity: {event.capacity}</li>
                                 <li className=''>Highlights: <span dangerouslySetInnerHTML={{ __html: event.description }}></span></li>
                                 <li>Special Finale: Not Provided</li>
                                 <li>LINE-UP TO BE ANNOUNCED</li>
-                            </ul>
+                            </ul> */}
                             <div className="title">Amenities</div>
                             <ul>
                                 <li dangerouslySetInnerHTML={{ __html: event.amenities }}></li>
                             </ul>
-                            <div className="title">Additional Festival Features (Open To All)</div>
+                            {/* <div className="title">Additional Festival Features (Open To All)</div>
                             <ul>
                                 <li>TBD</li>
-                            </ul>
+                            </ul> */}
                             <div className="title">Location</div>
                             <div className="text">
                                 <img src="./images/location.svg" alt="" />
@@ -106,7 +106,7 @@ const EventDetail = ({ slug }) => {
                             <div className="title">Venue</div>
                             <div className="text">{event.address.split(',')[0]}</div>
                             <div className="title">Refund Policy</div>
-                            <div className="text">{event.refundPolicy || "No Refund Policy Provided"}</div>
+                            <div className="text" dangerouslySetInnerHTML={{ __html: event.refundPolicy }}></div>
                         </div>
                         <div className="ticket-detail">
                             <div className="more-links">

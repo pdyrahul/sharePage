@@ -10,7 +10,7 @@ const VideoCard = ({ title, description, data }) => {
   const videoId = new URL(data.youTubeUrl).searchParams.get('v');
 
   const opts = {
-    height: '140',
+    height: '350',
     width: '100%',
     playerVars: {
       autoplay: 0,
@@ -19,7 +19,7 @@ const VideoCard = ({ title, description, data }) => {
 
   return (
     <Card>
-      <div style={{ height: '140px', overflow: 'hidden' }}>
+      <div style={{ height: '350px', overflow: 'hidden' }}>
         {videoId ? (
           <YouTube videoId={videoId} opts={opts} />
         ) : (
@@ -30,10 +30,10 @@ const VideoCard = ({ title, description, data }) => {
       </div>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {title}
+          <p>Video Title</p>
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {description}
+         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi magni, voluptas nostrum perferendis porro molestiae corporis consequuntur facilis laboriosam aut. Assumenda libero sunt id! Voluptates esse unde officia nihil suscipit.</p>
         </Typography>
       </CardContent>
     </Card>
