@@ -10,14 +10,16 @@ import {
   TableRow,
   TablePagination,
   Paper,
+  Grid,
+  Pagination,
 } from '@mui/material';
 import { AiOutlineBars } from 'react-icons/ai';
-import useFetchData from '../../../hooks/useFetchData'; // Custom hook to handle fetch requests
+import useFetchData from '../../../hooks/useFetchData';
 import { getDraftList } from '../../../services/api';
-import Skeleton from "react-loading-skeleton"; // Importing react-loading-skeleton
+import Skeleton from "react-loading-skeleton";
 
 const Page = () => {
-  const [view, setView] = useState('list'); // Default view is 'list'
+  const [view, setView] = useState('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -35,7 +37,7 @@ const Page = () => {
     location: event.address || 'Location not available',
     price: `$${event.sponsor?.sponsorPrice || 0}`,
     ticketsSold: event.capacity || 'Not Available',
-    image: event.poster || '/images/event-placeholder.svg', // Fallback image
+    image: event.poster || '/images/event-placeholder.svg',
   })) || [];
   console.log("Events", events);
   const filteredEvents = events.filter((event) =>
@@ -44,6 +46,7 @@ const Page = () => {
 
   const handleViewChange = (event) => {
     setView(event.target.value);
+    setPage(0); // Reset page when changing view
   };
 
   const handleSearchChange = (event) => {
@@ -64,6 +67,9 @@ const Page = () => {
   useEffect(() => {
     console.log("Loading state:", isLoading);
   }, [isLoading]);
+
+  // Calculate the number of pages for grid view
+  const totalPages = Math.ceil(filteredEvents.length / rowsPerPage);
 
   return (
     <div className="event-body">
@@ -111,19 +117,16 @@ const Page = () => {
 
         {isLoading ? (
           <div>
-            {/* Skeleton loader for the grid view */}
             {view === 'grid' ? (
               <div className="event-list grid">
-                {Array(5)
-                  .fill(0)
-                  .map((_, index) => (
-                    <div className="event" key={index}>
-                      <Skeleton height={150} width="100%" />
-                      <Skeleton width="60%" />
-                      <Skeleton width="40%" />
-                      <Skeleton width="80%" />
-                    </div>
-                  ))}
+                {Array(rowsPerPage).fill(0).map((_, index) => (
+                  <div className="event" key={index}>
+                    <Skeleton height={150} width="100%" />
+                    <Skeleton width="60%" />
+                    <Skeleton width="40%" />
+                    <Skeleton width="80%" />
+                  </div>
+                ))}
               </div>
             ) : (
               <Paper>
@@ -133,7 +136,7 @@ const Page = () => {
                       <TableRow>
                         <TableCell>Image</TableCell>
                         <TableCell>Title</TableCell>
-                        <TableCell>Date</TableCell>
+                        <TableCell>Date/Time</TableCell>
                         <TableCell>Hosted By</TableCell>
                         <TableCell>Location</TableCell>
                         <TableCell>Price</TableCell>
@@ -141,33 +144,31 @@ const Page = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {Array(5)
-                        .fill(0)
-                        .map((_, index) => (
-                          <TableRow key={index}>
-                            <TableCell>
-                              <Skeleton circle height={50} width={50} />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="60%" />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="40%" />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="60%" />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="60%" />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="40%" />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="60%" />
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                      {Array(rowsPerPage).fill(0).map((_, index) => (
+                        <TableRow key={index}>
+                          <TableCell>
+                            <Skeleton circle height={50} width={50} />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton width="60%" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton width="40%" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton width="60%" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton width="60%" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton width="40%" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton width="60%" />
+                          </TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -182,34 +183,45 @@ const Page = () => {
           <>
             <div className="total-events">Total Draft Events: {filteredEvents.length}</div>
             {view === 'grid' ? (
-              <div className="event-list grid">
-                {filteredEvents.map((event) => (
-                  <div className="event">
-                    <div className="img-wrapper">
-                      <img src={event.image} alt={event.title} />
-                    </div>
-                    <div className="title">
-                      <Link href={`/event-managing/draft-events/${event.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
-                        {event.title}
-                      </Link>
-                    </div>
-                    <div className="date">
-                      {event.date}
-                      <span>Started at {event.time}</span>
-                    </div>
-                    <div className="hosted">
-                      Hosted by <span>{event.hostedBy}</span>
-                    </div>
-                    <div className="location">
-                      <img src="/images/location.svg" alt="Location" />
-                      <span>{event.location}</span>
-                    </div>
-                    <div className="from">From {event.price}</div>
-                    <div className="ticket-sold">Ticket Sold: {event.ticketsSold}</div>
-                  </div>
-
-                ))}
-              </div>
+              <>
+                <Grid container spacing={2} className="event-list grid">
+                  {filteredEvents
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((event) => (
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={event.id}>
+                         <Link href={`/event-managing/draft-events/${event.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
+                        <div className="event" style={{width: "100%"}}>
+                          <div className="img-wrapper">
+                            <img src={event.image} alt={event.title} />
+                          </div>
+                          <div className="title">{event.title}</div>
+                          <div className="date">
+                            {event.date}
+                            <span>Started at {event.time}</span>
+                          </div>
+                          <div className="hosted">
+                            Hosted by <span>{event.hostedBy}</span>
+                          </div>
+                          <div className="location">
+                            <img src="/images/location.svg" alt="Location" />
+                            <span>{event.location}</span>
+                          </div>
+                          <div className="from">From {event.price}</div>
+                          <div className="ticket-sold">Ticket Sold: {event.ticketsSold}</div>
+                        </div>
+                        </Link>
+                      </Grid>
+                    ))}
+                </Grid>
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                  <Pagination 
+                    count={totalPages}
+                    page={page + 1}
+                    onChange={(event, value) => handleChangePage(event, value - 1)}
+                    color="primary"
+                  />
+                </div>
+              </>
             ) : (
               <Paper>
                 <TableContainer>
@@ -264,9 +276,6 @@ const Page = () => {
                   onRowsPerPageChange={handleChangeRowsPerPage}
                 />
               </Paper>
-
-
-
             )}
           </>
         )}

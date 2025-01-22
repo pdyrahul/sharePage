@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useState, useMemo, useEffect } from 'react';
 import {
   Table,
@@ -9,14 +9,16 @@ import {
   TableRow,
   TablePagination,
   Paper,
+  Grid,
+  Pagination,
 } from '@mui/material';
 import { AiOutlineBars } from 'react-icons/ai';
-import useFetchData from '../../../hooks/useFetchData'; // Custom hook to handle fetch requests
+import useFetchData from '../../../hooks/useFetchData'; 
 import { getEventList } from '../../../services/api';
-import Skeleton from "react-loading-skeleton"; // Importing react-loading-skeleton
+import Skeleton from "react-loading-skeleton";
 
 const Page = () => {
-  const [view, setView] = useState('list'); // Default view is 'list'
+  const [view, setView] = useState('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -45,6 +47,7 @@ const Page = () => {
 
   const handleViewChange = (event) => {
     setView(event.target.value);
+    setPage(0); // Reset page when changing view
   };
 
   const handleSearchChange = (event) => {
@@ -61,10 +64,43 @@ const Page = () => {
     setPage(0);
   };
 
-  // Ensuring the skeleton loader is shown during the initial data fetch
+  // Ensure skeleton loader is shown immediately on load
   useEffect(() => {
     console.log("Loading state:", isLoading);
   }, [isLoading]);
+
+  // Calculate the number of pages for grid view
+  const totalPages = Math.ceil(filteredEvents.length / rowsPerPage);
+
+  // Helper function to generate skeleton grids
+  const renderSkeletonGrids = (count) => 
+    Array(count).fill(0).map((_, index) => (
+      <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+        <div className="event" style={{ width: '100%' }}>
+          <Skeleton height={150} />
+          <Skeleton height={20} width="60%" />
+          <Skeleton height={20} width="40%" />
+          <Skeleton height={20} width="80%" />
+          <Skeleton height={20} width="60%" />
+          <Skeleton height={20} width="40%" />
+          <Skeleton height={20} width="60%" />
+        </div>
+      </Grid>
+    ));
+
+  // Helper function to generate skeleton table rows
+  const renderSkeletonRows = (count) => 
+    Array(count).fill(0).map((_, index) => (
+      <TableRow key={index}>
+        <TableCell><Skeleton circle height={50} width={50} /></TableCell>
+        <TableCell><Skeleton width="60%" /></TableCell>
+        <TableCell><Skeleton width="40%" /></TableCell>
+        <TableCell><Skeleton width="60%" /></TableCell>
+        <TableCell><Skeleton width="60%" /></TableCell>
+        <TableCell><Skeleton width="40%" /></TableCell>
+        <TableCell><Skeleton width="60%" /></TableCell>
+      </TableRow>
+    ));
 
   return (
     <div className="event-body">
@@ -112,20 +148,10 @@ const Page = () => {
 
         {isLoading ? (
           <div>
-            {/* Skeleton loader for the grid view */}
             {view === 'grid' ? (
-              <div className="event-list grid">
-                {Array(5)
-                  .fill(0)
-                  .map((_, index) => (
-                    <div className="event" key={index}>
-                      <Skeleton height={150} width="100%" />
-                      <Skeleton width="60%" />
-                      <Skeleton width="40%" />
-                      <Skeleton width="80%" />
-                    </div>
-                  ))}
-              </div>
+              <Grid container spacing={2} className="event-list grid">
+                {renderSkeletonGrids(rowsPerPage)}
+              </Grid>
             ) : (
               <Paper>
                 <TableContainer>
@@ -142,33 +168,7 @@ const Page = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {Array(5)
-                        .fill(0)
-                        .map((_, index) => (
-                          <TableRow key={index}>
-                            <TableCell>
-                              <Skeleton circle height={50} width={50} />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="60%" />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="40%" />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="60%" />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="60%" />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="40%" />
-                            </TableCell>
-                            <TableCell>
-                              <Skeleton width="60%" />
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                      {renderSkeletonRows(rowsPerPage)}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -183,29 +183,43 @@ const Page = () => {
           <>
             <div className="total-events">Total Events: {filteredEvents.length}</div>
             {view === 'grid' ? (
-              <div className="event-list grid">
-                {filteredEvents.map((event, index) => (
-                  <div className="event" key={index}>
-                    <div className="img-wrapper">
-                      <img src={event.image} alt={event.title} />
-                    </div>
-                    <div className="title">{event.title}</div>
-                    <div className="date">
-                      {event.date}
-                      <span>Started at {event.time}</span>
-                    </div>
-                    <div className="hosted">
-                      Hosted by <span>{event.hostedBy}</span>
-                    </div>
-                    <div className="location">
-                      <img src="/images/location.svg" alt="Location" />
-                      <span>{event.location}</span>
-                    </div>
-                    <div className="from">From {event.price}</div>
-                    <div className="ticket-sold">Ticket Sold: {event.ticketsSold}</div>
-                  </div>
-                ))}
-              </div>
+              <>
+                <Grid container spacing={2} className="event-list grid">
+                  {filteredEvents
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((event, index) => (
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={event.id || index}>
+                        <div className="event" style={{ width: '100%' }}>
+                          <div className="img-wrapper">
+                            <img src={event.image} alt={event.title} />
+                          </div>
+                          <div className="title">{event.title}</div>
+                          <div className="date">
+                            {event.date}
+                            <span>Started at {event.time}</span>
+                          </div>
+                          <div className="hosted">
+                            Hosted by <span>{event.hostedBy}</span>
+                          </div>
+                          <div className="location">
+                            <img src="/images/location.svg" alt="Location" />
+                            <span>{event.location}</span>
+                          </div>
+                          <div className="from">From {event.price}</div>
+                          <div className="ticket-sold">Ticket Sold: {event.ticketsSold}</div>
+                        </div>
+                      </Grid>
+                    ))}
+                </Grid>
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                  <Pagination 
+                    count={totalPages}
+                    page={page + 1}
+                    onChange={(event, value) => handleChangePage(event, value - 1)}
+                    color="primary"
+                  />
+                </div>
+              </>
             ) : (
               <Paper>
                 <TableContainer>
@@ -214,7 +228,7 @@ const Page = () => {
                       <TableRow>
                         <TableCell>Image</TableCell>
                         <TableCell>Title</TableCell>
-                        <TableCell>Date/Time </TableCell>
+                        <TableCell>Date/Time</TableCell>
                         <TableCell>Hosted By</TableCell>
                         <TableCell>Location</TableCell>
                         <TableCell>Price</TableCell>
@@ -225,7 +239,7 @@ const Page = () => {
                       {filteredEvents
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((event, index) => (
-                          <TableRow key={index}>
+                          <TableRow key={event.id || index}>
                             <TableCell>
                               <img
                                 src={event.image}

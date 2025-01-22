@@ -1,22 +1,22 @@
 "use client";
-import React, {useMemo, useState, useEffect, useRef} from "react";
-import {ErrorMessage, Field, Form, Formik} from "formik";
-import {Box, Modal, Typography, Button, CircularProgress} from "@mui/material";
-import {toast, ToastContainer} from "react-toastify";
+import React, { useMemo, useState, useEffect, useRef } from "react";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Box, Modal, Typography, Button, CircularProgress } from "@mui/material";
+import { toast, ToastContainer } from "react-toastify";
 import validationSchema from "../app/utils/Schema";
 import ImageUpload from "../app/(dashboard)/event-managing/submit-event/component/ImageUpload";
 import TicketList from "../app/(dashboard)/event-managing/submit-event/component/TicketList";
 import useFetchData from "../app/hooks/useFetchData";
-import {useRouter} from 'next/navigation';
-import {getEventCategories, getSponsors, getEventBySlug, updateEvent} from "../app/services/api"; // Assuming updateEvent is your PUT endpoint
+import { useRouter } from 'next/navigation';
+import { getEventCategories, getSponsors, getEventBySlug, updateEvent } from "../app/services/api"; // Assuming updateEvent is your PUT endpoint
 import SponsorModal from "../app/(dashboard)/event-managing/submit-event/component/SponsorModal";
 import ShareEditor from "./ui/TextEditor/ShareEditor";
 import Swal from "sweetalert2";
-import {LoadScript, Autocomplete} from "@react-google-maps/api";
+import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import "react-datepicker/dist/react-datepicker.css";
 import Axios from "../app/services/axios";
 
-const EventView = ({slug}) => {
+const EventView = ({ slug }) => {
     if (typeof window === undefined) {
         return false;
     }
@@ -29,7 +29,7 @@ const EventView = ({slug}) => {
 
     // Fetching data including the specific event by slug
     const apiRequests = useMemo(() => [getEventCategories, getSponsors, () => getEventBySlug(slug)], [slug]);
-    const {data, refetch} = useFetchData(apiRequests);
+    const { data, refetch } = useFetchData(apiRequests);
 
     // Destructuring data
     const [eventData = {}, sponsorData = {}, eventDraft = {}] = Array.isArray(data) ? data : [];
@@ -93,7 +93,7 @@ const EventView = ({slug}) => {
         setIsModalOpen(false);
     };
 
-    const handleSubmit = async (values, {setSubmitting, resetForm}) => {
+    const handleSubmit = async (values, { setSubmitting, resetForm }) => {
         try {
             const response = await updateEvent(slug, values);
             if (response.status === 'Success') {
@@ -121,14 +121,44 @@ const EventView = ({slug}) => {
                 validateOnChange={true}
                 onSubmit={handleSubmit}
             >
-                {({ errors, touched, isSubmitting, values,setFieldValue }) => {
+                {({ errors, touched, isSubmitting, values, setFieldValue }) => {
                     useEffect(() => {
-                        Axios.get(`event/${slug}`).then(data => {
-                            const event = data.data.data;
-                            const fields = ['category', 'ethnicity', 'eventTitle', 'description', 'refundPolicy'];
-                            fields.forEach(field => setFieldValue(field, event[field], false));
-                            // setUser(user);
-                            console.log(data.data.data);
+                        Axios.get(`/event/${slug}`).then(response => {
+                            const event = response.data.data;
+                            console.log('Event data:', event);
+
+                            // Set direct fields
+                            const fields = ['eventTitle', 'address', 'capacity', 'youTubeUrl', 'startDate', 'endDate', 'startTime'];
+                            fields.forEach(field => {
+                                setFieldValue(field, event[field], false);
+                            });
+
+                            // Handle null or undefined cases
+                            setFieldValue('refundPolicy', event.refundPolicy || '', false);
+                            setFieldValue('endTime', event.endTime || '', false);
+                            setFieldValue('ticketUrl', event.ticketUrl || '', false);
+                            setFieldValue('sponsor', event.sponsor || '', false);
+                            setFieldValue('isFeatured', event.isFeatured ? 'Yes' : 'No', false); // Assuming you use 'Yes'/'No' for form
+                            setFieldValue('eventType', event.event_type === 'paid' ? 'paid' : 'free', false);
+
+                            // Handle nested fields
+                            setFieldValue('ethnicity', event.ethnicity.id, false);
+                            setFieldValue('category', event.category.idspevent, false);
+
+                            // Set description and amenities which are HTML strings
+                            setFieldValue('description', event.description, false);
+                            setFieldValue('amenities', event.amenities, false);
+
+                            // Handle images (assuming your ImageUpload component can handle URL strings)
+                            setFieldValue('poster', [event.poster], false);
+                            setFieldValue('seatingLayout', [event.seatingLayout], false);
+                            setFieldValue('galleryImages', event.gallery.map(img => img.image_url), false);
+
+                            // Note: 'tickets' is not present in the data structure provided, so commenting out
+                            // setFieldValue('tickets', event.tickets || [], false);
+
+                        }).catch(error => {
+                            console.error('Error fetching event data:', error);
                         });
                     }, []);
 
@@ -414,7 +444,7 @@ const EventView = ({slug}) => {
                             </div>
                         )}
                         {/* Description */}
-                        <div className="input-group in-1-col">
+                        {/* <div className="input-group in-1-col">
                             <label>
                                 Description<span style={{ color: "#EF1D26" }}>*</span>
                             </label>
@@ -428,10 +458,10 @@ const EventView = ({slug}) => {
                                 component="div"
                                 style={errorStyles}
                             />
-                        </div>
+                        </div> */}
 
                         {/* Policy */}
-                        <div className="input-group in-1-col">
+                        {/* <div className="input-group in-1-col">
                             <label>
                                 Refund Policy<span style={{ color: "#EF1D26" }}>*</span>
                             </label>
@@ -439,15 +469,15 @@ const EventView = ({slug}) => {
                                 name="refundPolicy"
                                 data={values.refundPolicy || ""}
                                 setData={(data) => setFieldValue("refundPolicy", data)}
-                            />
+                            />  
                             <ErrorMessage
                                 name="refundPolicy"
                                 component="div"
                                 style={errorStyles}
                             />
-                        </div>
+                        </div> */}
                         {/* Amenities */}
-                        <div className="input-group in-1-col">
+                        {/* <div className="input-group in-1-col">
                             <label>
                                 Amenities<span style={{ color: "#EF1D26" }}>*</span>
                             </label>
@@ -461,7 +491,7 @@ const EventView = ({slug}) => {
                                 component="div"
                                 style={errorStyles}
                             />
-                        </div>
+                        </div> */}
                         {/* Uploader Component for Posters */}
                         <div className="input-group in-1-col">
                             <label>
@@ -511,8 +541,7 @@ const EventView = ({slug}) => {
                         </div>
 
                         {/* Sponsor Information Section */}
-                        <div
-                            className="input-group in-1-col"
+                        <div className="input-group in-1-col"
                             style={{
                                 backgroundColor: "#ffb8bd",
                                 color: "#000",
@@ -593,15 +622,15 @@ const EventView = ({slug}) => {
                         {/* Submit Button */}
                         <div className="main-btn">
                             <button type="button"
-                                    className="submit-button"
+                                className="submit-button"
 
                             >
                                 Preview
                             </button>
                             <button type="button"
-                                    className="submit-button"
-                                    onClick={() => handleSaveAsDraft(values, { resetForm: () => { } })}
-                                    disabled={isLoading}
+                                className="submit-button"
+                                onClick={() => handleSaveAsDraft(values, { resetForm: () => { } })}
+                                disabled={isLoading}
                             >
 
                                 {isLoading ? (
@@ -651,7 +680,7 @@ const EventView = ({slug}) => {
                 sponsorModalOpen={sponsorModalOpen}
                 CloseModal={CloseModal}
             />
-            <ToastContainer/>
+            <ToastContainer />
         </div>
     );
 };
