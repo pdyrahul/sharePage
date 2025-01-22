@@ -73,7 +73,7 @@ const Event = () => {
     const borderColor = theme.palette.mode === 'light' ? '#e0e0e0' : '#303030';
 
     return (
-        <Box className="event-wrapper" sx={{ position: 'relative', paddingTop: '40px', background:"#f2f2f240" }}>
+        <Box className="event-wrapper" sx={{ position: 'relative', paddingTop: '40px', }}>
             <Box sx={{ position: 'absolute', top: "-10%", right: "5%", display: 'flex', }}>
                 <Box
                     className="swiper-button-prev"
