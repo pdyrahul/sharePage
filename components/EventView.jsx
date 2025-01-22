@@ -137,13 +137,13 @@ const EventView = ({ slug }) => {
                             setFieldValue('refundPolicy', event.refundPolicy || '', false);
                             setFieldValue('endTime', event.endTime || '', false);
                             setFieldValue('ticketUrl', event.ticketUrl || '', false);
-                            setFieldValue('isFeatured', event.isFeatured ? "1" : "2", false); // Assuming you use 'Yes'/'No' for form
+                            setFieldValue('isFeatured', event.isFeatured ? "Yes" : "No", false); // Assuming you use 'Yes'/'No' for form
                             setFieldValue('eventType', event.event_type === 'paid' ? 'paid' : 'free', false);
 
                             // Handle nested fields
                             setFieldValue('ethnicity', event.ethnicity.id, false);
                             setFieldValue('category', event.category.idspevent, false);
-                            setFieldValue('sponsor', event.sponsor.sponsorName, false);
+                            setFieldValue('sponsor', event.sponsor.id, false);
                             // Set description and amenities which are HTML strings
                             setFieldValue('description', event.description, false);
                             setFieldValue('amenities', event.amenities, false);
