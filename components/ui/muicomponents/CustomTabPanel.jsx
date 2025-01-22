@@ -139,6 +139,7 @@ export default function BasicTabs({ data }) {
                 <p><strong style={{ color: '#c11' }}>Name:</strong>{data?.profile?.profileName || 'N/A'}</p>
                 <p><strong style={{ color: '#c11' }}>Phone:</strong> <span>{data?.profile?.profilePhone || 'N/A'}</span></p>
                 <p><strong style={{ color: '#c11' }}>Organizer Email:</strong>  <span>{data?.profile?.profileEmail || 'N/A'}</span></p>
+                <p><strong style={{ color: '#c11' }}>Organizer Address:</strong>  <span>{data?.profile?.address || 'N/A'}</span></p>
               </Grid>
               <Grid item md={6} xs={12}>
 
@@ -255,7 +256,8 @@ export default function BasicTabs({ data }) {
                     title={video.title}
                     description={video.description}
                     videoUrl={data.youTubeUrl}
-                  />
+                   data={data}
+                   />
                 </Grid>
               ))}
             </Grid>
