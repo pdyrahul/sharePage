@@ -136,9 +136,9 @@ export default function BasicTabs({ data }) {
             <Grid container spacing={2}>
               <Grid item md={6} xs={12}>
                 <h2>Contact Information</h2>
-                <p><strong style={{ color: '#c11' }}>Name:</strong>CICA</p>
-                <p><strong style={{ color: '#c11' }}>Phone:</strong> <span>+92323456456</span></p>
-                <p><strong style={{ color: '#c11' }}>Organizer Email:</strong>  <span>codegenio@gmail.com</span></p>
+                <p><strong style={{ color: '#c11' }}>Name:</strong>{data?.profile?.profileName || 'N/A'}</p>
+                <p><strong style={{ color: '#c11' }}>Phone:</strong> <span>{data?.profile?.profilePhone || 'N/A'}</span></p>
+                <p><strong style={{ color: '#c11' }}>Organizer Email:</strong>  <span>{data?.profile?.profileEmail || 'N/A'}</span></p>
               </Grid>
               <Grid item md={6} xs={12}>
 
