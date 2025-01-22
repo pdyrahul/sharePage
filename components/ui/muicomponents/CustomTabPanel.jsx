@@ -236,7 +236,7 @@ export default function BasicTabs({ data }) {
           ) : link.label === 'Specification' ? (
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <h2 style={{ color: '#c11' }}>Event Specification</h2>
+                <h2>Event Specification</h2>
               </Grid>
               <SpecificationItem label="Address" value={data?.address || 'N/A'} />
               <SpecificationItem label="Venue Name" value={data?.place || 'N/A'} />
