@@ -1,14 +1,14 @@
 "use client";
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { Box, Modal, Typography } from "@mui/material";
+import { Box, Modal, Typography, Button } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 import validationSchema from "../app/utils/Schema";
 import ImageUpload from "../app/(dashboard)/event-managing/submit-event/component/ImageUpload";
 import TicketList from "../app/(dashboard)/event-managing/submit-event/component/TicketList";
 import useFetchData from "../app/hooks/useFetchData";
 import { useRouter } from 'next/navigation';
-import { getEventCategories, getSponsors, getEventBySlug } from "../app/services/api"; 
+import { getEventCategories, getSponsors, getEventBySlug, updateEvent } from "../app/services/api"; // Assuming updateEvent is your PUT endpoint
 import SponsorModal from "../app/(dashboard)/event-managing/submit-event/component/SponsorModal";
 import ShareEditor from "./ui/TextEditor/ShareEditor";
 import Swal from "sweetalert2";
@@ -27,38 +27,39 @@ const EventView = ({ slug }) => {
 
   // Fetching data including the specific event by slug
   const apiRequests = useMemo(() => [getEventCategories, getSponsors, () => getEventBySlug(slug)], [slug]);
-  const { data } = useFetchData(apiRequests);
+  const { data, refetch } = useFetchData(apiRequests);
 
   // Destructuring data
   const [eventData = {}, sponsorData = {}, eventDraft = {}] = Array.isArray(data) ? data : [];
+
   // Preparing initial values from eventDraft
   const initialValues = useMemo(() => {
     if (eventDraft && eventDraft.data) {
       const draft = eventDraft.data;
-      console.log("eventDraft",draft);
+      console.log("eventDraft", draft);
       return {
         category: draft.category ? draft.category.idspevent : "",
         ethnicity: draft.ethnicity ? draft.ethnicity.id : "",
         eventTitle: draft.eventTitle || "",
         description: draft.description || "",
-        refundPolicy: draft.refundPolicy || "", // Note: this is null in the response
+        refundPolicy: draft.refundPolicy || "",
         amenities: draft.amenities || "", 
         address: draft.address || "",
         place: "", // Place is not in the response, so setting to empty string
-        eventType: draft.event_type || "free", // Note: 'event_type' in response, not 'eventType'
+        eventType: draft.event_type || "free",
         capacity: draft.capacity || "",
         youTubeUrl: draft.youTubeUrl || "",
         startDate: draft.startDate ? new Date(draft.startDate).toISOString().split('T')[0] : "",
         endDate: draft.endDate ? new Date(draft.endDate).toISOString().split('T')[0] : "",
         startTime: draft.startTime || "",
-        endTime: draft.endTime || "", // Note: this is null in the response
-        ticketLinkType: draft.ticketUrl ? "external" : "", // Assuming external if ticketUrl exists
+        endTime: draft.endTime || "",
+        ticketLinkType: draft.ticketUrl ? "external" : "",
         ticketUrl: draft.ticketUrl || "",
-        tickets: draft.tickets || [{ Ticket_type: "", Ticket_price: "", Quantity: "" }], // No tickets in response, defaulting
+        tickets: draft.tickets || [{ Ticket_type: "", Ticket_price: "", Quantity: "" }],
         poster: draft.poster ? [draft.poster] : [],
         galleryImages: draft.gallery ? draft.gallery.map(img => img.image_url) : [],
         seatingLayout: draft.seatingLayout ? [draft.seatingLayout] : [],
-        sponsor: draft.sponsor || "", // This is null in the response
+        sponsor: draft.sponsor || "",
         featuredEvent: draft.isFeatured ? "Yes" : "No"
       };
     }
@@ -102,6 +103,24 @@ const EventView = ({ slug }) => {
     setIsModalOpen(false);
   };
 
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    try {
+      const response = await updateEvent(slug, values);
+      if (response.status === 'Success') {
+        Swal.fire("Success", "Event updated successfully!", "success");
+        resetForm();
+        refetch(); // Refetch the updated data
+      } else {
+        throw new Error('Update failed');
+      }
+    } catch (error) {
+      Swal.fire("Error", "Failed to update the event.", "error");
+      console.error('Error updating event:', error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="event-body">
       <div className="heading">Edit Event Draft</div>
@@ -110,9 +129,9 @@ const EventView = ({ slug }) => {
         validationSchema={validationSchema}
         validateOnBlur={true}
         validateOnChange={true}
-        // onSubmit={handleFinalSubmit} // Removed since we're not submitting directly from here
+        onSubmit={handleSubmit}
       >
-        {({ setFieldValue, values }) => (
+        {({ setFieldValue, values, isSubmitting }) => (
              <Form className="submit-an-event">
              {/* Title Field */}
              <div className="input-group in-1-col">
@@ -570,11 +589,19 @@ const EventView = ({ slug }) => {
                  style={errorStyles}
                />
              </div>
+            
             {/* Submit Button */}
             <div className="main-btn">
-              <button type="button" className="submit-button" onClick={() => setIsModalOpen(true)}>
+              <Button type="button" className="submit-button" onClick={() => setIsModalOpen(true)}>
                 Preview
-              </button>
+              </Button>
+              <Button 
+                type="submit" 
+                className="submit-button" 
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Updating..." : "Update Event"}
+              </Button>
             </div>
           </Form>
         )}
@@ -593,7 +620,7 @@ const EventView = ({ slug }) => {
           </Typography>
           <div className="preview-content">
             <p>Event details would be shown here for preview...</p>
-            <button onClick={CloseModal}>Close</button>
+            <Button onClick={CloseModal}>Close</Button>
           </div>
         </Box>
       </Modal>
