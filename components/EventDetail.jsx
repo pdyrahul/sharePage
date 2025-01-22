@@ -83,21 +83,8 @@ const EventDetail = ({ slug }) => {
                             <div className="heading" style={{ padding: "none", textAlign: "left" }}>Event Detail</div>
                             <div className="title">Description</div>
                             <div className="text" dangerouslySetInnerHTML={{ __html: event.description }}></div>
-                            {/* <div className="title">Main Music Stage</div>
-                            <ul>
-                                <li>Capacity: {event.capacity}</li>
-                                <li className=''>Highlights: <span dangerouslySetInnerHTML={{ __html: event.description }}></span></li>
-                                <li>Special Finale: Not Provided</li>
-                                <li>LINE-UP TO BE ANNOUNCED</li>
-                            </ul> */}
                             <div className="title">Amenities</div>
-                            <ul>
-                                <li dangerouslySetInnerHTML={{ __html: event.amenities }}></li>
-                            </ul>
-                            {/* <div className="title">Additional Festival Features (Open To All)</div>
-                            <ul>
-                                <li>TBD</li>
-                            </ul> */}
+                            <div className="text" dangerouslySetInnerHTML={{ __html: event.amenities }}></div>
                             <div className="title">Location</div>
                             <div className="text">
                                 <img src="./images/location.svg" alt="" />

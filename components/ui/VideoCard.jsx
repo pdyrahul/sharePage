@@ -28,14 +28,6 @@ const VideoCard = ({ title, description, data }) => {
           </div>
         )}
       </div>
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          <p>Video Title</p>
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi magni, voluptas nostrum perferendis porro molestiae corporis consequuntur facilis laboriosam aut. Assumenda libero sunt id! Voluptates esse unde officia nihil suscipit.</p>
-        </Typography>
-      </CardContent>
     </Card>
   );
 };
