@@ -8,6 +8,7 @@ import ImageUpload from "../app/(dashboard)/event-managing/submit-event/componen
 import TicketList from "../app/(dashboard)/event-managing/submit-event/component/TicketList";
 import useFetchData from "../app/hooks/useFetchData";
 import { useRouter } from 'next/navigation';
+import Image from "next/image";
 import { getEventCategories, getSponsors, getEventBySlug, updateEvent } from "../app/services/api"; // Assuming updateEvent is your PUT endpoint
 import SponsorModal from "../app/(dashboard)/event-managing/submit-event/component/SponsorModal";
 import ShareEditor from "./ui/TextEditor/ShareEditor";
@@ -248,7 +249,7 @@ const EventView = ({ slug }) => {
                                                         setFieldValue("address", e.target.value);
                                                     }}
                                                 />
-                                                
+
                                             </Autocomplete>
                                             <ErrorMessage
                                                 name="address"
@@ -518,7 +519,8 @@ const EventView = ({ slug }) => {
                                         <Image
                                             src={oldEvent.poster}
                                             alt="Current Poster"
-                                            style={{ maxWidth: "100%", height: "auto" }}
+                                            width={200}
+                                            height={200}
                                         />
                                     </div>
                                 )}
@@ -543,12 +545,13 @@ const EventView = ({ slug }) => {
                                 <label>
                                     Saved Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
                                 </label>
-                                {event.seatingLayout && (
+                                {oldEvent.seatingLayout && (
                                     <div style={{ marginBottom: "10px" }}>
-                                        <img
-                                            src={event.seatingLayout}
+                                        <Image
+                                            src={oldEvent.seatingLayout}
                                             alt="Current Poster"
-                                            style={{ maxWidth: "100%", height: "auto" }}
+                                            width={200}
+                                            height={200}
                                         />
                                     </div>
                                 )}
@@ -565,13 +568,20 @@ const EventView = ({ slug }) => {
                                     component="span"
                                     style={errorStyles}
                                 />
-                                <div>
-                                    <img
-                                        src={eventData.poster}
-
-                                        alt=""
-                                        className='potraitImg' />
-                                </div>
+                                {oldEvent.gallery && oldEvent.gallery.length > 0 && (
+                                    <div style={{ marginBottom: "10px", display: "flex", flexWrap: "wrap" }}>
+                                        {oldEvent.gallery.map((image, index) => (
+                                            <div key={index} style={{ margin: "5px", display:"flex" }}>
+                                                <Image
+                                                    src={image.image_url}
+                                                    alt={`Gallery Image ${index + 1}`}
+                                                    width={150}
+                                                    height={150}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                             <div className="input-group in-0-5-col">
                                 <label>
