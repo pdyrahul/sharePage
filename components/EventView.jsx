@@ -9,11 +9,10 @@ import TicketList from "../app/(dashboard)/event-managing/submit-event/component
 import useFetchData from "../app/hooks/useFetchData";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
-import { getEventCategories, getSponsors, getEventBySlug, updateEvent } from "../app/services/api"; // Assuming updateEvent is your PUT endpoint
+import { getEventCategories, getSponsors, getEventBySlug, saveEvent } from "../app/services/api"; // Assuming updateEvent is your PUT endpoint
 import SponsorModal from "../app/(dashboard)/event-managing/submit-event/component/SponsorModal";
 import ShareEditor from "./ui/TextEditor/ShareEditor";
 import Swal from "sweetalert2";
-import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import "react-datepicker/dist/react-datepicker.css";
 import Axios from "../app/services/axios";
 
@@ -25,6 +24,7 @@ const EventView = ({ slug }) => {
     const [oldEvent, setOldEvent] = useState({});
     const addressAutocompleteRef = useRef(null);
     const addressInputRef = useRef(null);
+    const router = useRouter();
     useEffect(() => {
         if (typeof window !== 'undefined') {
         }
@@ -64,10 +64,10 @@ const EventView = ({ slug }) => {
     }, []);
     // Fetching data including the specific event by slug
     const apiRequests = useMemo(() => [getEventCategories, getSponsors, () => getEventBySlug(slug)], [slug]);
-    const { data, refetch } = useFetchData(apiRequests);
+    const { data } = useFetchData(apiRequests);
 
     // Destructuring data
-    const [eventData = {}, sponsorData = {}, eventDraft = {}] = Array.isArray(data) ? data : [];
+    const [eventData = {}, sponsorData = {},] = Array.isArray(data) ? data : [];
 
     // Preparing initial values from eventDraft
     const initialValues = {
@@ -93,7 +93,7 @@ const EventView = ({ slug }) => {
         galleryImages: [],
         seatingLayout: "",
         sponsor: "",
-        featuredEvent: "1",
+        isFeatured: "1",
     };
 
     const eventCategories = eventData?.data?.event_category.map((event) => ({
@@ -110,15 +110,7 @@ const EventView = ({ slug }) => {
         id: sponsor.id,
         name: sponsor.sponsorName,
     })) || [];
-
-    const handlePlaceSelect = (setFieldValue) => {
-        const place = autocompleteRef.current.getPlace();
-        if (place && place.formatted_address) {
-            setAddress(place.formatted_address); // Update local state
-            setFieldValue("address", place.formatted_address); // Update Formik state
-        }
-    };
-
+console.log("sponsor", sponsorList)
     const handleOpenModal = () => {
         setSponsorModalOpen(true);
     };
@@ -129,29 +121,26 @@ const EventView = ({ slug }) => {
     };
 
     const handleSubmit = async (values, { resetForm }) => {
-        values.address = address ? address : oldEvent.address;
+        values.address = address ? address : values.address; 
+        values.status = "1";
         try {
             const response = await Axios.put(`/event/${slug}`, values);
             console.log('Update response:', response);
-            if (response.status === 'Success') {
+                if (response.data && response.data.status === 'Success') {
                 Swal.fire("Success", "Event updated successfully!", "success");
                 resetForm();
+                router.push('/event-managing/draft-events');
             } else {
-                throw new Error('Update failed');
+                throw new Error('Update failed due to unexpected response');
             }
         } catch (error) {
-            Swal.fire("Error", "Failed to update the event.", "error");
             console.error('Error updating event:', error);
-        }
-    };
-    const handleSaveAsDraft = (values, formikBag) => {
-        handleSubmit(true, values, {
-            ...formikBag,
-            resetForm: () => {
-                formikBag.resetForm();
-                router.push('/event-managing/draft-events'); // Redirect after resetForm
+            if (error.response && error.response.data && error.response.data.error) {
+                Swal.fire("Error", error.response.data.error, "error");
+            } else {
+                Swal.fire("Error", "Failed to update the event.", "error");
             }
-        });
+        }
     };
     return (
         <div className="event-body">
@@ -164,39 +153,33 @@ const EventView = ({ slug }) => {
                 onSubmit={handleSubmit}
             >
                 {({ errors, touched, isSubmitting, values, setFieldValue }) => {
-                    useEffect(() => {
-                        Axios.get(`/event/${slug}`).then(response => {
-                            const event = response.data.data;
-                            setOldEvent(event);
-                            console.log('Event data:', event);
-                            // Set direct fields
-                            const fields = ['eventTitle', 'address', 'capacity', 'youTubeUrl', 'startDate', 'endDate', 'startTime', 'place'];
-                            fields.forEach(field => {
-                                setFieldValue(field, event[field], false);
-                            });
-                            // Handle null or undefined cases
-                            setFieldValue('refundPolicy', event.refundPolicy || '', false);
-                            setFieldValue('endTime', event.endTime || '', false);
-                            setFieldValue('ticketUrl', event.ticketUrl || '', false);
-                            setFieldValue('featuredEvent', event.isFeatured ? "1" : "0", false); // Assuming you use 'Yes'/'No' for form
-                            setFieldValue('eventType', event.event_type === 'paid' ? 'paid' : 'free', false);
-                            // Handle nested fields
-                            setFieldValue('ethnicity', event.ethnicity.id, false);
-                            setFieldValue('category', event.category.idspevent, false);
-                            setFieldValue('sponsor', event.sponsor.id, false);
-                            // Set description and amenities which are HTML strings
-                            setFieldValue('description', event.description, false);
-                            setFieldValue('amenities', event.amenities, false);
-                            // Handle images (assuming your ImageUpload component can handle URL strings)
-                            // setFieldValue('poster', event.poster ? [event.poster] : [], false);
-                            // setFieldValue('seatingLayout', event.seatingLayout ? [event.seatingLayout] : [], false);
-                            // setFieldValue('galleryImages', event.gallery ? event.gallery.map(img => img.url) : [], false);
-                            // Note: 'tickets' is not present in the data structure provided, so commenting out
-                            // setFieldValue('tickets', event.tickets || [], false);
-                        }).catch(error => {
-                            console.error('Error fetching event data:', error);
+            useEffect(() => {
+                Axios.get(`/event/${slug}`).then(response => {
+                    const event = response.data.data;
+                    if (event) {
+                        setOldEvent(event);
+                        const fields = ['eventTitle', 'address', 'capacity', 'youTubeUrl', 'startDate', 'endDate', 'startTime', 'place', 'poster', 'seatingLayout', 'gallery'];
+                        fields.forEach(field => {
+                            setFieldValue(field, event[field] ?? '', false); // Use nullish coalescing here
                         });
-                    }, []);
+                        // Handle null or undefined cases
+                        setFieldValue('refundPolicy', event.refundPolicy ?? '', false);
+                        setFieldValue('endTime', event.endTime ?? '', false);
+                        setFieldValue('ticketUrl', event.ticketUrl ?? '', false);
+                        setFieldValue('isFeatured', event.isFeatured ? "1" : "0", false);
+                        setFieldValue('eventType', event.event_type === 'paid' ? 'paid' : 'free', false);
+                        // Handle nested fields
+                        setFieldValue('ethnicity', event.ethnicity?.id ?? '', false);
+                        setFieldValue('category', event.category?.idspevent ?? '', false);
+                        setFieldValue('sponsor', event.sponsor.id, false);
+                        // Set description and amenities which are HTML strings
+                        setFieldValue('description', event.description ?? '', false);
+                        setFieldValue('amenities', event.amenities ?? '', false);
+                    }
+                }).catch(error => {
+                    console.error('Error fetching event data:', error);
+                });
+            }, []);
 
                     return (
                         <Form className="submit-an-event">
@@ -258,6 +241,9 @@ const EventView = ({ slug }) => {
                             </div>
                             {/* Address */}
                             <div className="input-group in-1-col">
+                            <label>
+                                    Address<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
                                 <input
                                     type="text"
                                     name="address"
@@ -575,6 +561,12 @@ const EventView = ({ slug }) => {
                                     component="span"
                                     style={errorStyles}
                                 />
+                                
+                            </div>
+                            <div className="input-group in-0-5-col">
+                                <label>
+                                    Saved Gallery Images<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
                                 {oldEvent.gallery && oldEvent.gallery.length > 0 && (
                                     <div style={{ marginBottom: "10px", display: "flex", flexWrap: "wrap" }}>
                                         {oldEvent.gallery.map((image, index) => (
@@ -587,20 +579,6 @@ const EventView = ({ slug }) => {
                                                 />
                                             </div>
                                         ))}
-                                    </div>
-                                )}
-                            </div>
-                            <div className="input-group in-0-5-col">
-                                <label>
-                                    Saved Gallery Images<span style={{ color: "#EF1D26" }}>*</span>
-                                </label>
-                                {event.galleryImages && (
-                                    <div style={{ marginBottom: "10px" }}>
-                                        <img
-                                            src={event.poster}
-                                            alt="Current Poster"
-                                            style={{ maxWidth: "100%", height: "auto" }}
-                                        />
                                     </div>
                                 )}
                             </div>
@@ -691,7 +669,7 @@ const EventView = ({ slug }) => {
                                 >
                                     Preview
                                 </button>
-                                <button type="button"
+                                {/* <button type="button"
                                     className="submit-button"
                                     onClick={() => handleSaveAsDraft(values, { resetForm: () => { } })}
                                     disabled={isLoading}
@@ -703,7 +681,7 @@ const EventView = ({ slug }) => {
                                         "Save as Draft"
                                     )}
 
-                                </button>
+                                </button> */}
                                 <button
                                     type="submit"
                                     className="submit-button"
@@ -719,7 +697,8 @@ const EventView = ({ slug }) => {
                             </div>
 
                             <ToastContainer />
-                        </Form>);
+                        </Form>
+                        );
                 }}
             </Formik>
 

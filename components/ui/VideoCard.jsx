@@ -23,7 +23,7 @@ const VideoCard = ({ title, description, data }) => {
         {videoId ? (
           <YouTube videoId={"videoId"} opts={opts} />
         ) : (
-          <div style={{ backgroundColor: 'lightgray', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+          <div style={{ backgroundColor: 'lightgray', display: 'none', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <Typography variant="body2" color="text.secondary">Video not available</Typography>
           </div>
         )}

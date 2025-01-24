@@ -39,7 +39,6 @@ const Page = () => {
     ticketsSold: event.capacity || 'Not Available',
     image: event.poster || '/images/event-placeholder.svg',
   })) || [];
-  console.log("Events", events);
   const filteredEvents = events.filter((event) =>
     event.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
