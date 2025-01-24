@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import 'bootstrap/dist/css/bootstrap.css'; 
 import { SidebarProvider } from '../Context/SidebarContext';
 import 'react-toastify/dist/ReactToastify.css';
+import React from "react";
 
 export const metadata = {
     title: 'The Share Page',

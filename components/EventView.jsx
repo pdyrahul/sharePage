@@ -23,12 +23,43 @@ const EventView = ({ slug }) => {
     const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
     const [address, setAddress] = useState("");
     const [oldEvent, setOldEvent] = useState({});
-    const autocompleteRef = useRef(null);
-    const libraries = ["places"];
-    const [isClient, setIsClient] = useState(false);
+    const addressAutocompleteRef = useRef(null);
+    const addressInputRef = useRef(null);
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            setIsClient(true);
+        }
+    }, []);
+
+    const handleAddressChange = (value) => {
+        setAddress(value);
+        setOldEvent({ ...oldEvent, address: value });
+    };
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setTimeout(() => {
+                addressAutocompleteRef.current = new window.google.maps.places.Autocomplete(
+                    addressInputRef.current,
+                    {
+                        componentRestrictions: {country: "ca"},
+                        fields: ["address_components", "geometry", "icon", "name"],
+                        types: ["address"]
+                    }
+                );
+
+                addressAutocompleteRef.current.addListener("place_changed", async function () {
+                    const place = await addressAutocompleteRef.current.getPlace();
+                    let address = '';
+                    if (place?.address_components) {
+                        address = [
+                            (place.address_components[0] && place.address_components[0].short_name || ''),
+                            (place.address_components[1] && place.address_components[1].short_name || ''),
+                            (place.address_components[2] && place.address_components[2].short_name || '')
+                        ].join(' ');
+                    }
+                    handleAddressChange(address);
+                });
+            },100)
         }
     }, []);
     // Fetching data including the specific event by slug
@@ -98,8 +129,9 @@ const EventView = ({ slug }) => {
     };
 
     const handleSubmit = async (values, { resetForm }) => {
+        values.address = address ? address : oldEvent.address;
         try {
-            const response = await updateEvent(slug, values);
+            const response = await Axios.put(`/event/${slug}`, values);
             console.log('Update response:', response);
             if (response.status === 'Success') {
                 Swal.fire("Success", "Event updated successfully!", "success");
@@ -225,41 +257,16 @@ const EventView = ({ slug }) => {
                                 />
                             </div>
                             {/* Address */}
-                            {isClient && (
-                                <div className="input-group in-1-col">
-                                    <LoadScript
-                                        googleMapsApiKey="AIzaSyAPpH4FGQaj_JIJOViHAeHGAjl7RDeW8OQ"
-                                        libraries={libraries}
-                                    >
-                                        <div style={{ display: "inline-block", width: "100%" }}>
-                                            <label>
-                                                Event Address<span style={{ color: "#EF1D26" }}>*</span>
-                                            </label>
-                                            <Autocomplete
-                                                onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
-                                                onPlaceChanged={() => handlePlaceSelect(setFieldValue)}
-                                            >
-                                                <Field
-                                                    type="text"
-                                                    name="address"
-                                                    placeholder="Enter Venue Name"
-                                                    value={address}
-                                                    onChange={(e) => {
-                                                        setAddress(e.target.value);
-                                                        setFieldValue("address", e.target.value);
-                                                    }}
-                                                />
-
-                                            </Autocomplete>
-                                            <ErrorMessage
-                                                name="address"
-                                                component="span"
-                                                style={errorStyles}
-                                            />
-                                        </div>
-                                    </LoadScript>
-                                </div>
-                            )}
+                            <div className="input-group in-1-col">
+                                <input
+                                    type="text"
+                                    name="address"
+                                    placeholder="Enter Venue Name"
+                                    ref={addressInputRef}
+                                    id="googleSearch"
+                                    defaultValue={oldEvent.address}
+                                />
+                            </div>
                             {/* Venue Name */}
                             <div className="input-group in-0-75-col">
                                 <label>
