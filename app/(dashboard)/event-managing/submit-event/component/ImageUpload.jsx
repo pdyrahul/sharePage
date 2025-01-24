@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { MdOutlineFileUpload } from "react-icons/md";
-const ImageUpload = ({ name, setFieldValue, multiple = true }) => {
+
+const ImageUpload = ({ name, setFieldValue, width, multiple = true }) => {
   const [files, setFiles] = useState([]);
 
   // Handle files drop
@@ -47,21 +48,20 @@ const ImageUpload = ({ name, setFieldValue, multiple = true }) => {
   };
 
   return (
-    <div style={{ textAlign: "center", display: "flex", flexDirection:"column", width:"100%", }}>
+    <div style={{ textAlign: "center", display: "flex", flexDirection: "column",  width: width, }}>
       <div
         {...getRootProps()}
         style={{
-          // border: "2px dashed #c11",
           borderRadius: "5px",
           padding: "20px",
           cursor: "pointer",
           margin: "20px 0",
-          background:"#f9fafb"
+          background: "#f9fafb",
         }}
       >
         <input {...getInputProps()} />
         <p>Drag and drop images here, or click to select files</p>
-        <MdOutlineFileUpload style={{height:"3rem", width:"3rem" }} />
+        <MdOutlineFileUpload style={{ height: "3rem", width: "3rem" }} />
       </div>
 
       {/* Display Images and Remove Buttons */}
