@@ -537,6 +537,7 @@ const Page = () => {
                 name="poster"
                 setFieldValue={setFieldValue}
                 multiple={false}
+                width="100%"
               />
               <ErrorMessage
                 name="poster"
@@ -554,6 +555,7 @@ const Page = () => {
                 name="seatingLayout"
                 setFieldValue={setFieldValue}
                 multiple={false}
+                width="100%"
               />
               <ErrorMessage
                 name="seatingLayout"
@@ -568,7 +570,7 @@ const Page = () => {
                 Upload Images For Gallery
                 <span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <ImageUpload name="galleryImages" setFieldValue={setFieldValue} />
+              <ImageUpload name="galleryImages" setFieldValue={setFieldValue} width="100%"/>
               <ErrorMessage
                 name="galleryImages"
                 component="span"
@@ -659,9 +661,9 @@ const Page = () => {
             {/* Submit Button */}
             <div className="main-btn">
               <button type="button"
-               className="submit-button"
-               
-               >
+                className="submit-button"
+
+              >
                 Preview
               </button>
               <button type="button"

@@ -17,16 +17,18 @@ import "react-datepicker/dist/react-datepicker.css";
 import Axios from "../app/services/axios";
 
 const EventView = ({ slug }) => {
-    if (typeof window === undefined) {
-        return false;
-    }
     const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
     const [address, setAddress] = useState("");
     const autocompleteRef = useRef(null);
     const libraries = ["places"];
-
+    const [isClient, setIsClient] = useState(false);
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setIsClient(true);
+        }
+    }, []);
     // Fetching data including the specific event by slug
     const apiRequests = useMemo(() => [getEventCategories, getSponsors, () => getEventBySlug(slug)], [slug]);
     const { data, refetch } = useFetchData(apiRequests);
@@ -58,7 +60,7 @@ const EventView = ({ slug }) => {
         galleryImages: [],
         seatingLayout: "",
         sponsor: "",
-        featuredEvent: "Yes",
+        featuredEvent: "1",
     };
 
     const eventCategories = eventData?.data?.event_category.map((event) => ({
@@ -93,24 +95,30 @@ const EventView = ({ slug }) => {
         setIsModalOpen(false);
     };
 
-    const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    const handleSubmit = async (values, { resetForm }) => {
         try {
             const response = await updateEvent(slug, values);
+            console.log('Update response:', response);
             if (response.status === 'Success') {
                 Swal.fire("Success", "Event updated successfully!", "success");
                 resetForm();
-                refetch(); // Refetch the updated data
             } else {
                 throw new Error('Update failed');
             }
         } catch (error) {
             Swal.fire("Error", "Failed to update the event.", "error");
             console.error('Error updating event:', error);
-        } finally {
-            setSubmitting(false);
         }
     };
-
+    const handleSaveAsDraft = (values, formikBag) => {
+        handleSubmit(true, values, {
+            ...formikBag,
+            resetForm: () => {
+                formikBag.resetForm();
+                router.push('/event-managing/draft-events'); // Redirect after resetForm
+            }
+        });
+    };
     return (
         <div className="event-body">
             <div className="heading">Edit Event Draft</div>
@@ -126,20 +134,17 @@ const EventView = ({ slug }) => {
                         Axios.get(`/event/${slug}`).then(response => {
                             const event = response.data.data;
                             console.log('Event data:', event);
-
                             // Set direct fields
-                            const fields = ['eventTitle', 'address', 'capacity', 'youTubeUrl', 'startDate', 'endDate', 'startTime','place'];
+                            const fields = ['eventTitle', 'address', 'capacity', 'youTubeUrl', 'startDate', 'endDate', 'startTime', 'place'];
                             fields.forEach(field => {
                                 setFieldValue(field, event[field], false);
                             });
-
                             // Handle null or undefined cases
                             setFieldValue('refundPolicy', event.refundPolicy || '', false);
                             setFieldValue('endTime', event.endTime || '', false);
                             setFieldValue('ticketUrl', event.ticketUrl || '', false);
-                            setFieldValue('isFeatured', event.isFeatured ? "Yes" : "No", false); // Assuming you use 'Yes'/'No' for form
+                            setFieldValue('featuredEvent', event.isFeatured ? "1" : "0", false); // Assuming you use 'Yes'/'No' for form
                             setFieldValue('eventType', event.event_type === 'paid' ? 'paid' : 'free', false);
-
                             // Handle nested fields
                             setFieldValue('ethnicity', event.ethnicity.id, false);
                             setFieldValue('category', event.category.idspevent, false);
@@ -147,514 +152,554 @@ const EventView = ({ slug }) => {
                             // Set description and amenities which are HTML strings
                             setFieldValue('description', event.description, false);
                             setFieldValue('amenities', event.amenities, false);
-
                             // Handle images (assuming your ImageUpload component can handle URL strings)
-                            setFieldValue('poster', [event.poster], false);
-                            setFieldValue('seatingLayout', [event.seatingLayout], false);
-                            setFieldValue('galleryImages', event.gallery.map(img => img.image_url), false);
-
+                            // setFieldValue('poster', event.poster ? [event.poster] : [], false);
+                            // setFieldValue('seatingLayout', event.seatingLayout ? [event.seatingLayout] : [], false);
+                            // setFieldValue('galleryImages', event.gallery ? event.gallery.map(img => img.url) : [], false);
                             // Note: 'tickets' is not present in the data structure provided, so commenting out
                             // setFieldValue('tickets', event.tickets || [], false);
-
                         }).catch(error => {
                             console.error('Error fetching event data:', error);
                         });
                     }, []);
 
-                    return (<Form className="submit-an-event">
-                        {/* Title Field */}
-                        <div className="input-group in-1-col">
-                            <label>
-                                Event Title
-                                <span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <Field
-                                type="text"
-                                name="eventTitle"
-                                placeholder="Enter Event Title"
-                            />
-                            <ErrorMessage
-                                name="eventTitle"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-                        {/* Category Field */}
-                        <div className="input-group in-0-5-col">
-                            <label>
-                                Category<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <Field as="select" name="category">
-                                <option value="">Select Category</option>
-                                {eventCategories.map((category) => (
-                                    <option key={category.id} value={category.id}>
-                                        {category.title}
-                                    </option>
-                                ))}
-                            </Field>
-                            <ErrorMessage
-                                name="category"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-
-                        {/* Ethnicity Field */}
-                        <div className="input-group in-0-5-col">
-                            <label>
-                                Ethnicity<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <Field as="select" name="ethnicity">
-                                <option value="">Select Ethnicity</option>
-                                {eventEthnicities.map((ethnicity) => (
-                                    <option key={ethnicity.id} value={ethnicity.id}>
-                                        {ethnicity.name}
-                                    </option>
-                                ))}
-                            </Field>
-                            <ErrorMessage
-                                name="ethnicity"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-                        {/* Address */}
-                        <div className="input-group in-1-col">
-                            <LoadScript
-                                googleMapsApiKey="AIzaSyAPpH4FGQaj_JIJOViHAeHGAjl7RDeW8OQ"
-                                libraries={libraries} // Use the static libraries array
-                            >
-                                <div style={{ display: "inline-block", width: "100%" }}>
-                                    <label>
-                                        Event Address<span style={{ color: "#EF1D26" }}>*</span>
-                                    </label>
-                                    <Autocomplete
-                                        onLoad={(autocomplete) =>
-                                            (autocompleteRef.current = autocomplete)
-                                        }
-                                        onPlaceChanged={() => handlePlaceSelect(setFieldValue)}
-                                    >
-                                        <Field
-                                            type="text"
-                                            name="address"
-                                            placeholder="Enter Venue Name"
-                                            value={address}
-                                            onChange={(e) => {
-                                                setAddress(e.target.value);
-                                                setFieldValue("address", e.target.value);
-                                            }}
-                                        />
-                                    </Autocomplete>
-                                    <ErrorMessage
-                                        name="address"
-                                        component="span"
-                                        style={errorStyles}
-                                    />
-                                </div>
-                            </LoadScript>
-                        </div>
-                        {/* Venue Name */}
-                        <div className="input-group in-0-75-col">
-                            <label>
-                                Venue<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <Field type="text" name="place" placeholder="Enter Venue Name" />
-                            <ErrorMessage name="place" component="span" style={errorStyles} />
-                        </div>
-                        {/* Capacity Field */}
-                        <div className="input-group in-3-col">
-                            <label>
-                                Capacity<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <Field
-                                type="number"
-                                name="capacity"
-                                placeholder="Enter Capacity"
-                            />
-                            <ErrorMessage
-                                name="capacity"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-                        {/* YouTube URL Field */}
-                        <div className="input-group in-1-col">
-                            <label>
-                                YouTube URL<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <Field
-                                type="url"
-                                name="youTubeUrl"
-                                placeholder="Enter YouTube URL"
-                            />
-                            <ErrorMessage
-                                name="youTubeUrl"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-
-                        {/* Dates and Times */}
-                        <div className="input-group  in-0-25-col ">
-                            <label>
-                                Start Date<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <Field type="date" name="startDate" />
-                            <ErrorMessage
-                                name="startDate"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-                        <div className="input-group in-0-25-col ">
-                            <label>
-                                Start Time<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <Field type="time" name="startTime" />
-                            <ErrorMessage
-                                name="startTime"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-
-                        <div className="input-group  in-0-25-col ">
-                            <label>
-                                End Date<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <Field type="date" name="endDate" />
-                            <ErrorMessage
-                                name="endDate"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-                        <div className="input-group in-0-25-col ">
-                            <label>
-                                End Time<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <Field type="time" name="endTime" />
-                            <ErrorMessage
-                                name="endTime"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-
-                        {/* Event Type - Radio Buttons */}
-                        <div className="input-group in-3-col">
-                            <label>Event Type</label>
-                            <div
-                                className="radiobttn"
-                                style={{ display: "flex", alignItems: "center", gap: "10px" }}
-                                role="group"
-                                aria-labelledby="radio-group"
-                            >
+                    return (
+                        <Form className="submit-an-event">
+                            {/* Title Field */}
+                            <div className="input-group in-1-col">
                                 <label>
-                                    <Field type="radio" name="eventType" value="free" />
-                                    Free
+                                    Event Title
+                                    <span style={{ color: "#EF1D26" }}>*</span>
                                 </label>
-                                <label>
-                                    <Field type="radio" name="eventType" value="paid" />
-                                    Paid
-                                </label>
+                                <Field
+                                    type="text"
+                                    name="eventTitle"
+                                    placeholder="Enter Event Title"
+                                />
+                                <ErrorMessage
+                                    name="eventTitle"
+                                    component="span"
+                                    style={errorStyles}
+                                />
                             </div>
-                            <ErrorMessage
-                                name="eventType"
-                                component="div"
-                                style={errorStyles}
-                            />
-                        </div>
+                            {/* Category Field */}
+                            <div className="input-group in-0-5-col">
+                                <label>
+                                    Category<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <Field as="select" name="category">
+                                    <option value="">Select Category</option>
+                                    {eventCategories.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.title}
+                                        </option>
+                                    ))}
+                                </Field>
+                                <ErrorMessage
+                                    name="category"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
 
-                        {/* Conditional rendering for ticket link if event is paid */}
-                        {values.eventType === "paid" && (
-                            <div
-                                className="sellTicket"
-                                style={{
-                                    border: "2px solid #d9dce0",
-                                    padding: "15px",
-                                    width: "100%",
-                                }}
-                            >
-                                {/* Add Ticket Link Field */}
+                            {/* Ethnicity Field */}
+                            <div className="input-group in-0-5-col">
+                                <label>
+                                    Ethnicity<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <Field as="select" name="ethnicity">
+                                    <option value="">Select Ethnicity</option>
+                                    {eventEthnicities.map((ethnicity) => (
+                                        <option key={ethnicity.id} value={ethnicity.id}>
+                                            {ethnicity.name}
+                                        </option>
+                                    ))}
+                                </Field>
+                                <ErrorMessage
+                                    name="ethnicity"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
+                            {/* Address */}
+                            {isClient && (
                                 <div className="input-group in-1-col">
-                                    <label>
-                                        Add Ticket Link<span style={{ color: "#EF1D26" }}>*</span>
-                                    </label>
-                                    <div
-                                        className="in-0-5-col radiobttn"
-                                        style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: "10px",
-                                        }}
-                                        role="group"
-                                        aria-labelledby="radio-group"
+                                    <LoadScript
+                                        googleMapsApiKey="AIzaSyAPpH4FGQaj_JIJOViHAeHGAjl7RDeW8OQ"
+                                        libraries={libraries}
                                     >
-                                        <label>
-                                            <Field
-                                                type="radio"
-                                                name="ticketLinkType"
-                                                value="external"
-                                            />
-                                            External
-                                        </label>
-                                        <label>
-                                            <Field
-                                                type="radio"
-                                                name="ticketLinkType"
-                                                value="sharePage"
-                                            />
-                                            Sell Ticket on TheSharePage
-                                        </label>
-                                    </div>
-                                    <ErrorMessage
-                                        name="ticketLinkType"
-                                        component="div"
-                                        style={errorStyles}
-                                    />
-
-                                    {/* Conditional Rendering Based on Ticket Link Type */}
-                                    {values.ticketLinkType === "external" && (
-                                        <div className="input-group in-0-75-col">
+                                        <div style={{ display: "inline-block", width: "100%" }}>
                                             <label>
-                                                Ticket URL<span style={{ color: "#EF1D26" }}>*</span>
+                                                Event Address<span style={{ color: "#EF1D26" }}>*</span>
                                             </label>
-                                            <Field
-                                                type="url"
-                                                name="ticketUrl"
-                                                placeholder="Enter Ticket URL"
-                                                style={{ marginRight: "8px", width: "100%" }}
-                                            />
+                                            <Autocomplete
+                                                onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                                                onPlaceChanged={() => handlePlaceSelect(setFieldValue)}
+                                            >
+                                                <Field
+                                                    type="text"
+                                                    name="address"
+                                                    placeholder="Enter Venue Name"
+                                                    value={address}
+                                                    onChange={(e) => {
+                                                        setAddress(e.target.value);
+                                                        setFieldValue("address", e.target.value);
+                                                    }}
+                                                />
+                                            </Autocomplete>
                                             <ErrorMessage
-                                                name="ticketUrl"
+                                                name="address"
                                                 component="span"
                                                 style={errorStyles}
                                             />
                                         </div>
-                                    )}
-                                    {values.ticketLinkType === "sharePage" && (
-                                        <TicketList
-                                            name="tickets"
-                                            setFieldValue={setFieldValue}
-                                        />
-                                    )}
+                                    </LoadScript>
                                 </div>
+                            )}
+                            {/* Venue Name */}
+                            <div className="input-group in-0-75-col">
+                                <label>
+                                    Venue<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <Field type="text" name="place" placeholder="Enter Venue Name" />
+                                <ErrorMessage name="place" component="span" style={errorStyles} />
                             </div>
-                        )}
-                        {/* Description */}
-                        {/* <div className="input-group in-1-col">
-                            <label>
-                                Description<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <ShareEditor
-                                name="description"
-                                data={values.description || ""}
-                                setData={(data) => setFieldValue("description", data)}
-                            />
-                            <ErrorMessage
-                                name="description"
-                                component="div"
-                                style={errorStyles}
-                            />
-                        </div> */}
-
-                        {/* Policy */}
-                        {/* <div className="input-group in-1-col">
-                            <label>
-                                Refund Policy<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <ShareEditor
-                                name="refundPolicy"
-                                data={values.refundPolicy || ""}
-                                setData={(data) => setFieldValue("refundPolicy", data)}
-                            />  
-                            <ErrorMessage
-                                name="refundPolicy"
-                                component="div"
-                                style={errorStyles}
-                            />
-                        </div> */}
-                        {/* Amenities */}
-                        {/* <div className="input-group in-1-col">
-                            <label>
-                                Amenities<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <ShareEditor
-                                name="amenities"
-                                data={values.amenities || ""}
-                                setData={(data) => setFieldValue("amenities", data)}
-                            />
-                            <ErrorMessage
-                                name="amenities"
-                                component="div"
-                                style={errorStyles}
-                            />
-                        </div> */}
-                        {/* Uploader Component for Posters */}
-                        <div className="input-group in-1-col">
-                            <label>
-                                Upload Poster(s)<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <ImageUpload
-                                name="poster"
-                                setFieldValue={setFieldValue}
-                                multiple={false}
-                            />
-                            <ErrorMessage
-                                name="poster"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-
-                        {/* Uploader Component for Seating Layout */}
-                        <div className="input-group in-1-col">
-                            <label>
-                                Upload Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <ImageUpload
-                                name="seatingLayout"
-                                setFieldValue={setFieldValue}
-                                multiple={false}
-                            />
-                            <ErrorMessage
-                                name="seatingLayout"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-
-                        {/* Uploader Component for Gallery Images */}
-                        <div className="input-group in-1-col">
-                            <label>
-                                Upload Images For Gallery
-                                <span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <ImageUpload name="galleryImages" setFieldValue={setFieldValue} />
-                            <ErrorMessage
-                                name="galleryImages"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
-
-                        {/* Sponsor Information Section */}
-                        <div className="input-group in-1-col"
-                            style={{
-                                backgroundColor: "#ffb8bd",
-                                color: "#000",
-                                padding: "10px",
-                                fontWeight: "bold",
-                                marginBottom1: "20px",
-                            }}
-                        >
-                            <h5 className="sponser-title m-0 ">SPONSER INFORMATION </h5>
-                        </div>
-
-                        {/* Sponsor Selection */}
-                        <div className="input-group in-3-col">
-                            <label>
-                                Select Sponsor <span style={{ color: "#EF1D26" }}>*</span>
-                            </label>
-                            <div
-                                name="sponsor"
-                                style={{ display: "flex", alignItems: "center", width: "100%" }}
-                            >
-                                <Field as="select" name="sponsor">
-                                    <option value="">Select Sponsor</option>
-                                    {sponsorList.map((sponsor) => (
-                                        <option key={sponsor.id} value={sponsor.id}>
-                                            {sponsor.name}
-                                        </option>
-                                    ))}
-                                </Field>
-
-                                {/* Button to open modal */}
-                                <button
-                                    type="button"
-                                    onClick={handleOpenModal}
+                            {/* Capacity Field */}
+                            <div className="input-group in-3-col">
+                                <label>
+                                    Capacity<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <Field
+                                    type="number"
+                                    name="capacity"
+                                    placeholder="Enter Capacity"
+                                />
+                                <ErrorMessage
+                                    name="capacity"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
+                            {/* YouTube URL Field */}
+                            <div className="input-group in-1-col">
+                                <label>
+                                    YouTube URL<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <Field
+                                    type="url"
+                                    name="youTubeUrl"
+                                    placeholder="Enter YouTube URL"
+                                />
+                                <ErrorMessage
+                                    name="youTubeUrl"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
+                            {/* Dates and Times */}
+                            <div className="input-group  in-0-25-col ">
+                                <label>
+                                    Start Date<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <Field type="date" name="startDate" />
+                                <ErrorMessage
+                                    name="startDate"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
+                            <div className="input-group in-0-25-col ">
+                                <label>
+                                    Start Time<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <Field type="time" name="startTime" />
+                                <ErrorMessage
+                                    name="startTime"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
+                            <div className="input-group  in-0-25-col ">
+                                <label>
+                                    End Date<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <Field type="date" name="endDate" />
+                                <ErrorMessage
+                                    name="endDate"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
+                            <div className="input-group in-0-25-col ">
+                                <label>
+                                    End Time<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <Field type="time" name="endTime" />
+                                <ErrorMessage
+                                    name="endTime"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
+                            {/* Event Type - Radio Buttons */}
+                            <div className="input-group in-3-col">
+                                <label>Event Type</label>
+                                <div
+                                    className="radiobttn"
+                                    style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                                    role="group"
+                                    aria-labelledby="radio-group"
+                                >
+                                    <label>
+                                        <Field type="radio" name="eventType" value="free" />
+                                        Free
+                                    </label>
+                                    <label>
+                                        <Field type="radio" name="eventType" value="paid" />
+                                        Paid
+                                    </label>
+                                </div>
+                                <ErrorMessage
+                                    name="eventType"
+                                    component="div"
+                                    style={errorStyles}
+                                />
+                            </div>
+                            {/* Conditional rendering for ticket link if event is paid */}
+                            {values.eventType === "paid" && (
+                                <div
+                                    className="sellTicket"
                                     style={{
-                                        margin: "10px",
-                                        background: "#c11",
-                                        color: "#fff",
-                                        padding: "5px 10px",
-                                        borderRadius: "5px",
-                                        width: "200px",
+                                        border: "2px solid #d9dce0",
+                                        padding: "15px",
+                                        width: "100%",
                                     }}
                                 >
-                                    Add Sponsor
+                                    {/* Add Ticket Link Field */}
+                                    <div className="input-group in-1-col">
+                                        <label>
+                                            Add Ticket Link<span style={{ color: "#EF1D26" }}>*</span>
+                                        </label>
+                                        <div
+                                            className="in-0-5-col radiobttn"
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: "10px",
+                                            }}
+                                            role="group"
+                                            aria-labelledby="radio-group"
+                                        >
+                                            <label>
+                                                <Field
+                                                    type="radio"
+                                                    name="ticketLinkType"
+                                                    value="external"
+                                                />
+                                                External
+                                            </label>
+                                            <label>
+                                                <Field
+                                                    type="radio"
+                                                    name="ticketLinkType"
+                                                    value="sharePage"
+                                                />
+                                                Sell Ticket on TheSharePage
+                                            </label>
+                                        </div>
+                                        <ErrorMessage
+                                            name="ticketLinkType"
+                                            component="div"
+                                            style={errorStyles}
+                                        />
+
+                                        {/* Conditional Rendering Based on Ticket Link Type */}
+                                        {values.ticketLinkType === "external" && (
+                                            <div className="input-group in-0-75-col">
+                                                <label>
+                                                    Ticket URL<span style={{ color: "#EF1D26" }}>*</span>
+                                                </label>
+                                                <Field
+                                                    type="url"
+                                                    name="ticketUrl"
+                                                    placeholder="Enter Ticket URL"
+                                                    style={{ marginRight: "8px", width: "100%" }}
+                                                />
+                                                <ErrorMessage
+                                                    name="ticketUrl"
+                                                    component="span"
+                                                    style={errorStyles}
+                                                />
+                                            </div>
+                                        )}
+                                        {values.ticketLinkType === "sharePage" && (
+                                            <TicketList
+                                                name="tickets"
+                                                setFieldValue={setFieldValue}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            {/* Description */}
+                            {<div className="input-group in-1-col">
+                                <label>
+                                    Description<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <ShareEditor
+                                    name="description"
+                                    data={values.description || ""}
+                                    setData={(data) => setFieldValue("description", data)}
+                                />
+                                <ErrorMessage
+                                    name="description"
+                                    component="div"
+                                    style={errorStyles}
+                                />
+                            </div>}
+
+                            {/* Policy */}
+                            {<div className="input-group in-1-col">
+                                <label>
+                                    Refund Policy<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <ShareEditor
+                                    name="refundPolicy"
+                                    data={values.refundPolicy || ""}
+                                    setData={(data) => setFieldValue("refundPolicy", data)}
+                                />
+                                <ErrorMessage
+                                    name="refundPolicy"
+                                    component="div"
+                                    style={errorStyles}
+                                />
+                            </div>}
+                            {/* Amenities */}
+                            {<div className="input-group in-1-col">
+                                <label>
+                                    Amenities<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <ShareEditor
+                                    name="amenities"
+                                    data={values.amenities || ""}
+                                    setData={(data) => setFieldValue("amenities", data)}
+                                />
+                                <ErrorMessage
+                                    name="amenities"
+                                    component="div"
+                                    style={errorStyles}
+                                />
+                            </div>}
+                            {/* Uploader Component for Posters */}
+                            <div className="input-group in-0-5-col">
+                                <label>
+                                    Upload Poster(s)<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <ImageUpload
+                                    name="poster"
+                                    setFieldValue={setFieldValue}
+                                    multiple={false}
+                                />
+                                <ErrorMessage
+                                    name="poster"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
+                            <div className="input-group in-0-5-col">
+                                <label>
+                                    Saved Poster<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                {event.poster && (
+                                    <div style={{ marginBottom: "10px" }}>
+                                        <img
+                                            src={event.poster}
+                                            alt="Current Poster"
+                                            style={{ maxWidth: "100%", height: "auto" }}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                            {/* Uploader Component for Seating Layout */}
+                            <div className="input-group in-0-5-col">
+                                <label>
+                                    Upload Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <ImageUpload
+                                    name="seatingLayout"
+                                    setFieldValue={setFieldValue}
+                                    multiple={false}
+                                />
+                                <ErrorMessage
+                                    name="seatingLayout"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
+                            <div className="input-group in-0-5-col">
+                                <label>
+                                    Saved Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                {event.seatingLayout && (
+                                    <div style={{ marginBottom: "10px" }}>
+                                        <img
+                                            src={event.seatingLayout}
+                                            alt="Current Poster"
+                                            style={{ maxWidth: "100%", height: "auto" }}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                            {/* Uploader Component for Gallery Images */}
+                            <div className="input-group in-0-5-col">
+                                <label>
+                                    Upload Images For Gallery
+                                    <span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <ImageUpload name="galleryImages" setFieldValue={setFieldValue} />
+                                <ErrorMessage
+                                    name="galleryImages"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                                <div>
+                                    <img
+                                        src={eventData.poster}
+
+                                        alt=""
+                                        className='potraitImg' />
+                                </div>
+                            </div>
+                            <div className="input-group in-0-5-col">
+                                <label>
+                                    Saved Gallery Images<span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                {event.galleryImages && (
+                                    <div style={{ marginBottom: "10px" }}>
+                                        <img
+                                            src={event.poster}
+                                            alt="Current Poster"
+                                            style={{ maxWidth: "100%", height: "auto" }}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                            {/* Sponsor Information Section */}
+                            <div className="input-group in-1-col"
+                                style={{
+                                    backgroundColor: "#ffb8bd",
+                                    color: "#000",
+                                    padding: "10px",
+                                    fontWeight: "bold",
+                                    marginBottom1: "20px",
+                                }}
+                            >
+                                <h5 className="sponser-title m-0 ">SPONSER INFORMATION </h5>
+                            </div>
+
+                            {/* Sponsor Selection */}
+                            <div className="input-group in-3-col">
+                                <label>
+                                    Select Sponsor <span style={{ color: "#EF1D26" }}>*</span>
+                                </label>
+                                <div
+                                    name="sponsor"
+                                    style={{ display: "flex", alignItems: "center", width: "100%" }}
+                                >
+                                    <Field as="select" name="sponsor">
+                                        <option value="">Select Sponsor</option>
+                                        {sponsorList.map((sponsor) => (
+                                            <option key={sponsor.id} value={sponsor.id}>
+                                                {sponsor.name}
+                                            </option>
+                                        ))}
+                                    </Field>
+
+                                    {/* Button to open modal */}
+                                    <button
+                                        type="button"
+                                        onClick={handleOpenModal}
+                                        style={{
+                                            margin: "10px",
+                                            background: "#c11",
+                                            color: "#fff",
+                                            padding: "5px 10px",
+                                            borderRadius: "5px",
+                                            width: "200px",
+                                        }}
+                                    >
+                                        Add Sponsor
+                                    </button>
+                                </div>
+                                <ErrorMessage
+                                    name="sponsor"
+                                    component="span"
+                                    style={errorStyles}
+                                />
+                            </div>
+
+                            {/* Featured Event Option */}
+                            <div className="input-group in-3-col">
+                                <label>Make Featured Event (35 USD)</label>
+                                <div
+                                    className="radiobttn"
+                                    style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                                    role="group"
+                                    aria-labelledby="radio-group"
+                                >
+                                    <label>
+                                        <Field type="radio" name="featuredEvent" value="1" />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <Field type="radio" name="featuredEvent" value="0" />
+                                        No
+                                    </label>
+                                </div>
+                                <ErrorMessage
+                                    name="featuredEvent"
+                                    component="div"
+                                    style={errorStyles}
+                                />
+                            </div>
+
+                            {/* Submit Button */}
+                            <div className="main-btn">
+                                <button type="button"
+                                    className="submit-button"
+
+                                >
+                                    Preview
+                                </button>
+                                <button type="button"
+                                    className="submit-button"
+                                    onClick={() => handleSaveAsDraft(values, { resetForm: () => { } })}
+                                    disabled={isLoading}
+                                >
+
+                                    {isLoading ? (
+                                        <CircularProgress size={20} color="inherit" />
+                                    ) : (
+                                        "Save as Draft"
+                                    )}
+
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="submit-button"
+                                    disabled={isLoading}
+                                    onClick={() => handleSubmit(values, { resetForm: () => { } })}
+                                >
+                                    {isLoading ? (
+                                        <CircularProgress size={20} color="inherit" />
+                                    ) : (
+                                        "Submit"
+                                    )}
                                 </button>
                             </div>
-                            <ErrorMessage
-                                name="sponsor"
-                                component="span"
-                                style={errorStyles}
-                            />
-                        </div>
 
-                        {/* Featured Event Option */}
-                        <div className="input-group in-3-col">
-                            <label>Make Featured Event (35 USD)</label>
-                            <div
-                                className="radiobttn"
-                                style={{ display: "flex", alignItems: "center", gap: "10px" }}
-                                role="group"
-                                aria-labelledby="radio-group"
-                            >
-                                <label>
-                                    <Field type="radio" name="featuredEvent" value="1" />
-                                    Yes
-                                </label>
-                                <label>
-                                    <Field type="radio" name="featuredEvent" value="0" />
-                                    No
-                                </label>
-                            </div>
-                            <ErrorMessage
-                                name="featuredEvent"
-                                component="div"
-                                style={errorStyles}
-                            />
-                        </div>
-
-                        {/* Submit Button */}
-                        <div className="main-btn">
-                            <button type="button"
-                                className="submit-button"
-
-                            >
-                                Preview
-                            </button>
-                            <button type="button"
-                                className="submit-button"
-                                onClick={() => handleSaveAsDraft(values, { resetForm: () => { } })}
-                                disabled={isLoading}
-                            >
-
-                                {isLoading ? (
-                                    <CircularProgress size={20} color="inherit" />
-                                ) : (
-                                    "Save as Draft"
-                                )}
-
-                            </button>
-                            <button
-                                type="submit"
-                                className="submit-button"
-                                disabled={isLoading}
-                                onClick={() => handleFinalSubmit(values, { resetForm: () => { } })}
-                            >
-                                {isLoading ? (
-                                    <CircularProgress size={20} color="inherit" />
-                                ) : (
-                                    "Submit"
-                                )}
-                            </button>
-                        </div>
-
-                        <ToastContainer />
-                    </Form>);
+                            <ToastContainer />
+                        </Form>);
                 }}
             </Formik>
 

@@ -1,51 +1,84 @@
-"use client"
-import { useCallback, useState, useRef } from 'react';
+"use client";
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { debounce } from 'lodash';
-import dynamic from 'next/dynamic';
+import { Editor } from '@tinymce/tinymce-react';
 
-const JoditEditor = dynamic(() => import('jodit-react'), {
-  ssr: false,
-});
-const ShareEditor = ({ data, setData }) => {
+const ShareEditor = ({ data, setData, fetchData }) => {
+  // This check will prevent the component from rendering on the server, which is not what we want.
+  // Instead, we'll manage server/client differences in a way that allows for proper hydration.
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsClient(true);
+    }
+  }, []);
+
   const [content, setContent] = useState(data);
-  const editor = useRef(null);
+  const editorRef = useRef(null);
+  const history = useRef([data]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+
   const debouncedUpdate = useCallback(
     debounce((newContent) => {
       setData(newContent);
     }, 300),
-    [] // Dependencies array
+    []
   );
 
-  const handleBlur = (newContent) => {
+  useEffect(() => {
+    setContent(data);
+    updateHistory(data);
+  }, [data]);
+
+  const updateHistory = (newContent) => {
+    history.current = history.current.slice(0, historyIndex + 1);
+    history.current.push(newContent);
+    setHistoryIndex(history.current.length - 1);
+  };
+
+  const handleUndo = () => {
+    if (historyIndex > 0) {
+      const prevState = history.current[historyIndex - 1];
+      setContent(prevState);
+      if (editorRef.current) {
+        editorRef.current.setContent(prevState);
+      }
+      setHistoryIndex(historyIndex - 1);
+      setData(prevState);
+    }
+  };
+
+  const handleEditorChange = (newContent, editor) => {
     setContent(newContent);
+    updateHistory(newContent);
     debouncedUpdate(newContent);
   };
 
+  // Only render the editor if we're on the client side to avoid hydration issues
+  if (!isClient) {
+    // You might want to show a loading indicator or nothing until hydration is complete
+    return <div>Loading...</div>;
+  }
+
   return (
     <div style={{ width: '100%' }}>
-      <JoditEditor
-        ref={editor}
-        value={content}
-        onBlur={handleBlur} // Use onBlur for state update
-        config={{
-          readonly: false,
-          height: 150,
-          toolbarSticky: false,
-          askBeforePasteHTML: false,
-          askBeforePasteFromWord: false,
-          defaultActionOnPaste: 'insert_as_html',
-          buttons: [
-            'undo', 'redo', '|',
-            'bold', 'italic', 'underline', '|',
-            'copy', 'cut', 'paste', '|',
-            'align', 'font', 'fontsize',
+      <Editor
+        tinymceScriptSrc="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.7/tinymce.min.js"
+        onInit={(evt, editor) => editorRef.current = editor}
+        initialValue={data}
+        init={{
+          height: 200,
+          menubar: false,
+          plugins: [
+            'advlist autolink lists link image charmap print preview anchor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste code help wordcount'
           ],
-          clipboard: {
-            matchVisual: true, // Helps in ensuring pasted content matches the editor style
-          },
-          placeholder: 'Start typing or paste your content here...',
-          allowPasteFromWord: true, // Allows pasting from Word or other editors
+          toolbar: 'undo redo bold italic alignjustify',
+          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
         }}
+        onEditorChange={handleEditorChange}
       />
     </div>
   );

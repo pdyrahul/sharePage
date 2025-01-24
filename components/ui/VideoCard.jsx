@@ -21,13 +21,14 @@ const VideoCard = ({ title, description, data }) => {
     <Card>
       <div style={{ height: '350px', overflow: 'hidden' }}>
         {videoId ? (
-          <YouTube videoId={videoId} opts={opts} />
+          <YouTube videoId={"videoId"} opts={opts} />
         ) : (
           <div style={{ backgroundColor: 'lightgray', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <Typography variant="body2" color="text.secondary">Video not available</Typography>
           </div>
         )}
       </div>
+     
     </Card>
   );
 };
