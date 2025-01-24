@@ -12,7 +12,7 @@ const SeatingLayout = ({data}) => {
       
       </Typography>
       {/* Example of an image for seating layout */}
-      <img src={data.seatingLayout} alt={data.id} style={{ width: '100%', height: '550px' }} />
+      <img src={data.seatingLayout} alt={data.id} style={{ width: '100%', height: '550px', borderRadius:'10px' }} />
     </Box>
   );
 };

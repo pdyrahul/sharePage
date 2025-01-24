@@ -1,44 +1,45 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import YouTube from 'react-youtube';
+import { Box } from '@mui/material';
 
-const VideoCard = ({ title, description, data }) => {
-  // Extract the video ID from the YouTube URL
-  const videoId = new URL(data.youTubeUrl).searchParams.get('v');
-
-  const opts = {
-    height: '350',
-    width: '100%',
-    playerVars: {
-      autoplay: 0,
-    },
+const VideoCard = ({ videoUrl }) => {
+  const getCleanEmbedUrl = (url) => {
+    const regex = /(?:youtube\.com\/embed\/|youtube\.com.*(?:\?|&)v=|youtu\.be\/)([^&]+)/;
+    const match = url.match(regex);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
   };
 
-  return (
-    <Card>
-      <div style={{ height: '350px', overflow: 'hidden' }}>
-        {videoId ? (
-          <YouTube videoId={"videoId"} opts={opts} />
-        ) : (
-          <div style={{ backgroundColor: 'lightgray', display: 'none', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            <Typography variant="body2" color="text.secondary">Video not available</Typography>
-          </div>
-        )}
-      </div>
-     
-    </Card>
-  );
-};
+  const embedUrl = getCleanEmbedUrl(videoUrl);
 
-VideoCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  data: PropTypes.shape({
-    youTubeUrl: PropTypes.string.isRequired,
-  }).isRequired,
+  if (!embedUrl) {
+    return <p>Invalid or Restricted YouTube URL</p>;
+  }
+
+  return (
+    <Box
+      sx={{
+        position: 'relative',
+        paddingBottom: '56.25%', // 16:9 aspect ratio
+        height: 400,
+        overflow: 'hidden',
+      }}
+    >
+      <iframe
+        src={embedUrl}
+        title="YouTube Video"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '500px',
+          borderRadius:'10px',
+        }}
+      ></iframe>
+    </Box>
+  );
 };
 
 export default VideoCard;

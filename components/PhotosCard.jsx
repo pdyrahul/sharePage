@@ -14,7 +14,7 @@ const PhotosCard = ({ data }) => {
     }));
     return ( 
         <Box className="photos-wrapper"> 
-            <ImageList cols={5} gap={15} sx={{ width: '100%', }}>
+            <ImageList cols={4} gap={15} sx={{ width: '100%', }}>
                 {photos.map((photo) => ( 
                     <ImageListItem key={photo.id} data-bs-toggle="modal" data-bs-target="#view-image" sx={{ position: 'relative', width: '100%', paddingBottom: '100%' }}>
                         <Box
@@ -24,6 +24,7 @@ const PhotosCard = ({ data }) => {
                                 left: 0,
                                 width: '100%',
                                 height: '100%',
+                               
                             }}
                         >
                             <LazyLoadImage
@@ -34,6 +35,7 @@ const PhotosCard = ({ data }) => {
                                     width: '100%',
                                     height: '100%',
                                     objectFit: 'cover',
+                                    borderRadius: '10px',
                                 }}
                             />
                         </Box>
