@@ -1,11 +1,11 @@
-'use client'; 
+'use client';
 
 import React, { useState } from 'react';
 import { Modal, Box, Button, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-// import { Editor } from '../../../../components/ui/TextEditor/Editor';
+import ShareEditor from '../../../../components/ui/TextEditor/ShareEditor';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -31,9 +31,9 @@ const Page = () => {
   };
 
   const onSubmit = (data) => {
-   toast.success('Launched successfully!', {
-       style: { width: '300px', marginTop: '10px' },
-     });
+    toast.success('Launched successfully!', {
+      style: { width: '300px', marginTop: '10px' },
+    });
     setIsLoading(true); // Set loading state
 
     // Log the form data to the console
@@ -257,26 +257,11 @@ const Page = () => {
             placeholder="Type Description"
             rows={6}
           /> */}
-           {/* <Editor 
-            onEditorChange={handleEditorChange}
-            initialValue="<p>Start writing here...</p>"
-          /> */}
+          <ShareEditor
+            onChange={(content) => setValue("description", content)}
+            initialValue={watch('description') || "<p>Start writing here...</p>"}
+          />
           {errors.description && <span style={{ color: 'red' }}>This field is required</span>}
-          {/* <div className="icons">
-            <div className="icon">
-              <img src="./images/italic.svg" alt="" />
-            </div>
-            <div className="icon">
-              <img src="./images/bold.svg" alt="" />
-            </div>
-            <div className="icon">
-              <img src="./images/underline.svg" alt="" />
-            </div>
-            <div className="icon">
-              <img src="./images/line-through.svg" alt="" />
-            </div>
-            <div className="icon">Generate By AI</div>
-          </div> */}
         </div>
 
         {/* Banner Image Upload */}
@@ -393,7 +378,7 @@ const Page = () => {
             Please fill in all required fields.
           </div>
         )}
-        <ToastContainer/>
+        <ToastContainer />
       </form>
 
       {/* Modal to show form data */}

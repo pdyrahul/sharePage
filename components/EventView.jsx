@@ -21,6 +21,7 @@ const EventView = ({ slug }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
     const [address, setAddress] = useState("");
+    const [oldEvent, setOldEvent] = useState({});
     const autocompleteRef = useRef(null);
     const libraries = ["places"];
     const [isClient, setIsClient] = useState(false);
@@ -133,6 +134,7 @@ const EventView = ({ slug }) => {
                     useEffect(() => {
                         Axios.get(`/event/${slug}`).then(response => {
                             const event = response.data.data;
+                            setOldEvent(event);
                             console.log('Event data:', event);
                             // Set direct fields
                             const fields = ['eventTitle', 'address', 'capacity', 'youTubeUrl', 'startDate', 'endDate', 'startTime', 'place'];
@@ -246,6 +248,7 @@ const EventView = ({ slug }) => {
                                                         setFieldValue("address", e.target.value);
                                                     }}
                                                 />
+                                                
                                             </Autocomplete>
                                             <ErrorMessage
                                                 name="address"
@@ -510,10 +513,10 @@ const EventView = ({ slug }) => {
                                 <label>
                                     Saved Poster<span style={{ color: "#EF1D26" }}>*</span>
                                 </label>
-                                {event.poster && (
+                                {oldEvent.poster && (
                                     <div style={{ marginBottom: "10px" }}>
-                                        <img
-                                            src={event.poster}
+                                        <Image
+                                            src={oldEvent.poster}
                                             alt="Current Poster"
                                             style={{ maxWidth: "100%", height: "auto" }}
                                         />
