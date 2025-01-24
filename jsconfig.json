@@ -4,7 +4,9 @@
   },
   "include": [
     "src/**/*",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    "pages/**/*",
+    "components/**/*"
   ],
   "exclude": [
     "node_modules"
