@@ -14,6 +14,12 @@
 .css-q403tl {
     border: none !important;
 }
+.errorText {
+    color: red;
+    font-size: 12px;
+    font-weight: 500;
+   
+}
 .swiper-button-prev:after, .swiper-button-next:after{font-size: 21px !important;}
 .tox .tox-edit-area::before {
     border: 1px solid #c11 !important;

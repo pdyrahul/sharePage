@@ -105,7 +105,7 @@ const ImageUpload = ({ name, setFieldValue, multiple = true }) => {
                     background: "#f9fafb"
                 }}
             >
-                <input {...getInputProps()} />
+                <input name={name} {...getInputProps()} accept="image/*" />
                 <p>Drag and drop images here, or click to select files</p>
                 <MdOutlineFileUpload style={{ height: "3rem", width: "3rem" }} />
             </div>
