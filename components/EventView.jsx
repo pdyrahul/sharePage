@@ -165,22 +165,34 @@ const EventView = ({ slug }) => {
         }
     }
     const handleDelete = async (galleryId) => {
-        try {
-            const response = await deletegalleryImage(galleryId);
-            if (response.data.status === "Success") {
-                Swal.fire("Success", "Image deleted successfully!", "success");
-                // Update state to remove the deleted image from oldEvent.gallery
-                setOldEvent(prevState => ({
-                    ...prevState,
-                    gallery: prevState.gallery.filter(image => image.id !== galleryId)
-                }));
-            } else {
-                Swal.fire("Error", "Failed to delete the image.", "error");
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        });
+        if (result.isConfirmed) {
+            try {
+                const response = await deletegalleryImage(galleryId);
+                if (response.data.status === "Success") {
+                    Swal.fire("Success", "Image deleted successfully!", "success");
+                    // Update state to remove the deleted image from oldEvent.gallery
+                    setOldEvent(prevState => ({
+                        ...prevState,
+                        gallery: prevState.gallery.filter(image => image.id !== galleryId)
+                    }));
+                } else {
+                    Swal.fire("Error", "Failed to delete the image.", "error");
+                }
+            } catch (error) {
+                console.error("Error deleting image:", error);
+                Swal.fire("Error", "An error occurred while deleting the image.", "error");
             }
-        } catch (error) {
-            console.error("Error deleting image:", error);
-            Swal.fire("Error", "An error occurred while deleting the image.", "error");
         }
+ 
     };
     return (
         <div className="event-body">
