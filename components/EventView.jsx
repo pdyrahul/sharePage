@@ -93,7 +93,7 @@ const EventView = ({ slug }) => {
         galleryImages: [],
         seatingLayout: "",
         sponsor: "",
-        featuredEvent: "1",
+        isFeatured: "1",
     };
 
     const eventCategories = eventData?.data?.event_category.map((event) => ({
@@ -218,7 +218,7 @@ const EventView = ({ slug }) => {
                                 setFieldValue('refundPolicy', event.refundPolicy ?? '', false);
                                 setFieldValue('endTime', event.endTime ?? '', false);
                                 setFieldValue('ticketUrl', event.ticketUrl ?? '', false);
-                                setFieldValue('isFeatured', event.featuredEvent ? "1" : "0", false);
+                                setFieldValue('isFeatured', event.isFeatured ? "1" : "0", false);
                                 setFieldValue('eventType', event.event_type === 'paid' ? 'paid' : 'free', false);
                                 // Handle nested fields
                                 setFieldValue('ethnicity', event.ethnicity?.id ?? '', false);
