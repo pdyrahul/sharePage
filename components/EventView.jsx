@@ -9,13 +9,13 @@ import TicketList from "../app/(dashboard)/event-managing/submit-event/component
 import useFetchData from "../app/hooks/useFetchData";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
-import { getEventCategories, getSponsors, getEventBySlug, saveEvent } from "../app/services/api"; // Assuming updateEvent is your PUT endpoint
+import { getEventCategories, getSponsors, getEventBySlug, deletegalleryImage } from "../app/services/api"; // Assuming updateEvent is your PUT endpoint
 import SponsorModal from "../app/(dashboard)/event-managing/submit-event/component/SponsorModal";
 import ShareEditor from "./ui/TextEditor/ShareEditor";
 import Swal from "sweetalert2";
 import "react-datepicker/dist/react-datepicker.css";
 import Axios from "../app/services/axios";
-
+import { MdOutlineDelete } from "react-icons/md";
 const EventView = ({ slug }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,7 +41,7 @@ const EventView = ({ slug }) => {
                 addressAutocompleteRef.current = new window.google.maps.places.Autocomplete(
                     addressInputRef.current,
                     {
-                        componentRestrictions: {country: "ca"},
+                        componentRestrictions: { country: "ca" },
                         fields: ["address_components", "geometry", "icon", "name"],
                         types: ["address"]
                     }
@@ -59,12 +59,12 @@ const EventView = ({ slug }) => {
                     }
                     handleAddressChange(address);
                 });
-            },100)
+            }, 100)
         }
     }, []);
     // Fetching data including the specific event by slug
     const apiRequests = useMemo(() => [getEventCategories, getSponsors, () => getEventBySlug(slug)], [slug]);
-    const { data } = useFetchData(apiRequests);
+    const { data,refetch } = useFetchData(apiRequests);
 
     // Destructuring data
     const [eventData = {}, sponsorData = {},] = Array.isArray(data) ? data : [];
@@ -93,7 +93,7 @@ const EventView = ({ slug }) => {
         galleryImages: [],
         seatingLayout: "",
         sponsor: "",
-        isFeatured: "1",
+        featuredEvent: "1",
     };
 
     const eventCategories = eventData?.data?.event_category.map((event) => ({
@@ -110,7 +110,7 @@ const EventView = ({ slug }) => {
         id: sponsor.id,
         name: sponsor.sponsorName,
     })) || [];
-console.log("sponsor", sponsorList)
+    console.log("sponsor", sponsorList)
     const handleOpenModal = () => {
         setSponsorModalOpen(true);
     };
@@ -121,12 +121,34 @@ console.log("sponsor", sponsorList)
     };
 
     const handleSubmit = async (values, { resetForm }) => {
-        values.address = address ? address : values.address; 
+        values.address = address ? address : values.address;
+        values.status = "2";
+        try {
+            const response = await Axios.put(`/event/${slug}`, values);
+            console.log('Update response:', response);
+            if (response.data && response.data.status === 'Success') {
+                Swal.fire("Success", "Event updated successfully!", "success");
+                resetForm();
+                router.push('/event-managing/active-event');
+            } else {
+                throw new Error('Update failed due to unexpected response');
+            }
+        } catch (error) {
+            console.error('Error updating event:', error);
+            if (error.response && error.response.data && error.response.data.error) {
+                Swal.fire("Error", error.response.data.error, "error");
+            } else {
+                Swal.fire("Error", "Failed to update the event.", "error");
+            }
+        }
+    };
+    const handleSaveAsDraft = async (values, { resetForm }) => {
+        values.address = address ? address : values.address;
         values.status = "1";
         try {
             const response = await Axios.put(`/event/${slug}`, values);
             console.log('Update response:', response);
-                if (response.data && response.data.status === 'Success') {
+            if (response.data && response.data.status === 'Success') {
                 Swal.fire("Success", "Event updated successfully!", "success");
                 resetForm();
                 router.push('/event-managing/draft-events');
@@ -141,6 +163,24 @@ console.log("sponsor", sponsorList)
                 Swal.fire("Error", "Failed to update the event.", "error");
             }
         }
+    }
+    const handleDelete = async (galleryId) => {
+        try {
+            const response = await deletegalleryImage(galleryId);
+            if (response.data.status === "Success") {
+                Swal.fire("Success", "Image deleted successfully!", "success");
+                // Update state to remove the deleted image from oldEvent.gallery
+                setOldEvent(prevState => ({
+                    ...prevState,
+                    gallery: prevState.gallery.filter(image => image.id !== galleryId)
+                }));
+            } else {
+                Swal.fire("Error", "Failed to delete the image.", "error");
+            }
+        } catch (error) {
+            console.error("Error deleting image:", error);
+            Swal.fire("Error", "An error occurred while deleting the image.", "error");
+        }
     };
     return (
         <div className="event-body">
@@ -153,33 +193,33 @@ console.log("sponsor", sponsorList)
                 onSubmit={handleSubmit}
             >
                 {({ errors, touched, isSubmitting, values, setFieldValue }) => {
-            useEffect(() => {
-                Axios.get(`/event/${slug}`).then(response => {
-                    const event = response.data.data;
-                    if (event) {
-                        setOldEvent(event);
-                        const fields = ['eventTitle', 'address', 'capacity', 'youTubeUrl', 'startDate', 'endDate', 'startTime', 'place', 'poster', 'seatingLayout', 'gallery'];
-                        fields.forEach(field => {
-                            setFieldValue(field, event[field] ?? '', false); // Use nullish coalescing here
+                    useEffect(() => {
+                        Axios.get(`/event/${slug}`).then(response => {
+                            const event = response.data.data;
+                            if (event) {
+                                setOldEvent(event);
+                                const fields = ['eventTitle', 'address', 'capacity', 'youTubeUrl', 'startDate', 'endDate', 'startTime', 'place', 'poster', 'seatingLayout', 'gallery'];
+                                fields.forEach(field => {
+                                    setFieldValue(field, event[field] ?? '', false); // Use nullish coalescing here
+                                });
+                                // Handle null or undefined cases
+                                setFieldValue('refundPolicy', event.refundPolicy ?? '', false);
+                                setFieldValue('endTime', event.endTime ?? '', false);
+                                setFieldValue('ticketUrl', event.ticketUrl ?? '', false);
+                                setFieldValue('isFeatured', event.featuredEvent ? "1" : "0", false);
+                                setFieldValue('eventType', event.event_type === 'paid' ? 'paid' : 'free', false);
+                                // Handle nested fields
+                                setFieldValue('ethnicity', event.ethnicity?.id ?? '', false);
+                                setFieldValue('category', event.category?.idspevent ?? '', false);
+                                setFieldValue('sponsor', event.sponsor.id, false);
+                                // Set description and amenities which are HTML strings
+                                setFieldValue('description', event.description ?? '', false);
+                                setFieldValue('amenities', event.amenities ?? '', false);
+                            }
+                        }).catch(error => {
+                            console.error('Error fetching event data:', error);
                         });
-                        // Handle null or undefined cases
-                        setFieldValue('refundPolicy', event.refundPolicy ?? '', false);
-                        setFieldValue('endTime', event.endTime ?? '', false);
-                        setFieldValue('ticketUrl', event.ticketUrl ?? '', false);
-                        setFieldValue('isFeatured', event.isFeatured ? "1" : "0", false);
-                        setFieldValue('eventType', event.event_type === 'paid' ? 'paid' : 'free', false);
-                        // Handle nested fields
-                        setFieldValue('ethnicity', event.ethnicity?.id ?? '', false);
-                        setFieldValue('category', event.category?.idspevent ?? '', false);
-                        setFieldValue('sponsor', event.sponsor.id, false);
-                        // Set description and amenities which are HTML strings
-                        setFieldValue('description', event.description ?? '', false);
-                        setFieldValue('amenities', event.amenities ?? '', false);
-                    }
-                }).catch(error => {
-                    console.error('Error fetching event data:', error);
-                });
-            }, []);
+                    }, []);
 
                     return (
                         <Form className="submit-an-event">
@@ -241,7 +281,7 @@ console.log("sponsor", sponsorList)
                             </div>
                             {/* Address */}
                             <div className="input-group in-1-col">
-                            <label>
+                                <label>
                                     Address<span style={{ color: "#EF1D26" }}>*</span>
                                 </label>
                                 <input
@@ -508,7 +548,7 @@ console.log("sponsor", sponsorList)
                                     Saved Poster<span style={{ color: "#EF1D26" }}>*</span>
                                 </label>
                                 {oldEvent.poster && (
-                                    <div style={{ marginBottom: "10px" }}>
+                                    <div style={{ marginBottom: "10px", position: "relative" }}>
                                         <Image
                                             src={oldEvent.poster}
                                             alt="Current Poster"
@@ -539,7 +579,7 @@ console.log("sponsor", sponsorList)
                                     Saved Seating Layout<span style={{ color: "#EF1D26" }}>*</span>
                                 </label>
                                 {oldEvent.seatingLayout && (
-                                    <div style={{ marginBottom: "10px" }}>
+                                    <div style={{ marginBottom: "10px", position: "relative" }}>
                                         <Image
                                             src={oldEvent.seatingLayout}
                                             alt="Current Poster"
@@ -561,7 +601,7 @@ console.log("sponsor", sponsorList)
                                     component="span"
                                     style={errorStyles}
                                 />
-                                
+
                             </div>
                             <div className="input-group in-0-5-col">
                                 <label>
@@ -570,7 +610,22 @@ console.log("sponsor", sponsorList)
                                 {oldEvent.gallery && oldEvent.gallery.length > 0 && (
                                     <div style={{ marginBottom: "10px", display: "flex", flexWrap: "wrap" }}>
                                         {oldEvent.gallery.map((image, index) => (
-                                            <div key={index} style={{ margin: "5px", display:"flex" }}>
+                                            <div key={index} style={{ margin: "5px", display: "flex", position: "relative" }}>
+                                                <MdOutlineDelete
+                                                    onClick={() => handleDelete(image.id)}
+                                                    style={{
+                                                        cursor: "pointer",
+                                                        color: "#fff",
+                                                        marginBottom: "5px",
+                                                        fontSize: "30px",
+                                                        position: "absolute",
+                                                        top: "0",
+                                                        right: "0",
+                                                        backgroundColor: "#c11",
+                                                        padding: "5px",
+                                                    }}
+                                                    title="Delete Image"
+                                                />
                                                 <Image
                                                     src={image.image_url}
                                                     alt={`Gallery Image ${index + 1}`}
@@ -669,7 +724,7 @@ console.log("sponsor", sponsorList)
                                 >
                                     Preview
                                 </button>
-                                {/* <button type="button"
+                                <button type="button"
                                     className="submit-button"
                                     onClick={() => handleSaveAsDraft(values, { resetForm: () => { } })}
                                     disabled={isLoading}
@@ -681,7 +736,7 @@ console.log("sponsor", sponsorList)
                                         "Save as Draft"
                                     )}
 
-                                </button> */}
+                                </button>
                                 <button
                                     type="submit"
                                     className="submit-button"
@@ -698,7 +753,7 @@ console.log("sponsor", sponsorList)
 
                             <ToastContainer />
                         </Form>
-                        );
+                    );
                 }}
             </Formik>
 

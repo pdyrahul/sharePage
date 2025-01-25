@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { AiOutlineBars } from 'react-icons/ai';
 import useFetchData from '../../../hooks/useFetchData'; 
-import { getEventList } from '../../../services/api';
+import { getActiveList } from '../../../services/api';
 import Skeleton from "react-loading-skeleton";
 
 const Page = () => {
@@ -24,7 +24,7 @@ const Page = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Fetching events from API
-  const apiRequests = useMemo(() => [getEventList], []);
+  const apiRequests = useMemo(() => [getActiveList], []);
   const { data, error, isLoading } = useFetchData(apiRequests);
 
   // Accessing the events array from the fetched data

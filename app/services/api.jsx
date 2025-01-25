@@ -17,6 +17,7 @@ export const userProfiles = () => api.get("/event/user/profiles");
 export const setProfile = (userId) => api.get(`/event/user/set-profile/${userId}`);
 export const getEventList = () => api.get("/event");
 export const getDraftList = () => api.get("/event?status=1");
+export const getActiveList = () => api.get("/event?status=2");
 export const getEventBySlug = (slug) => {
   if (!slug) {
       throw new Error("Slug is required to fetch the event.");
@@ -30,5 +31,5 @@ export const updateEvent = (slug, data) => {
     }
     return api.put(`/event/${slug}`, data);
 }
-
+export const deletegalleryImage = (galleryId) => api.delete(`/event/delete-gallery-image/${galleryId}`);
 export default api;

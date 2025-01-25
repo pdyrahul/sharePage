@@ -26,9 +26,6 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(false); // State for loading indicator
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
-  const handleEditorChange = (content) => {
-    console.log('Content changed:', content);
-  };
 
   const onSubmit = (data) => {
     toast.success('Launched successfully!', {
@@ -252,13 +249,10 @@ const Page = () => {
           <label>
             Description<span style={{ color: "#ef1d26" }}>*</span>
           </label>
-          {/* <textarea
-            {...register('description', { required: true })}
-            placeholder="Type Description"
-            rows={6}
-          /> */}
           <ShareEditor
-            onChange={(content) => setValue("description", content)}
+            onChange={(content) => {
+              setValue("description", content, { shouldValidate: true }); // Update and validate the field
+            }}
             initialValue={watch('description') || "<p>Start writing here...</p>"}
           />
           {errors.description && <span style={{ color: 'red' }}>This field is required</span>}
