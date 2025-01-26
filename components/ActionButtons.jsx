@@ -1,10 +1,10 @@
 "use client";
-import axios from "axios";
 import React, { useState } from "react";
 import { IconButton, Tooltip, CircularProgress, Typography } from "@mui/material";
 import { Favorite, FavoriteBorder, ThumbUp, ThumbUpAltOutlined, Share } from "@mui/icons-material";
-import performAction  from "../app/services/api";
-const ActionButtons = ({ eventId, userId }) => {
+import performAction from "../app/services/api";
+import useFetchData from "../app/hooks/useFetchData";
+const ActionButtons = ({ pageType, eventId, userId, profileId }) => {
   const [state, setState] = useState({
     isInterested: false,
     isFavorited: false,
@@ -14,42 +14,53 @@ const ActionButtons = ({ eventId, userId }) => {
     shareCount: 0,
   });
 
-  const handleAction = async (actionType) => {
+  const handleAction = (actionType, isActive) => {
+    setState(prev => ({ ...prev, loading: true }));
+  
     try {
-      setState((prev) => ({ ...prev, loading: true }));
       const payload = {
-        event_id: eventId,
         user_id: userId,
+        profile_id: profileId,
+        event_id: eventId,
         type: actionType,
+        for: pageType,
+        status: isActive ? 0 : 1,
       };
-
-      const response = await performAction(actionType, payload)
-
+      const response = performAction(payload);
       if (response.data.status === "Success") {
         const { is_interested, type } = response.data.data;
-
-        setState((prev) => ({
-          ...prev,
-          isInterested: actionType === "Like" ? is_interested : prev.isInterested,
-          isFavorited: actionType === "Favorite" ? type === "Favorite" : prev.isFavorited,
-          likeCount: actionType === "Like" ? prev.likeCount + 1 : prev.likeCount,
-          favoriteCount: actionType === "Favorite" ? prev.favoriteCount + 1 : prev.favoriteCount,
-          loading: false,
-        }));
+        updateState(actionType, isActive, is_interested, type);
+      } else {
+        throw new Error("Unexpected API response");
       }
     } catch (error) {
-      console.error("Failed to update action", error);
-      setState((prev) => ({ ...prev, loading: false }));
+      console.error("Failed to update action:", error);
+      // Optionally, show error to user
+    } finally {
+      setState(prev => ({ ...prev, loading: false }));
     }
   };
+  
+  const updateState = (actionType, isActive, is_interested, type) => {
+    setState(prev => ({
+      ...prev,
+      isInterested: actionType === "like" ? is_interested : prev.isInterested,
+      isFavorited: actionType === "Favorite" ? type === "Favorite" : prev.isFavorited,
+      likeCount: updateCount(actionType === "like", isActive, prev.likeCount),
+      favoriteCount: updateCount(actionType === "Favorite", isActive, prev.favoriteCount),
+    }));
+  };
+  
+  const updateCount = (isActionType, isActive, count) => 
+    isActionType ? (isActive ? count - 1 : count + 1) : count;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center" }}>
       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
         {/* Like Button */}
-        <Tooltip title="Like">
+        <Tooltip title={state.isInterested ? "Dislike" : "Like"}>
           <IconButton
-            onClick={() => handleAction("Like")}
+            onClick={() => handleAction("like", state.isInterested)}
             color={state.isInterested ? "primary" : "default"}
             disabled={state.loading}
           >
@@ -58,9 +69,9 @@ const ActionButtons = ({ eventId, userId }) => {
         </Tooltip>
 
         {/* Favorite Button */}
-        <Tooltip title="Favorite">
+        <Tooltip title={state.isFavorited ? "Unfavorite" : "Favorite"}>
           <IconButton
-            onClick={() => handleAction("Favorite")}
+            onClick={() => handleAction("Favorite", state.isFavorited)}
             color={state.isFavorited ? "secondary" : "default"}
             disabled={state.loading}
           >

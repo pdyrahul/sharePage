@@ -41,7 +41,7 @@ const initialValues = {
   galleryImages: [],
   seatingLayout: "",
   sponsor: "",
-  featuredEvent: "Yes",
+  featuredEvent: "1",
 };
 
 
@@ -117,6 +117,10 @@ const Page = () => {
         CloseModal(); // Close the modal
         Swal.fire("Success", isDraft ? "Draft saved successfully!" : "Event submitted successfully!", "success"); // Success alert
         refetch(); // Optional: to refetch event data after submission
+        if (values.featuredEvent === "1" && !isDraft) {
+          const eventId = response.data.id; // Use the id from the API response
+          router.push(`/payment/${eventId}`);
+        }
       })
       .catch((error) => {
         Swal.fire("Error", "Something went wrong. Please try again.", "error"); // Error alert
@@ -162,22 +166,22 @@ const Page = () => {
       name: ethnicity.ethnicity_name,
     })) || [];
 
-  const sponsorList =
-    sponsorData?.data?.map((sponsor) => ({
-      id: sponsor.id,
-      name: sponsor.sponsorName,
-    })) || [];
-  // let sponsorList = []; // Declare sponsorList in the appropriate scope
-  // if (
-  //   sponsorData?.data &&
-  //   Array.isArray(sponsorData.data) &&
-  //   sponsorData.data.length > 0
-  // ) {
-  //   sponsorList = sponsorData.data.map((sponsor) => ({
-  //     id: sponsor?.id || null,
-  //     name: sponsor?.sponsorName || "Unknown",
-  //   }));
-  // }
+  // const sponsorList =
+  //   sponsorData?.data?.map((sponsor) => ({
+  //     id: sponsor.id,
+  //     name: sponsor.sponsorName,
+  //   })) || [];
+  let sponsorList = []; // Declare sponsorList in the appropriate scope
+  if (
+    sponsorData?.data &&
+    Array.isArray(sponsorData.data) &&
+    sponsorData.data.length > 0
+  ) {
+    sponsorList = sponsorData.data.map((sponsor) => ({
+      id: sponsor?.id || null,
+      name: sponsor?.sponsorName || "Unknown",
+    }));
+  }
 
   const handlePlaceSelect = (setFieldValue) => {
     const place = autocompleteRef.current.getPlace();

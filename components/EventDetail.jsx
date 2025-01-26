@@ -103,7 +103,7 @@ const EventDetail = ({ slug }) => {
                         </div>
                         <div className="ticket-detail">
                             <div className="more-links">
-                                <ActionButtons/>
+                                <ActionButtons  pageType="event" eventId={event.id} />
                             </div>
                             <div className="ticket-wrapper">
                                 <TicketBooking event={event} />
