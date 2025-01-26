@@ -164,6 +164,9 @@ const Event = () => {
             ))
           : null}
       </Swiper>
+      {/* Navigation Buttons */}
+      <div className="swiper-button-prev"></div>
+      <div className="swiper-button-next"></div>
     </Box>
   );
 };

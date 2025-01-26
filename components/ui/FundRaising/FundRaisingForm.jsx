@@ -2,11 +2,6 @@
 import ImageUpload from '../common/ImageUpload';
 import { useActionState, useState } from 'react';
 import { SaveFromData } from '../../../app/(dashboard)/fund-raising/create-campaign/submitAction';
-import { set } from 'lodash';
-
-
-
-
 const FundRaisingForm = () => {
 
     const [fieldValue, setFieldValue] = useState();

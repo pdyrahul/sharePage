@@ -32,4 +32,14 @@ export const updateEvent = (slug, data) => {
     return api.put(`/event/${slug}`, data);
 }
 export const deletegalleryImage = (galleryId) => api.delete(`/event/delete-gallery-image/${galleryId}`);
+ export const performAction = async (actionType, payload) => {
+  try {
+    const response = await axios.post(`/event/favourite/${actionType}`, payload);
+    return response.data; // Return the response data to handle it in the calling component
+  } catch (error) {
+    console.error("API call failed:", error);
+    throw error; // Re-throw the error for proper handling
+  }
+};
 export default api;
+ 
