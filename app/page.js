@@ -5,6 +5,7 @@ import Event from "../components/ui/Events/Event";
 import Modal from '../components/ui/muicomponents/Modal';
 import 'react-toastify/dist/ReactToastify.css';
 import { use } from 'react';
+import LatestEvent from '../components/ui/Events/LatestEvent';
 
 
 // export const metadata = {
@@ -77,17 +78,17 @@ const EventsPage = () => {
           </div>
         </div>
         <div className="group-navigation">
-          {['All', 'For you', 'Today', 'This Weekend', 'This Month', 'Free', 'Online', 'Favorites'].map((link, index) => (
+          {['Latest', 'For you', 'Today', 'This Weekend', 'This Month', 'Free', 'Online', 'Favorites'].map((link, index) => (
             <div className={`link ${index === 0 ? 'active-link' : ''}`} key={index}>{link}</div>
           ))}
         </div>
         <div className="event-box-wrapper">
           <div className="main-heading">
-            <div className="heading_home">Educational</div>
+            <div className="heading_home">Latest Events</div>
 
           </div>
+          {/* <LatestEvent /> */}
           <Event />
-          {/* <Event /> */}
         </div>
       </div>
     </div>
