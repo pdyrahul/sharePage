@@ -17,11 +17,11 @@ const FundRaisingForm = () => {
                     </div>
                 ) : null}
 
-                {formState?.errors ? (
+                {/* {formState?.errors ? (
                     <div className="alert alert-danger">
                         {JSON.stringify(formState.errors)}
                     </div>
-                ) : null}
+                ) : null} */}
                 <div className="input-group in-1-col pb-2">
                     <label>
                         Title<span style={{ color: "#ef1d26" }}>*</span>

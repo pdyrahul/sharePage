@@ -1,12 +1,7 @@
-
-
+// api.js
 import axios from 'axios';
 
-const API_BASE_URL = "http://sharepagebackend.test/api/v1"; // Your API base URL
-
-const token = process.env.NEXT_PUBLIC_API_TOKEN
-
-// console.log(token);
+const API_BASE_URL = 'http://sharepagebackend.test/api/v1/';  // Your API base URL
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -24,29 +19,61 @@ export const setAuthToken = (token) => {
         delete api.defaults.headers.common['Authorization'];
     }
 };
+// Generic GET Request
+export const getRequest = async (endpoint, params = {}) => {
+    try {
+        const response = await api.get(endpoint, { params });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
 
-// Function to make a GET request
+// Generic POST Request
+export const postRequest = async (endpoint, data) => {
+    try {
+        const response = await api.post(endpoint, data);
+        return response.data;
 
-function getRequest(endpoint, params) {
+    } catch (error) {
+        return error.response.data;
+    }
+};
 
-    return api.get(endpoint, { params })
-        .then(response => response.data)
-        .catch(error => {
-            throw error;
-        });
-}
+// Generic PUT Request
+export const putRequest = async (endpoint, data) => {
+    try {
+        const response = await api.put(endpoint, data);
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
 
+// Generic DELETE Request
+export const deleteRequest = async (endpoint) => {
+    try {
+        const response = await api.delete(endpoint);
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+};
 
+// Error Handling Function
+const handleError = (error) => {
+    let message = 'An unexpected error occurred. Please try again later.';
+    if (error.response) {
+        console.error('Server responded with an error:', error.response.data);
 
-// Function to make a POST request
-function postRequest(endpoint, data) {
-    return api.post(endpoint, data)
-        .then(response => response.data)
-        .catch(error => {
-            throw error;
-        });
-}
-
-
-
-export { getRequest, postRequest };
+        message = error.response.data.message || message; // Customize the message based on API response
+        return error.response.data; // Return the error response instead of throwing
+    } else if (error.request) {
+        console.error('No response from the server:', error.request);
+        message = 'No response from the server. Please check your internet connection.';
+    } else {
+        console.error('Error during request setup:', error.message);
+        message = error.message;
+    }
+    return { success: false, message }; // Return an error object instead of throwing
+};

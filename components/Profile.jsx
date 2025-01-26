@@ -6,7 +6,7 @@ import { Dropdown } from "react-bootstrap";
 import { CgProfile } from "react-icons/cg";
 export default function Profile() {
     const [selectedProfile, setSelectedProfile] = useState(null);
-
+    const [isMobile, setIsMobile] = useState(false);
     const apiRequests = useMemo(() => [userProfiles], []);
     const { data, isLoading, error } = useFetchData(apiRequests);
     const profiles = data?.[0]?.data || [];
