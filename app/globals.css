@@ -20,12 +20,13 @@
     font-weight: 500;
    
 }
-.swiper-button-prev:after, .swiper-button-next:after{font-size: 21px !important;}
+.swiper-button-prev:after, .swiper-button-next:after{font-size: 12px !important; font-weight: 700;}
 .tox .tox-edit-area::before {
     border: 1px solid #c11 !important;
 }
 .event-wrapper .swiper{padding: 10px 20px;}
-.swiper-button-next, .swiper-button-prev{background-color: #c11 !important; color: #fff !important; border-radius: 50%; width: 40px !important; height: 40px !important;}
+.swiper-button-next, .swiper-button-prev{position: absolute; top: -6% !important;background-color: #c11 !important; color: #fff !important; border-radius: 4px; width: 25px !important; height: 25px !important;}
+.swiper-button-prev{ left: unset !important; right:3%!important;}
 input[type="radio"] {
     height: 12px !important;
     width: 12px !important;
@@ -908,10 +909,8 @@ p {
         .banner-img {
             width: 100%;
             border: 3px solid #edf2fa;
-            border-radius: 20px;
             img {
                 width: 100%;
-                border-radius: 20px;
                 height: 100%;
             }
 
