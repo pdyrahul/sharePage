@@ -1,40 +1,50 @@
 "use client";
 import CheckoutForm from "./CheckoutForm";
-
+import { postRequest, setAuthToken } from "lib/Api";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import { useState, useEffect } from "react";
+
 
 
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
     throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
 }
+const FeaturedAmount = await process.env.NEXT_PUBLIC_STRIPE_AMOUNT;
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 
 
 
-export default function EventPayment() {
+export default function EventPayment({ event_id = null, amount = null }) {
+    const [clientSecret, setClientSecret] = useState('');
+    setAuthToken(process.env.NEXT_PUBLIC_API_TOKEN);
 
-    console.log(process.env.STRIPE_SECRET_KEY);
-    // if (process.env.STRIPE_SECRET_KEY === undefined) {
-    //     throw new Error("STRIPE_SECRET_KEY is not defined");
-    // } 
-    // 
-    const clientSecret = '';
+    useEffect(() => {
+        const fetchClientSecret = async () => {
+            const response = await postRequest('payment/create-payment-intent', {
+                amount: 3500,
 
-    const amount = 3500;
+            });
+            console.log(response);
+            setClientSecret(response.clientSecret);
+        };
+        fetchClientSecret();
+    }, []);
+
+
     const options = {
-        mode: "payment",
-        amount: amount,
-        currency: "usd",
-
-        // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+        clientSecret: clientSecret,
     };
+
+    if (!clientSecret) {
+        return <div>Loading...</div>;
+    }
     return (
         <>
             <Elements stripe={stripePromise} options={options}>
-                <CheckoutForm amount={amount} />
+                <CheckoutForm event_id={event_id} clientSecret={clientSecret} />
             </Elements>
         </>
     )
