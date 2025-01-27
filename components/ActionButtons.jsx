@@ -11,32 +11,60 @@ const ActionButtons = ({ pageType, eventId }) => {
     loading: false,
   });
 
-  // Fetch initial state on mount
+  // Function to save state to localStorage
+  const saveToLocalStorage = (key, value) => {
+    localStorage.setItem(key, JSON.stringify(value));
+  };
+
+  // Function to load state from localStorage
+  const loadFromLocalStorage = (key) => {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
+  };
+
+  // Fetch initial state on mount or load from localStorage if available
   useEffect(() => {
     const fetchInitialState = async () => {
       setState(prev => ({ ...prev, loading: true })); // Set loading to true while fetching data
-      try {
-        const response = await axios.get(`https://peru-grouse-335420.hostingersite.com/api/v1/event/favorite/${eventId}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`,
-          }
-        });
 
-        if (response.data.status === "Success") {
-          const { is_interested, is_favorited } = response.data.data;
-          setState(prev => ({
-            ...prev,
-            isInterested: Boolean(is_interested), // Ensure boolean
-            isFavorited: Boolean(is_favorited),    // Ensure boolean
-          }));
-        } else {
-          throw new Error("Unexpected API response");
+      // Try to load from localStorage first
+      const localInterested = loadFromLocalStorage(`isInterested_${eventId}`);
+      const localFavorited = loadFromLocalStorage(`isFavorited_${eventId}`);
+
+      if (localInterested !== null && localFavorited !== null) {
+        setState({
+          ...state,
+          isInterested: localInterested,
+          isFavorited: localFavorited,
+          loading: false
+        });
+      } else {
+        try {
+          const response = await axios.get(`https://peru-grouse-335420.hostingersite.com/api/v1/event/favorite/${eventId}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`,
+            }
+          });
+
+          if (response.data.status === "Success") {
+            const { is_interested, is_favorited } = response.data.data;
+            setState({
+              ...state,
+              isInterested: Boolean(is_interested),
+              isFavorited: Boolean(is_favorited),
+            });
+            // Save to localStorage for future reloads
+            saveToLocalStorage(`isInterested_${eventId}`, Boolean(is_interested));
+            saveToLocalStorage(`isFavorited_${eventId}`, Boolean(is_favorited));
+          } else {
+            throw new Error("Unexpected API response");
+          }
+        } catch (error) {
+          console.error("Failed to fetch initial state:", error);
+        } finally {
+          setState(prev => ({ ...prev, loading: false })); // Reset loading state
         }
-      } catch (error) {
-        console.error("Failed to fetch initial state:", error);
-      } finally {
-        setState(prev => ({ ...prev, loading: false })); // Reset loading state
       }
     };
 
@@ -67,20 +95,23 @@ const ActionButtons = ({ pageType, eventId }) => {
         // Update state based on action type
         setState(prev => ({
           ...prev,
-          isInterested: actionType === "like" ? !prev.isInterested : prev.isInterested, // Toggle isInterested for "like"
-          isFavorited: actionType === "Favorite" ? !prev.isFavorited : prev.isFavorited, // Toggle isFavorited for "Favorite"
+          isInterested: actionType === "like" ? !prev.isInterested : prev.isInterested,
+          isFavorited: actionType === "Favorite" ? !prev.isFavorited : prev.isFavorited,
         }));
+        
+        // Save updated state to localStorage
+        saveToLocalStorage(`isInterested_${eventId}`, actionType === "like" ? !isActive : state.isInterested);
+        saveToLocalStorage(`isFavorited_${eventId}`, actionType === "Favorite" ? !isActive : state.isFavorited);
       } else {
         throw new Error("Unexpected API response");
       }
     } catch (error) {
       console.error("Failed to update action:", error);
-      // Optionally, show error to user
+      // Optionally, show error to user or revert state
     } finally {
       setState(prev => ({ ...prev, loading: false }));
     }
   };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center", position:"relative"}}>
       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
