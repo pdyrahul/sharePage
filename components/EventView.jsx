@@ -93,7 +93,7 @@ const EventView = ({ slug }) => {
         galleryImages: [],
         seatingLayout: "",
         sponsor: "",
-        isFeatured: "Yes",
+        isFeatured: "1",
     };
 
     const eventCategories = eventData?.data?.event_category.map((event) => ({
@@ -218,7 +218,7 @@ const EventView = ({ slug }) => {
                                 setFieldValue('refundPolicy', event.refundPolicy ?? '', false);
                                 setFieldValue('endTime', event.endTime ?? '', false);
                                 setFieldValue('ticketUrl', event.ticketUrl ?? '', false);
-                                setFieldValue('isFeatured', event.isFeatured ? "1" : "0", false);
+                                setFieldValue('featuredEvent', event.featuredEvent ? "1" : "0", false);
                                 setFieldValue('eventType', event.event_type === 'paid' ? 'paid' : 'free', false);
                                 // Handle nested fields
                                 setFieldValue('ethnicity', event.ethnicity?.id ?? '', false);
@@ -753,7 +753,6 @@ const EventView = ({ slug }) => {
                                     type="submit"
                                     className="submit-button"
                                     disabled={isLoading}
-                                    onClick={() => handleSubmit(values, { resetForm: () => { } })}
                                 >
                                     {isLoading ? (
                                         <CircularProgress size={20} color="inherit" />
