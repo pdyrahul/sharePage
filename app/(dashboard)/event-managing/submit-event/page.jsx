@@ -117,10 +117,10 @@ const Page = () => {
         CloseModal(); // Close the modal
         Swal.fire("Success", isDraft ? "Draft saved successfully!" : "Event submitted successfully!", "success"); // Success alert
         refetch(); // Optional: to refetch event data after submission
-        if (values.featuredEvent === "1" && !isDraft) {
-          const eventId = response.data.id; // Use the id from the API response
-          router.push(`/payment/${eventId}`);
-        }
+          if (values.featuredEvent === "1") {
+                    const eventId = response.data.data.id; // Access the ID from the response
+                    router.push(`/payment/${eventId}`); // Use the ID instead of the slug
+                }
       })
       .catch((error) => {
         Swal.fire("Error", "Something went wrong. Please try again.", "error"); // Error alert

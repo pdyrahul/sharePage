@@ -64,7 +64,7 @@ const EventView = ({ slug }) => {
     }, []);
     // Fetching data including the specific event by slug
     const apiRequests = useMemo(() => [getEventCategories, getSponsors, () => getEventBySlug(slug)], [slug]);
-    const { data,refetch } = useFetchData(apiRequests);
+    const { data, refetch } = useFetchData(apiRequests);
 
     // Destructuring data
     const [eventData = {}, sponsorData = {},] = Array.isArray(data) ? data : [];
@@ -93,7 +93,7 @@ const EventView = ({ slug }) => {
         galleryImages: [],
         seatingLayout: "",
         sponsor: "",
-        isFeatured: "1",
+        isFeatured: "Yes",
     };
 
     const eventCategories = eventData?.data?.event_category.map((event) => ({
@@ -120,26 +120,26 @@ const EventView = ({ slug }) => {
         setIsModalOpen(false);
     };
 
+    // Convert featuredEvent to isFeatured before sending to the API
     const handleSubmit = async (values, { resetForm }) => {
         values.address = address ? address : values.address;
         values.status = "2";
+        values.isFeatured = values.featuredEvent === "1"; // Convert "1" or "0" to boolean
         try {
             const response = await Axios.put(`/event/${slug}`, values);
-            console.log('Update response:', response);
             if (response.data && response.data.status === 'Success') {
                 Swal.fire("Success", "Event updated successfully!", "success");
                 resetForm();
-                router.push('/event-managing/active-event');
+              if (values.featuredEvent === "1") {
+                const eventId = response.data.data.id; // Access the ID from the response
+                router.push(`/payment/${eventId}`); // Use the ID instead of the slug
+            }
             } else {
                 throw new Error('Update failed due to unexpected response');
             }
         } catch (error) {
             console.error('Error updating event:', error);
-            if (error.response && error.response.data && error.response.data.error) {
-                Swal.fire("Error", error.response.data.error, "error");
-            } else {
-                Swal.fire("Error", "Failed to update the event.", "error");
-            }
+            Swal.fire("Error", "Failed to update the event.", "error");
         }
     };
     const handleSaveAsDraft = async (values, { resetForm }) => {
@@ -192,7 +192,7 @@ const EventView = ({ slug }) => {
                 Swal.fire("Error", "An error occurred while deleting the image.", "error");
             }
         }
- 
+
     };
     return (
         <div className="event-body">
@@ -223,7 +223,7 @@ const EventView = ({ slug }) => {
                                 // Handle nested fields
                                 setFieldValue('ethnicity', event.ethnicity?.id ?? '', false);
                                 setFieldValue('category', event.category?.idspevent ?? '', false);
-                                setFieldValue('sponsor', event.sponsor.id, false);
+                                setFieldValue('sponsor', event.sponsor?.id, false);
                                 // Set description and amenities which are HTML strings
                                 setFieldValue('description', event.description ?? '', false);
                                 setFieldValue('amenities', event.amenities ?? '', false);
