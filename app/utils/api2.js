@@ -1,22 +1,7 @@
-
 // api.js
-// Generic API functions to make GET, POST, PUT, and DELETE requests
-// with error handling and optional auth token support
-// Usage:
-// import { getRequest, postRequest, putRequest, deleteRequest } from './api';
-// const response = await getRequest('endpoint', { param1: 'value1' });
-// const response = await postRequest('endpoint', { key: 'value' });
-// const response = await putRequest('endpoint', { key: 'value' });
-// const response = await deleteRequest('endpoint');
-// const response = await postRequest('login', { email, password });
-// const response = await postRequest('register', { name, email, password });
 import axios from 'axios';
 
-const API_BASE_URL = "http://sharepagebackend.test/api/v1"; // Your API base URL
-
-const token = process.env.NEXT_PUBLIC_API_TOKEN
-
-// console.log(token);
+const API_BASE_URL = 'http://sharepagebackend.test/api/v1/';  // Your API base URL
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -79,11 +64,10 @@ export const deleteRequest = async (endpoint) => {
 const handleError = (error) => {
     let message = 'An unexpected error occurred. Please try again later.';
     if (error.response) {
-
         console.error('Server responded with an error:', error.response.data);
-        message = error.response.data.message || message;
-        return error.response.data;
-        // Customize the message based on API response
+
+        message = error.response.data.message || message; // Customize the message based on API response
+        return error.response.data; // Return the error response instead of throwing
     } else if (error.request) {
         console.error('No response from the server:', error.request);
         message = 'No response from the server. Please check your internet connection.';
