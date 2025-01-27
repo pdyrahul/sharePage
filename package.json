@@ -49,6 +49,7 @@
     "react-toastify": "^11.0.3",
     "react-youtube": "^10.1.0",
     "rsuite": "^5.77.0",
+    "stripe": "^17.5.0",
     "sweetalert2": "^11.15.10",
     "swiper": "^11.2.1",
     "tinymce": "^7.6.1",
