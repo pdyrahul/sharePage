@@ -26,7 +26,13 @@
 }
 .event-wrapper .swiper{padding: 10px 20px;}
 .swiper-button-next, .swiper-button-prev{position: absolute; top: -6% !important;background-color: #c11 !important; color: #fff !important; border-radius: 4px; width: 25px !important; height: 25px !important;}
-.swiper-button-prev{ left: unset !important; right:3%!important;}
+.swiper-button-prev{ 
+    left: unset !important; 
+    right:3%!important;
+}
+@media(max-width:768px){
+    .swiper-button-prev{ right:11%!important;}
+}
 input[type="radio"] {
     height: 12px !important;
     width: 12px !important;
