@@ -18,7 +18,6 @@ const VideoCard = ({ videoUrl }) => {
     <Box
       sx={{
         position: 'relative',
-        paddingBottom: '56.25%', // 16:9 aspect ratio
         height: 400,
         overflow: 'hidden',
       }}
