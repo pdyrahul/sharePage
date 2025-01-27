@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { IconButton, Tooltip, CircularProgress, Typography } from "@mui/material";
 import { Favorite, FavoriteBorder, ThumbUp, ThumbUpAltOutlined, Share } from "@mui/icons-material";
 import performAction from "../app/services/api";
-import useFetchData from "../app/hooks/useFetchData";
+
 const ActionButtons = ({ pageType, eventId, userId, profileId }) => {
   const [state, setState] = useState({
     isInterested: false,
@@ -16,29 +16,32 @@ const ActionButtons = ({ pageType, eventId, userId, profileId }) => {
 
   const handleAction = (actionType, isActive) => {
     setState(prev => ({ ...prev, loading: true }));
+    
+    const payload = {
+      user_id: userId,
+      profile_id: profileId,
+      event_id: eventId,
+      type: actionType,
+      for: pageType,
+      status: isActive ? 0 : 1,
+    };
   
-    try {
-      const payload = {
-        user_id: userId,
-        profile_id: profileId,
-        event_id: eventId,
-        type: actionType,
-        for: pageType,
-        status: isActive ? 0 : 1,
-      };
-      const response = performAction(payload);
-      if (response.data.status === "Success") {
-        const { is_interested, type } = response.data.data;
-        updateState(actionType, isActive, is_interested, type);
-      } else {
-        throw new Error("Unexpected API response");
-      }
-    } catch (error) {
-      console.error("Failed to update action:", error);
-      // Optionally, show error to user
-    } finally {
-      setState(prev => ({ ...prev, loading: false }));
-    }
+    performAction(payload)
+      .then(response => {
+        if (response.data.status === "Success") {
+          const { is_interested, type } = response.data.data;
+          updateState(actionType, isActive, is_interested, type);
+        } else {
+          throw new Error("Unexpected API response");
+        }
+      })
+      .catch(error => {
+        console.error("Failed to update action:", error);
+        // Optionally, show error to user
+      })
+      .finally(() => {
+        setState(prev => ({ ...prev, loading: false }));
+      });
   };
   
   const updateState = (actionType, isActive, is_interested, type) => {

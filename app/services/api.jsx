@@ -32,6 +32,6 @@ export const updateEvent = (slug, data) => {
     return api.put(`/event/${slug}`, data);
 }
 export const deletegalleryImage = (galleryId) => api.delete(`/event/delete-gallery-image/${galleryId}`);
-export const performAction =(payload)=>api.post ('/event/favorite', payload);
+export const performAction =(payload)=>api.post ("/event/favorite", payload);
 export default api;
  

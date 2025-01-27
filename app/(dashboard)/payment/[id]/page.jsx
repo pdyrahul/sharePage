@@ -6,7 +6,7 @@ export const metadata = {
   };
   
 export default async function Page({ params }) {
-    const slug = (await params).id
+    const slug = await (params.id)
     return (
         <div className="payment-page">
         <h1>Payment Page</h1>

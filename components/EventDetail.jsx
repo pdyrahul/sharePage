@@ -80,8 +80,9 @@ const EventDetail = ({ slug }) => {
                     <div className="event-detail">
                         <div className="detail-wrapper">
                             <div className="back">
-                                <Link href={'/'}><MdKeyboardBackspace /></Link>
+                                <Link href={'/'}><MdKeyboardBackspace />
                                 <span>Return To Home</span>
+                                </Link>
                             </div>
                             <div className="date">{formatDateTime(event.startDate, event.startTime, event.endDate, event.endTime, event.place)}</div>
                             <div className="event-title">{event.eventTitle}</div>
