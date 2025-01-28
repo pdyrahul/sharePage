@@ -10,7 +10,7 @@ export default async function Page({ params }) {
 
   return (
     <div className="event-body">
-      <div className="heading">Payment</div>
+      <div className="heading">Payment For Event</div>
       {event_id ? (
         <>
           <div className="card border-danger " style={{ maxWidth: '600px', margin:"0 auto" }}>

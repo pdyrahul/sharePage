@@ -4,14 +4,14 @@
     "paths": {     
       "@components/*": ["components/*"],    
       "@public/*": ["public/*"],
-      "@lib/*": ["lib/*"],
+      "@lib/*": ["lib/*"]
     }
   },
   "include": [
-    "src/**/*",
+    "app/**/*",
     "next-env.d.ts",
     "pages/**/*",
-    "components/**/*",  
+    "components/**/*"
   ],
   "exclude": [
     "node_modules"

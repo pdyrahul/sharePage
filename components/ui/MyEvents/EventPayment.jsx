@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
     throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
 }
-const FeaturedAmount = await process.env.NEXT_PUBLIC_STRIPE_AMOUNT;
+// const FeaturedAmount = await process.env.NEXT_PUBLIC_STRIPE_AMOUNT;
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 export default function EventPayment({ event_id = null, amount = null }) {
