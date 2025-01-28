@@ -1,6 +1,6 @@
 "use client";
 import CheckoutForm from "./CheckoutForm";
-import { postRequest, setAuthToken } from "lib/api";
+import { postRequest, setAuthToken } from "@lib/api";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useState, useEffect } from "react";
@@ -22,7 +22,7 @@ export default function EventPayment({ event_id = null, amount = null }) {
 
             });
             console.log(response);
-            setClientSecret(response.clientSecret);
+            setClientSecret(response?.clientSecret);
         };
         fetchClientSecret();
     }, []);
