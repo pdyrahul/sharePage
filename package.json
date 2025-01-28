@@ -37,6 +37,7 @@
     "npm": "^11.0.0",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.8",
+    "react-confetti": "^6.2.2",
     "react-datepicker": "^7.6.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.5",

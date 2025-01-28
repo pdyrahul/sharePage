@@ -13,7 +13,7 @@ export default async function Page({ params }) {
       <div className="heading">Payment</div>
       {event_id ? (
         <>
-          <div className="card border-danger " style={{ width: '600px' }}>
+          <div className="card border-danger " style={{ maxWidth: '600px', margin:"0 auto" }}>
             <div className="card-body">
               <EventPayment event_id={event_id} />
             </div>
