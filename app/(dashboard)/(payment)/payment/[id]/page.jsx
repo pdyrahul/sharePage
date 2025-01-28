@@ -6,11 +6,11 @@ export const metadata = {
 
 export default async function Page({ params }) {
 
-  const event_id = await (params.id);
+  const event_id = (await params).id;
 
   return (
     <div className="event-body">
-      <div className="heading">Payment</div>
+      <div className="heading">Payment For Event</div>
       {event_id ? (
         <>
           <div className="card border-danger " style={{ maxWidth: '600px', margin:"0 auto" }}>
