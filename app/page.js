@@ -4,8 +4,7 @@ import Link from 'next/link';
 import Event from "../components/ui/Events/Event";
 import Modal from '../components/ui/muicomponents/Modal';
 import 'react-toastify/dist/ReactToastify.css';
-import { use } from 'react';
-import LatestEvent from '../components/ui/Events/LatestEvent';
+
 
 
 // export const metadata = {

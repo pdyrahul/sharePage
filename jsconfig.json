@@ -11,9 +11,7 @@
     "src/**/*",
     "next-env.d.ts",
     "pages/**/*",
-    "components/**/*",
-    
-
+    "components/**/*",  
   ],
   "exclude": [
     "node_modules"
