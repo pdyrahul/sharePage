@@ -1,6 +1,6 @@
 
 import { useQuery } from 'react-query'
-import { getRequest } from 'app/utils/api2'
+import { getRequest } from 'lib/api'
 import { Loading } from 'components/ui/common/Loading'
 import LatestEventCard from './LatestEventCard'
 

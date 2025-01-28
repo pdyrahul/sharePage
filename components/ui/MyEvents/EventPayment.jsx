@@ -1,6 +1,6 @@
 "use client";
 import CheckoutForm from "./CheckoutForm";
-import { postRequest, setAuthToken } from "lib/Api";
+import { postRequest, setAuthToken } from "lib/api";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useState, useEffect } from "react";
