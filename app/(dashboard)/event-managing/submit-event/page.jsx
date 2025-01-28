@@ -43,8 +43,6 @@ const initialValues = {
   sponsor: "",
   featuredEvent: "1",
 };
-
-
 const Page = () => {
   const router = useRouter();
   if (typeof window === undefined) {
