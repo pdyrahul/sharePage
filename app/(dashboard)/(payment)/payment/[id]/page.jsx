@@ -6,7 +6,7 @@ export const metadata = {
 
 export default async function Page({ params }) {
 
-  const event_id = (await params).id;
+  const event_id = await (params.id);
 
   return (
     <div className="event-body">
