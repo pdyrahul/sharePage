@@ -4,6 +4,7 @@ const api = axios.create({
   headers: {
     Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`,
     "Content-Type": "multipart/form-data", 
+    'Content-Type': 'application/json',
   },
 });
 // export const userLogin = axios.post("/login");
@@ -22,6 +23,7 @@ export const postAction = (payload) =>api.post("/event/favorite", payload);
 export const getEventBySlug = (slug) => api.get(`/event/${slug}`);
 export const updateEvent = (slug, data) => api.put(`/event/${slug}`, data);
 export const deletegalleryImage = (galleryId) => api.delete(`/event/delete-gallery-image/${galleryId}`);
+export const publicEvent = (filter) => api.get(`/event/latest-events?${filter}=true`);
 
 export default api;
  
