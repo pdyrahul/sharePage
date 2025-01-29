@@ -35,6 +35,7 @@ const Event = () => {
   const [selectedFilter, setSelectedFilter] = useState("Latest Events");
   const [events, setEvents] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [eventWithError, setEventWithError] = useState(null);
   const apiParameter = useMemo(() => getApiParameter(selectedFilter), [selectedFilter]);
 
   const apiRequests = useMemo(() => {
@@ -44,8 +45,23 @@ const Event = () => {
   const { data, isLoading, error } = useFetchData(apiRequests);
 
   useEffect(() => {
+    console.log("Loading state:", isLoading); // Debugging to check loading state
+
+    if (isLoading) {
+      setErrorMessage(""); // Clear any previous error while loading
+      return;
+    }
+
     if (error) {
-      setErrorMessage("Server Error: Failed to load events.");
+      const errorData = error?.message || "Unknown error";
+      
+      // Check if the error contains "Data not found"
+      if (errorData.includes("Data not found") || error?.errors?.message?.includes("Data not found")) {
+        setErrorMessage(`No data available for "${selectedFilter}".`);
+      } else {
+        setErrorMessage("Server Error: No data available for.");
+      }
+      setEventWithError(selectedFilter); // Capture the selected filter name as the event name with error
       setEvents([]); // Reset events on error
     } else if (data?.[0]?.data?.length) {
       const processedEvents = data[0].data.map((event) => ({
@@ -75,11 +91,13 @@ const Event = () => {
 
       setEvents(processedEvents);
       setErrorMessage(""); // Clear any error
+      setEventWithError(null); // Clear error event name
     } else {
-      setErrorMessage("No events data available.");
+      setErrorMessage(`No events found for "${selectedFilter}".`);
+      setEventWithError(selectedFilter); // Capture the selected filter name as the event name with error
       setEvents([]);
     }
-  }, [data, error]);
+  }, [data, error, isLoading, selectedFilter]);
 
   return (
     <>
@@ -92,11 +110,11 @@ const Event = () => {
         sx={{
           marginTop: '2.5rem',
           border: 1,
-          borderColor: "divider", // Adding border to the tabs
+          borderColor: "#c11 !important",
           "& .MuiTab-root": {
             fontWeight: "bold",
             backgroundColor: "white", // Non-active tab background color
-            color: "#000", // Text color for non-active tabs
+            color: "#c11", // Text color for non-active tabs
             "&:hover": {
               backgroundColor: "#f1f1f1", // Hover effect for non-active tab
             },
@@ -104,7 +122,9 @@ const Event = () => {
           "& .Mui-selected": {
             backgroundColor: "#c11", // Active tab background color
             color: "#fff !important", // Active tab text color
+            border:"none"
           },
+          "& .MuiTabs-indicator":{backgroundColor: "#c11",}
         }}
       >
         {["Latest Events", "Today", "This Weekend", "This Month", "Free", "Paid", "Favourites"].map((filter) => (
@@ -112,7 +132,9 @@ const Event = () => {
             key={filter}
             label={filter}
             value={filter}
+            height="20px"
             sx={{
+              fontWeight:"300",
               textTransform: "none",
               fontSize: "16px",
               color: selectedFilter === filter ? "#fff" : "#000", // Active tab text color adjustment
@@ -125,17 +147,19 @@ const Event = () => {
         <h3 style={{ display: "inline-block", borderBottom: "3px solid #c11", padding: "0 4px" }}>
           {selectedFilter}
         </h3>
-        {isLoading || errorMessage ? (
+
+        {/* Show Skeleton if still loading */}
+        {isLoading ? (
           <Box sx={{ display: "flex", justifyContent: "space-between", gap: "16px" }}>
             {[...Array(6)].map((_, index) => (
               <Box key={index} sx={{ maxWidth: 345, minHeight: 400 }}>
-                <Skeleton variant="rectangular" width={300} height={400} />
+                <Skeleton variant="rectangular" width={200} height={400} />
               </Box>
             ))}
           </Box>
         ) : errorMessage ? (
-          <Typography variant="h6" color="error">
-            {errorMessage} {/* Show detailed error message */}
+          <Typography variant="h6" color="error" align="center">
+            {eventWithError ? `${eventWithError} - ${errorMessage}` : errorMessage}
           </Typography>
         ) : (
           <Swiper
@@ -188,11 +212,11 @@ const Event = () => {
             ))}
           </Swiper>
         )}
+
         {/* Swiper Navigation Buttons */}
         <div className="swiper-button-prev"></div>
         <div className="swiper-button-next"></div>
       </Box>
-
     </>
   );
 };

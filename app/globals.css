@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
 @import "rsuite/dist/rsuite.css";
 
-:root {
+:root,h1,h2,h3,h4,h5,h6, .MuiButtonBase-root{
     --background: #ffffff;
     --foreground: #171717;
     user-select: none;
