@@ -4,7 +4,7 @@
 :root,h1,h2,h3,h4,h5,h6, .MuiButtonBase-root{
     --background: #ffffff;
     --foreground: #171717;
-    user-select: none;
+    /* user-select: none; */
     font-family: "Karla", serif !important;
     font-style: normal;
     scroll-behavior: smooth;
