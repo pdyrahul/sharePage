@@ -77,7 +77,7 @@ const EventsPage = () => {
           </div>
         </div>
         <div className="group-navigation">
-          {['Latest', 'For you', 'Today', 'This Weekend', 'This Month', 'Free', 'Online', 'Favorites'].map((link, index) => (
+          {['Latest', 'For you', 'Today', 'This Weekend', 'This Month', 'Free', 'Online', 'Favourites'].map((link, index) => (
             <div className={`link ${index === 0 ? 'active-link' : ''}`} key={index}>{link}</div>
           ))}
         </div>
