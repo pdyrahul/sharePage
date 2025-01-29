@@ -18,9 +18,9 @@ import {
 import { CiLocationOn } from "react-icons/ci";
 import Link from "next/link";
 
-// हेल्पर फंक्शन: API पैरामीटर मैप करें
 const getApiParameter = (filter) => {
   const mapping = {
+    "Latest Events": "",
     Today: "today",
     "This Weekend": "thisWeek",
     "This Month": "thisMonth",
@@ -32,13 +32,12 @@ const getApiParameter = (filter) => {
 };
 
 const Event = () => {
-  const [selectedFilter, setSelectedFilter] = useState("Today");
-  const [events, setEvents] = useState([]); 
-  const [errorMessage, setErrorMessage] = useState(""); 
+  const [selectedFilter, setSelectedFilter] = useState("Latest Events");
+  const [events, setEvents] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const apiParameter = useMemo(() => getApiParameter(selectedFilter), [selectedFilter]);
 
   const apiRequests = useMemo(() => {
-    if (!apiParameter) return [];
     return [() => publicEvent(apiParameter)];
   }, [apiParameter]);
 
@@ -46,8 +45,8 @@ const Event = () => {
 
   useEffect(() => {
     if (error) {
-      setErrorMessage("Failed to load events.");
-      setEvents([]); // कोई डेटा नहीं
+      setErrorMessage("Server Error: Failed to load events.");
+      setEvents([]); // Reset events on error
     } else if (data?.[0]?.data?.length) {
       const processedEvents = data[0].data.map((event) => ({
         id: event.id || "N/A",
@@ -55,17 +54,17 @@ const Event = () => {
         title: event.eventTitle || "Untitled Event",
         date: event.startDate
           ? new Date(event.startDate).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })
           : "Date not available",
         time: event.startTime
           ? new Date(`1970-01-01T${event.startTime}`).toLocaleTimeString("en-US", {
-              hour: "numeric",
-              minute: "2-digit",
-              hour12: true,
-            })
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          })
           : "Time not available",
         hostedBy: event.sponsor?.sponsorName || "Unknown Host",
         location: event.address || "Location not available",
@@ -73,11 +72,11 @@ const Event = () => {
         ticketsSold: event.capacity || "Not Available",
         image: event.poster || "/images/event-placeholder.svg",
       }));
-  
+
       setEvents(processedEvents);
-      setErrorMessage(""); // कोई एरर नहीं
+      setErrorMessage(""); // Clear any error
     } else {
-      setErrorMessage("Data not available.");
+      setErrorMessage("No events data available.");
       setEvents([]);
     }
   }, [data, error]);
@@ -91,13 +90,24 @@ const Event = () => {
         scrollButtons="auto"
         aria-label="Event Filters"
         sx={{
-          marginTop: '0.5rem',
-          borderBottom: 1,
-          borderColor: "divider",
-          "& .MuiTab-root": { fontWeight: "bold" },
+          marginTop: '2.5rem',
+          border: 1,
+          borderColor: "divider", // Adding border to the tabs
+          "& .MuiTab-root": {
+            fontWeight: "bold",
+            backgroundColor: "white", // Non-active tab background color
+            color: "#000", // Text color for non-active tabs
+            "&:hover": {
+              backgroundColor: "#f1f1f1", // Hover effect for non-active tab
+            },
+          },
+          "& .Mui-selected": {
+            backgroundColor: "#c11", // Active tab background color
+            color: "#fff !important", // Active tab text color
+          },
         }}
       >
-        {["Today", "This Weekend", "This Month", "Free", "Paid", "Favourites"].map((filter) => (
+        {["Latest Events", "Today", "This Weekend", "This Month", "Free", "Paid", "Favourites"].map((filter) => (
           <Tab
             key={filter}
             label={filter}
@@ -105,26 +115,27 @@ const Event = () => {
             sx={{
               textTransform: "none",
               fontSize: "16px",
-              color: selectedFilter === filter ? "#1976d2" : "#c11",
+              color: selectedFilter === filter ? "#fff" : "#000", // Active tab text color adjustment
             }}
           />
         ))}
       </Tabs>
+
       <Box className="event-wrapper" sx={{ position: "relative", paddingTop: "40px" }}>
-        {isLoading ? (
+        <h3 style={{ display: "inline-block", borderBottom: "3px solid #c11", padding: "0 4px" }}>
+          {selectedFilter}
+        </h3>
+        {isLoading || errorMessage ? (
           <Box sx={{ display: "flex", justifyContent: "space-between", gap: "16px" }}>
             {[...Array(6)].map((_, index) => (
               <Box key={index} sx={{ maxWidth: 345, minHeight: 400 }}>
-                <Skeleton variant="rectangular" height={180} />
-                <Skeleton variant="text" height={40} />
-                <Skeleton variant="text" />
-                <Skeleton variant="text" />
+                <Skeleton variant="rectangular" width={300} height={400} />
               </Box>
             ))}
           </Box>
-        ) : error ? (
+        ) : errorMessage ? (
           <Typography variant="h6" color="error">
-            Failed to load events.
+            {errorMessage} {/* Show detailed error message */}
           </Typography>
         ) : (
           <Swiper
@@ -181,6 +192,7 @@ const Event = () => {
         <div className="swiper-button-prev"></div>
         <div className="swiper-button-next"></div>
       </Box>
+
     </>
   );
 };

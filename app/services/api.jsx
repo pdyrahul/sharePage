@@ -23,7 +23,11 @@ export const postAction = (payload) =>api.post("/event/favorite", payload);
 export const getEventBySlug = (slug) => api.get(`/event/${slug}`);
 export const updateEvent = (slug, data) => api.put(`/event/${slug}`, data);
 export const deletegalleryImage = (galleryId) => api.delete(`/event/delete-gallery-image/${galleryId}`);
-export const publicEvent = (filter) => api.get(`/event/latest-events?${filter}=true`);
+export const publicEvent = (filter) => {
+  const url = filter ? `/event/latest-events?${filter}=true` : `/event/latest-events`;
+  return api.get(url);
+};
+
 
 export default api;
  
