@@ -93,7 +93,7 @@ const Event = () => {
       setErrorMessage(""); // Clear any error
       setEventWithError(null); // Clear error event name
     } else {
-      setErrorMessage(`No events found for "${selectedFilter}".`);
+      setErrorMessage("No events found");
       setEventWithError(selectedFilter); // Capture the selected filter name as the event name with error
       setEvents([]);
     }

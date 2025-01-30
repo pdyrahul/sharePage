@@ -8,6 +8,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import useFetchData from './hooks/useFetchData';
 import { getCategory } from './services/api';
 import { Grid, Card, CardContent, Typography } from '@mui/material';
+import Image from 'next/image';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const EventsPage = () => {
   const router = useRouter();
@@ -37,15 +40,17 @@ const EventsPage = () => {
     }
   }, [data]); // Effect runs whenever 'data' changes
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  console.log("category", data);
+  // Render loading skeleton
+  const renderSkeleton = () => (
+    Array(5).fill(0).map((_, index) => (
+      <div className="item" key={index}>
+        <div className="img-wrapper" style={{position: "relative", width: '120px', height: '120px'}}>
+          <Skeleton height={'120px'} width={'120px'} />
+        </div>
+        <Skeleton width={'80%'} />
+      </div>
+    ))
+  );
 
   return (
     <div className="event-wrapper">
@@ -58,9 +63,9 @@ const EventsPage = () => {
         </div>
         <div className="menu-filter">
           {/* Hardcoded Fund Raising Card */}
-          <Link 
-            href="/fundraising" 
-            className="item" 
+          <Link
+            href="/fundraising"
+            className="item"
             onClick={handleFundRaisingClick}
           >
             <div className="img-wrapper">
@@ -68,20 +73,27 @@ const EventsPage = () => {
             </div>
             <span>Fund Raising</span>
           </Link>
-          
-          {/* Render other categories from processedData */}
-          {processedData.map((category) => (
-            <Link
-              href={`/category/${category.id}`}
-              className="item" 
-              key={category.id}
-            >
-              <div className="img-wrapper">
-                <img src={category.categoryImages} alt={category.name} style={{ maxWidth: '100%', height: 'auto' }} />
-              </div>
-              <span>{category.name}</span>
-            </Link>
-          ))}
+
+          {/* Render loading skeleton or actual categories */}
+          {isLoading ? renderSkeleton() : 
+            processedData.map((category) => (
+              <Link
+                href={`/category/${category.id}`}
+                className="item"
+                key={category.id}
+              >
+                <div className="img-wrapper" style={{position:"relative"}}>
+                  <Image
+                    src={category.categoryImages}
+                    alt={category.name}
+                    loading='lazy'
+                    fill={true} 
+                  />
+                </div>
+                <span>{category.name}</span>
+              </Link>
+            ))
+          }
         </div>
         <div className="filters">
           <div className="search-box">
