@@ -6,10 +6,13 @@ import { getCategoryWise } from 'app/services/api';
 import { Box, Button, Card, CardContent, Typography, Grid } from '@mui/material';
 
 
-const CategoryDetails = ({ params }) => {
+const SimilarEvent = ({ params }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 2;
+
+    // Unwrap the params Promise using React.use
     const { id } = use(params);
+
     const apiRequests = useMemo(() => [
         () => getCategoryWise(id, currentPage)
     ], [id, currentPage]);
@@ -81,4 +84,4 @@ const CategoryDetails = ({ params }) => {
     );
 };
 
-export default CategoryDetails;
+export default SimilarEvent;
