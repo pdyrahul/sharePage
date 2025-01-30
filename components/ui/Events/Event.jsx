@@ -26,7 +26,7 @@ const getApiParameter = (filter) => {
     "This Month": "thisMonth",
     Free: "free",
     Paid: "paid",
-    Favourites: "favourites",
+    Favourites: "favourite",
   };
   return mapping[filter] || "";
 };

@@ -1,10 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Event from "../components/ui/Events/Event";
 import Modal from '../components/ui/muicomponents/Modal';
 import 'react-toastify/dist/ReactToastify.css';
+import useFetchData from './hooks/useFetchData';
+import { getCategory } from './services/api';
+import { Grid, Card, CardContent, Typography } from '@mui/material';
 
 const EventsPage = () => {
   const router = useRouter();
@@ -12,28 +15,37 @@ const EventsPage = () => {
     router.push('/fund-raising'); // Navigate to the Fund Raising page
   };
 
-  const itemContent = [
-    { img1: './images/microphone.svg', img2: './images/microphone-2.svg', label: 'Music' },
-    { img1: './images/night.svg', img2: './images/night-2.svg', label: 'Nightlife' },
-    { img1: './images/arts.svg', img2: './images/arts-2.svg', label: 'Arts & Craft' },
-    { img1: './images/brush.svg', img2: './images/brush-2.svg', label: 'Performing & Visual Arts' },
-    { img1: './images/kids.svg', img2: './images/kids-2.svg', label: 'Kids' },
-    { img1: './images/classes.svg', img2: './images/classes-2.svg', label: 'Classes' },
-    { img1: './images/culture.svg', img2: './images/culture-2.svg', label: 'Cultural' },
-    { img1: './images/seniors.svg', img2: './images/seniors-2.svg', label: 'Seniors' },
-    { img1: './images/hikes.svg', img2: './images/hikes-2.svg', label: 'Hikes' },
-    { img1: './images/picnics.svg', img2: './images/picnics-2.svg', label: 'Picnics' },
-    { img1: './images/online.svg', img2: './images/online-2.svg', label: 'Online' },
-    { img1: './images/educational.svg', img2: './images/educational-2.svg', label: 'Educational' },
-    { img1: './images/business.svg', img2: './images/business-2.svg', label: 'Business' },
-    { img1: './images/mice.svg', img2: './images/mice-2.svg', label: 'Karaoke' },
-    { img1: './images/comedies.svg', img2: './images/comedies-2.svg', label: 'Comedies' },
-    { img1: './images/fund-raising.svg', img2: './images/fund-raising-2.svg', label: 'Fund Raising', onClick: handleFundRaisingClick },
-    { img1: './images/single.svg', img2: './images/single-2.svg', label: 'Singles Mingles' },
-    { img1: './images/trade.svg', img2: './images/trade-2.svg', label: 'Trade shows' },
-    { img1: './images/job.svg', img2: './images/job-2.svg', label: 'Job Fair' },
-    { img1: './images/dance.svg', img2: './images/dance-2.svg', label: 'Dance' },
-  ];
+  const apiRequests = useMemo(() => {
+    return [getCategory]; // Assuming getCategory doesn't require any arguments
+  }, []);
+
+  const { data, isLoading, error } = useFetchData(apiRequests);
+
+  // State to hold processed data
+  const [processedData, setProcessedData] = useState([]);
+
+  useEffect(() => {
+    if (data && data.length > 0 && data[0].data && data[0].data.length > 0) {
+      // Process data to extract id, name, title
+      const processed = data[0].data.map(item => ({
+        id: item.idspevent,
+        name: item.speventTitle, // Assuming 'name' is equivalent to 'speventTitle'
+        title: item.speventTitle, // Assuming 'title' is the same as 'name'
+        categoryImages: item.image_url,
+      }));
+      setProcessedData(processed);
+    }
+  }, [data]); // Effect runs whenever 'data' changes
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  console.log("category", data);
 
   return (
     <div className="event-wrapper">
@@ -45,13 +57,29 @@ const EventsPage = () => {
           </Link>
         </div>
         <div className="menu-filter">
-          {itemContent.map((item, index) => (
-            <Link href={item.label === 'Fund Raising' ? '/fundraising' : `/category/${item.label}`} className="item" key={index} onClick={item.onClick}>
+          {/* Hardcoded Fund Raising Card */}
+          <Link 
+            href="/fundraising" 
+            className="item" 
+            onClick={handleFundRaisingClick}
+          >
+            <div className="img-wrapper">
+              <img src="./images/fund-raising.svg" alt="Fund Raising" style={{ maxWidth: '100%', height: 'auto' }} />
+            </div>
+            <span>Fund Raising</span>
+          </Link>
+          
+          {/* Render other categories from processedData */}
+          {processedData.map((category) => (
+            <Link
+              href={`/category/${category.id}`}
+              className="item" 
+              key={category.id}
+            >
               <div className="img-wrapper">
-                <img src={item.img1} className="img-1" alt={item.label} />
-                <img src={item.img2} className="img-2" alt={item.label} />
+                <img src={category.categoryImages} alt={category.name} style={{ maxWidth: '100%', height: 'auto' }} />
               </div>
-              <span>{item.label}</span>
+              <span>{category.name}</span>
             </Link>
           ))}
         </div>
@@ -69,7 +97,7 @@ const EventsPage = () => {
         </div>
         <div>
           <div className="event-box-wrapper">
-            <Event/>
+            <Event />
           </div>
         </div>
       </div>

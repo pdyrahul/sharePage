@@ -1,7 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
 @import "rsuite/dist/rsuite.css";
 
-:root,h1,h2,h3,h4,h5,h6, .MuiButtonBase-root{
+:root,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.MuiButtonBase-root,.MuiTypography-h6 .MuiTypography-root {
     --background: #ffffff;
     --foreground: #171717;
     /* user-select: none; */
@@ -9,30 +16,59 @@
     font-style: normal;
     scroll-behavior: smooth;
 }
-.css-kygdfq-MuiCardMedia-root{object-fit: inherit !important;}
+
+.css-kygdfq-MuiCardMedia-root {
+    object-fit: inherit !important;
+}
+
 .css-14y13q2-MuiTableCell-root,
 .css-q403tl {
     border: none !important;
 }
+
 .errorText {
     color: red;
     font-size: 12px;
     font-weight: 500;
-   
+
 }
-.swiper-button-prev:after, .swiper-button-next:after{font-size: 12px !important; font-weight: 700;}
+
+.swiper-button-prev:after,
+.swiper-button-next:after {
+    font-size: 12px !important;
+    font-weight: 700;
+}
+
 .tox .tox-edit-area::before {
     border: 1px solid #c11 !important;
 }
-.event-wrapper .swiper{padding: 10px 20px;}
-.swiper-button-next, .swiper-button-prev{position: absolute; top: 14% !important;background-color: #b3aeae !important; color: #fff !important; border-radius: 4px; width: 25px !important; height: 25px !important;}
-.swiper-button-prev{ 
-    left: unset !important; 
-    right:3%!important;
+
+.event-wrapper .swiper {
+    padding: 10px 20px;
 }
-@media(max-width:768px){
-    .swiper-button-prev{ right:11%!important;}
+
+.swiper-button-next,
+.swiper-button-prev {
+    position: absolute;
+    top: 14% !important;
+    background-color: #b3aeae !important;
+    color: #fff !important;
+    border-radius: 4px;
+    width: 25px !important;
+    height: 25px !important;
 }
+
+.swiper-button-prev {
+    left: unset !important;
+    right: 3% !important;
+}
+
+@media(max-width:768px) {
+    .swiper-button-prev {
+        right: 11% !important;
+    }
+}
+
 input[type="radio"] {
     height: 12px !important;
     width: 12px !important;
@@ -121,6 +157,8 @@ p {
     font-style: normal;
     margin: 0 !important;
     padding: 0 !important;
+    font-family: "Karla", serif !important;
+    font-style: normal;
 
 }
 
@@ -861,7 +899,7 @@ p {
                         border-radius: 50%;
                         padding: 10px;
                         background: #fff;
-                    
+
 
                         img {
                             border-radius: 50%;
@@ -915,6 +953,7 @@ p {
         .banner-img {
             width: 100%;
             border: 3px solid #edf2fa;
+
             img {
                 width: 100%;
                 height: 100%;
@@ -959,7 +998,10 @@ p {
                         padding-left: 5px;
                         font-weight: 500;
                     }
-                    a{color: #c11 !important;}
+
+                    a {
+                        color: #c11 !important;
+                    }
                 }
 
                 .date {
@@ -1130,11 +1172,15 @@ p {
                     width: 100%;
                     border: 3px solid #edf2fa;
                     border-radius: 20px;
+
                     img {
                         border-radius: 20px;
                         width: 100%;
                         transition: all 0.3s;
-                        & :hover{transform: scale(1.05);}
+
+                        & :hover {
+                            transform: scale(1.05);
+                        }
                     }
                 }
 
