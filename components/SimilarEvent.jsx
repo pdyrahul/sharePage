@@ -9,7 +9,6 @@ import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import Link from 'next/link';
 import Image from 'next/image';
-import {useProfile} from '../Context/ProfileContext';
 
 const SimilarEvent = ({ params }) => {
     const { id } = use(params); // Assuming 'use(params)' is a custom hook. If not, adjust this.
@@ -17,19 +16,6 @@ const SimilarEvent = ({ params }) => {
         () => getSmilarEvent(id)
     ], [id]);
     const { data, isLoading, error } = useFetchData(apiRequests);
-    
-    const { setProfile } = useProfile(); // Only get setProfile from context now
-    const [localProfile, setLocalProfile] = useState(null); // Local state to hold profile
-
-    useEffect(() => {
-        const storedProfile = sessionStorage.getItem("selectedProfile");
-        if (storedProfile) {
-          setLocalProfile(JSON.parse(storedProfile));
-        }
-        console.log("Local Profile:", localProfile);
-    }, []); // Run once on mount
-
-    // Loading state: Show skeleton
     if (isLoading) {
         return (
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-evenly', flexWrap: 'wrap', gap: '5px' }}>
@@ -46,7 +32,7 @@ const SimilarEvent = ({ params }) => {
     // No data state
     if (!data || !data[0] || !data[0].data) return <div>No data available</div>;
 
-    const events = data[0].data.data || [];
+    const events = data[0].data|| [];
 
     return (
         <Box sx={{ mt: 2 }}>
@@ -63,7 +49,7 @@ const SimilarEvent = ({ params }) => {
                 className="mySwiper"
             >
                 {events.map((event, index) => {
-                    const imageUrl = event.poster?.path || 'https://picsum.photos/22';
+                    const imageUrl = event.poster;
                     return (
                         <SwiperSlide key={event.id || index}>
                             <Box className="event" sx={{ padding: 0 }}>
@@ -87,7 +73,7 @@ const SimilarEvent = ({ params }) => {
                                                 <span style={{ margin:'5px', fontSize: '0.8em', color:'#7649B3', fontWeight:'700' }}>Started at {event.start_time || 'Started at 07 : 00 AM'}</span>
                                             </div>
                                             <div className="hosted" style={{ padding: '0 10px', fontSize: '1.1em',color:'#7649B3', }}>
-                                                Hosted by <span style={{color:'#000', fontSize: '0.8em', textDecoration:'underline'}}>{localProfile?.spProfileName || 'Aneema Agarwal'}</span>
+                                                Hosted by <span style={{color:'#000', fontSize: '0.8em', textDecoration:'underline'}}>{event?.sponsor?.sponsorName || 'Aneema Agarwal'}</span>
                                             </div>
                                             <div className="location" style={{ padding: '0 10px', display: 'flex', alignItems: 'center', fontSize: '0.9em' }}>
                                                 <Image src="/images/location.svg" alt="Location Icon" width={16} height={16} />
