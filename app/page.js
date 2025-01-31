@@ -29,11 +29,10 @@ const EventsPage = () => {
 
   useEffect(() => {
     if (data && data.length > 0 && data[0].data && data[0].data.length > 0) {
-      // Process data to extract id, name, title
       const processed = data[0].data.map(item => ({
         id: item.idspevent,
-        name: item.speventTitle, // Assuming 'name' is equivalent to 'speventTitle'
-        title: item.speventTitle, // Assuming 'title' is the same as 'name'
+        name: item.speventTitle, 
+        title: item.speventTitle, 
         categoryImages: item.image_url,
       }));
       setProcessedData(processed);
@@ -42,14 +41,16 @@ const EventsPage = () => {
 
   // Render loading skeleton
   const renderSkeleton = () => (
-    Array(5).fill(0).map((_, index) => (
-      <div className="item" key={index}>
-        <div className="img-wrapper" style={{position: "relative", width: '120px', height: '120px'}}>
-          <Skeleton height={'120px'} width={'120px'} />
+    <div className="menu-filter">
+      {Array(5).fill(0).map((_, index) => (
+        <div className="item" key={index}>
+          <div className="img-wrapper" style={{position: "relative", width: '120px', height: '120px'}}>
+            <Skeleton height={'120px'} width={'120px'} />
+          </div>
+          <Skeleton width={'80%'} />
         </div>
-        <Skeleton width={'80%'} />
-      </div>
-    ))
+      ))}
+    </div>
   );
 
   return (
@@ -86,8 +87,8 @@ const EventsPage = () => {
                   <Image
                     src={category.categoryImages}
                     alt={category.name}
-                   height={60}
-                   width={60}
+                    height={60}
+                    width={60}
                   />
                 </div>
                 <span>{category.name}</span>
