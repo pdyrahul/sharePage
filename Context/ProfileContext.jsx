@@ -1,4 +1,3 @@
-// ProfileContext.js
 "use client"
 import React, { createContext, useContext, useState, useEffect } from "react";
 
@@ -8,7 +7,6 @@ export const ProfileProvider = ({ children }) => {
   const [selectedProfile, setSelectedProfile] = useState(null);
 
   useEffect(() => {
-    // Load profile from session storage on initialization
     const storedProfile = sessionStorage.getItem("selectedProfile");
     if (storedProfile) {
       setSelectedProfile(JSON.parse(storedProfile));
@@ -20,11 +18,18 @@ export const ProfileProvider = ({ children }) => {
     sessionStorage.setItem("selectedProfile", JSON.stringify(profile));
   };
 
+  // Here we're not providing any value, just the functions to manage state
   return (
-    <ProfileContext.Provider value={{ selectedProfile, setProfile }}>
+    <ProfileContext.Provider value={{ setProfile }}>
       {children}
     </ProfileContext.Provider>
   );
 };
 
-export const useProfile = () => useContext(ProfileContext);
+export const useProfile = () => {
+  const context = useContext(ProfileContext);
+  if (context === undefined) {
+    throw new Error('useProfile must be used within a ProfileProvider');
+  }
+  return context;
+};

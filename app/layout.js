@@ -7,23 +7,25 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { SidebarProvider } from '../Context/SidebarContext';
 import { Suspense } from 'react';
 import Loading from './loading';
+import { ProfileProvider } from '../Context/ProfileContext'; // Adjust the path
 
 const queryClient = new QueryClient();
 
 export default function RootLayout({ children }) {
-
     return (
         <html lang="en">
             <body>
                 <QueryClientProvider client={queryClient}>
                     <ReactQueryDevtools initialIsOpen={false} />
                     <Suspense fallback={<Loading />}>
-                        <SidebarProvider>
-                            <div className="body-wrapper">
-                                <Header />
-                                {children}
-                            </div>
-                        </SidebarProvider>
+                        <ProfileProvider>  // Add ProfileProvider here
+                            <SidebarProvider>
+                                <div className="body-wrapper">
+                                    <Header />
+                                    {children}
+                                </div>
+                            </SidebarProvider>
+                        </ProfileProvider>
                     </Suspense>
                 </QueryClientProvider>
             </body>
