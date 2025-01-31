@@ -80,7 +80,7 @@ const SimilarEvent = ({ params }) => {
                                                 />
                                             </div>
                                             <div className="title" style={{fontSize:'1.5em', padding: '10px', fontWeight: 'bold' }}>
-                                                {event.category?.speventTitle || 'Event Title'}
+                                                {event.slug || 'Event Title'}
                                             </div>
                                             <div className="date" style={{ padding: '0 10px', fontSize: '1.3em', color:'#c11' }}>
                                                 {event.start_date || 'Mar-16-2024'}
