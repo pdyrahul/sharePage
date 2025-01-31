@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
                 <QueryClientProvider client={queryClient}>
                     <ReactQueryDevtools initialIsOpen={false} />
                     <Suspense fallback={<Loading />}>
-                        <ProfileProvider>  // Add ProfileProvider here
+                        <ProfileProvider> 
                             <SidebarProvider>
                                 <div className="body-wrapper">
                                     <Header />
