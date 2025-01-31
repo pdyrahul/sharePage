@@ -150,7 +150,7 @@ const Event = () => {
           <Box sx={{ display: "flex", justifyContent: "space-between", gap: "16px" }}>
             {[...Array(6)].map((_, index) => (
               <Box key={index} sx={{ maxWidth: 345, minHeight: 400 }}>
-                <Skeleton variant="rectangular" width={200} height={400} />
+                <Skeleton variant="rectangular" width={345} height={400} />
               </Box>
             ))}
           </Box>
