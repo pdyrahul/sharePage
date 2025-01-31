@@ -43,11 +43,15 @@ const initialValues = {
   sponsor: "",
   featuredEvent: "1",
 };
+
+
 const Page = () => {
   const router = useRouter();
   if (typeof window === undefined) {
     return false;
   }
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sponsorModalOpen, setSponsorModalOpen] = useState(false);
@@ -58,6 +62,8 @@ const Page = () => {
   const { data, refetch } = useFetchData(apiRequests);
 
   const handleFormSubmit = (isDraft, values, { resetForm }) => {
+    let currentLoadingState = isDraft ? setIsSavingDraft : setIsSubmitting;
+    currentLoadingState(true);
     setIsLoading(true); // Start loading
 
     const formData = new FormData();
@@ -109,39 +115,43 @@ const Page = () => {
 
     console.log("FormData values", formData);
 
-    saveEvent(formData) // API call with formData
-      .then((response) => {
-        resetForm(); // Reset the form after successful submission
-        CloseModal(); // Close the modal
-        Swal.fire("Success", isDraft ? "Draft saved successfully!" : "Event submitted successfully!", "success"); // Success alert
-        refetch(); // Optional: to refetch event data after submission
-          if (values.featuredEvent === "1") {
-                    const eventId = response.data.data.id; // Access the ID from the response
-                    router.push(`/payment/${eventId}`); // Use the ID instead of the slug
-                }
-      })
-      .catch((error) => {
-        Swal.fire("Error", "Something went wrong. Please try again.", "error"); // Error alert
-      })
-      .finally(() => {
-        setIsLoading(false); // Stop loading
-      });
-  };
-
-  // Function for saving as draft
-  const handleSaveAsDraft = (values, formikBag) => {
-    handleFormSubmit(true, values, {
-      ...formikBag,
-      resetForm: () => {
-        formikBag.resetForm();
-        router.push('/event-managing/draft-events'); // Redirect after resetForm
+    saveEvent(formData)
+    .then((response) => {
+      resetForm();
+      CloseModal();
+      Swal.fire("Success", isDraft ? "Draft saved successfully!" : "Event submitted successfully!", "success");
+      refetch();
+      
+      // Redirect based on isFeatured
+      if (values.featuredEvent === "1") {
+        const eventId = response.data.data.id;
+        router.push(`/payment/${eventId}`);
+      } else {
+        router.push(isDraft ? '/event-managing/draft-events' : '/event-managing/active-event');
       }
+    })
+    .catch((error) => {
+      Swal.fire("Error", "Something went wrong. Please try again.", "error");
+    })
+    .finally(() => {
+      currentLoadingState(false); // Reset the loading state
     });
-  };
-  // Function for final submission
-  const handleFinalSubmit = (values, formikBag) => {
-    handleFormSubmit(false, values, formikBag);
-  };
+};
+
+// Function for saving as draft
+const handleSaveAsDraft = (values, formikBag) => {
+  handleFormSubmit(true, values, {
+    ...formikBag,
+    resetForm: () => formikBag.resetForm()
+  });
+};
+
+// Function for final submission
+const handleFinalSubmit = (values, formikBag) => {
+  handleFormSubmit(false, values, formikBag);
+};
+
+
   const handleOpenModal = () => {
     setSponsorModalOpen(true);
   };
@@ -572,7 +582,7 @@ const Page = () => {
                 Upload Images For Gallery
                 <span style={{ color: "#EF1D26" }}>*</span>
               </label>
-              <ImageUpload name="galleryImages" setFieldValue={setFieldValue} width="100%"/>
+              <ImageUpload name="galleryImages" setFieldValue={setFieldValue} width="100%" />
               <ErrorMessage
                 name="galleryImages"
                 component="span"
@@ -662,32 +672,26 @@ const Page = () => {
 
             {/* Submit Button */}
             <div className="main-btn">
-              <button type="button"
-                className="submit-button"
-
-              >
-                Preview
-              </button>
-              <button type="button"
+              <button type="button" className="submit-button">Preview</button>
+              <button
+                type="button"
                 className="submit-button"
                 onClick={() => handleSaveAsDraft(values, { resetForm: () => { } })}
-                disabled={isLoading}
+                disabled={isSavingDraft} // Disable only if saving draft
               >
-
-                {isLoading ? (
+                {isSavingDraft ? (
                   <CircularProgress size={20} color="inherit" />
                 ) : (
                   "Save as Draft"
                 )}
-
               </button>
               <button
                 type="submit"
                 className="submit-button"
-                disabled={isLoading}
+                disabled={isSubmitting} // Disable only if submitting
                 onClick={() => handleFinalSubmit(values, { resetForm: () => { } })}
               >
-                {isLoading ? (
+                {isSubmitting ? (
                   <CircularProgress size={20} color="inherit" />
                 ) : (
                   "Submit"
