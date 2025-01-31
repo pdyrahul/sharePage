@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
+import Link from 'next/link'; // Import Link from Next.js
 
 const SimilarEvent = ({ params }) => {
     const { id } = use(params);
@@ -35,7 +36,7 @@ const SimilarEvent = ({ params }) => {
     const events = data[0].data.data || [];
 
     return (
-        <Box sx={{ mt: 2, padding:'10px 0' }}>
+        <Box sx={{ mt: 2 }}>
             <Swiper
                 modules={[Navigation]}
                 spaceBetween={16}
@@ -50,23 +51,25 @@ const SimilarEvent = ({ params }) => {
             >
                 {events.map((event, index) => (
                     <SwiperSlide key={event.id || index}>
-                        <Box sx={{marginBottom: 2 }}>
-                            <Card sx={{ minWidth: 275, height: '100%' }}>
-                                <CardContent>
-                                    <Typography variant="h5" component="div">
-                                        {event.title || 'Event Title'}
-                                    </Typography>
-                                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                        ID: {event.id}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Profile ID: {event.profile_id || 'N/A'}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Category: {event.category?.speventTitle || 'No Category'}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
+                        <Box sx={{paddingTop:'40px'}}>
+                            <Link href={`/events/${event.slug}`} style={{ textDecoration: "none" }}>
+                                <Card sx={{ minWidth: 275, height: '100%' }}>
+                                    <CardContent>
+                                        <Typography variant="h5" component="div">
+                                            {event.title || 'Event Title'}
+                                        </Typography>
+                                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                            ID: {event.id}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            Profile ID: {event.profile_id || 'N/A'}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            Category: {event.category?.speventTitle || 'No Category'}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Link>
                         </Box>
                     </SwiperSlide>
                 ))}
