@@ -86,8 +86,8 @@ const EventsPage = () => {
                   <Image
                     src={category.categoryImages}
                     alt={category.name}
-                    loading='lazy'
-                    fill={true} 
+                   height={60}
+                   width={60}
                   />
                 </div>
                 <span>{category.name}</span>

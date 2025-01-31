@@ -135,12 +135,12 @@ const EventDetail = ({ slug }) => {
                             </div>
                         </div>
                     </div>
-                    <div className='my-2'>
+                    <div className='my-2' style={{minHeight:'350px'}}>
                         <CustomTabPanel data={event} />
                     </div>
                     <div className="event-box-wrapper">
                         <div className="main-heading">
-                            <div className="heading" style={{ textAlign: "left", padding: "0" }}>Similar Events</div>
+                            <div className="heading" style={{ textAlign: "left", padding: "0", borderBottom:'4px solid #c11' }}>Similar Events</div>
                         </div>
                         <SimilarEvent params={Promise.resolve({ id:9 })} />
                     </div>

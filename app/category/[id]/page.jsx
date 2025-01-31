@@ -5,7 +5,6 @@ import useFetchData from 'app/hooks/useFetchData';
 import { getCategoryWise } from 'app/services/api';
 import { Box, Button, Card, CardContent, Typography, Grid } from '@mui/material';
 
-
 const CategoryDetails = ({ params }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 2;
@@ -13,17 +12,18 @@ const CategoryDetails = ({ params }) => {
     const apiRequests = useMemo(() => [
         () => getCategoryWise(id, currentPage)
     ], [id, currentPage]);
-
     const { data, isLoading, error } = useFetchData(apiRequests);
-
-    console.log("Data from useFetchData:", data); // Debug log
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
     if (!data || !data[0] || !data[0].data) return <div>No data available</div>;
 
-    const events = data[0].data.data || []; // Assuming there's another 'data' level
-    const paginationInfo = data[0].data; // Contains pagination info like last_page, next_page_url
+    const events = data[0].data.data || [];
+    const paginationInfo = data[0].data;
+
+    if (events.length === 0) {
+        return <div>Data Coming Soon</div>;
+    }
 
     const handleNextPage = () => {
         if (paginationInfo.current_page < paginationInfo.last_page) {
@@ -39,7 +39,8 @@ const CategoryDetails = ({ params }) => {
 
     return (
         <>
-            <Box sx={{ mt: 2, display: 'flex', justifyContent:'space-evenly',flexWrap:'wrap' }}>
+        <div></div>
+            <Box sx={{ mt: 2, display: 'flex', justifyContent:'space-evenly',flexWrap:'wrap'}}>
                 {events.map((event, index) => (
                     <Grid item xs={12} sm={6} md={4} lg={2} key={event.id || index}>
                         <Card sx={{ minWidth: 275, marginBottom: 2 }}>

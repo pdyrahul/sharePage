@@ -113,15 +113,12 @@ const Event = () => {
           borderColor: "#c11 !important",
           "& .MuiTab-root": {
             fontWeight: "bold",
-            backgroundColor: "white", // Non-active tab background color
-            color: "#c11", // Text color for non-active tabs
-            "&:hover": {
-              backgroundColor: "#f1f1f1", // Hover effect for non-active tab
-            },
+            backgroundColor: "white", 
+            color: "#c11", 
           },
           "& .Mui-selected": {
-            backgroundColor: "#c11", // Active tab background color
-            color: "#fff !important", // Active tab text color
+            backgroundColor: "#c11", 
+            color: "#fff !important", 
             border:"none"
           },
           "& .MuiTabs-indicator":{backgroundColor: "#c11",}

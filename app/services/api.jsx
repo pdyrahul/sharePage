@@ -32,6 +32,4 @@ export const publicEvent = (filter) => {
   const url = filter ? `/event/latest-events?${filter}=true` : `/event/latest-events`;
   return api.get(url);
 };
-
-
 export default api;
