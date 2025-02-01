@@ -16,8 +16,8 @@ import { AiOutlineBars } from 'react-icons/ai';
 import useFetchData from '../../../hooks/useFetchData'; 
 import { getActiveList } from '../../../services/api';
 import Skeleton from "react-loading-skeleton";
-
-const Page = () => {
+import Link from 'next/link';
+const Page = ({slug}) => {
   const [view, setView] = useState('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
@@ -25,8 +25,8 @@ const Page = () => {
 
   // Fetching events from API
   const apiRequests = useMemo(() => [getActiveList], []);
-  const { data, error, isLoading } = useFetchData(apiRequests);
-
+  const { data, error,  loading: isLoading } = useFetchData(apiRequests);
+ 
   // Accessing the events array from the fetched data
   const events = data?.[0]?.data?.map((event) => ({
     id: event.id || 'N/A',
@@ -37,9 +37,10 @@ const Page = () => {
     location: event.address || 'Location not available',
     price: `$${event.sponsor?.sponsorPrice || 0}`,
     ticketsSold: event.capacity || 'Not Available',
-    image: event.poster || '/images/event-placeholder.svg', // Fallback image
+    image: event.poster || '/images/event-placeholder.svg',
+    EventSlug:event.slug // Fallback image
   })) || [];
-
+  console.log('EventSlug', events);
   // Filter events based on search query
   const filteredEvents = events.filter((event) =>
     event.title?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -178,7 +179,7 @@ const Page = () => {
         ) : error ? (
           <div>Error loading events.</div>
         ) : filteredEvents.length === 0 ? (
-          <div>No events found.</div>
+          <div>Data Loading...</div>
         ) : (
           <>
             <div className="total-events">Total Events: {filteredEvents.length}</div>
@@ -247,7 +248,11 @@ const Page = () => {
                                 style={{ width: '50px', height: '50px' }}
                               />
                             </TableCell>
-                            <TableCell>{event.title}</TableCell>
+                            <TableCell>
+                            <Link href={`/events/${event?.EventSlug}`} style={{ textDecoration: "none" }}>
+                              {event.title}
+                              </Link>
+                              </TableCell>
                             <TableCell>
                               {event.date} <p>Started at {event.time}</p>
                             </TableCell>

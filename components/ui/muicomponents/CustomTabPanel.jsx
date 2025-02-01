@@ -230,7 +230,7 @@ export default function BasicTabs({ data }) {
                 </form>
               </Grid>
             </Grid>
-          ) : link.label === 'Videos' ? (<VideoCard videoUrl={data.youTubeUrl}data={data}/>)
+          ) : link.label === 'Videos' ? (<VideoCard videoUrl={data?.youTubeUrl}data={data}/>)
            : link.label === 'Seating Layout' ? (
             <SeatingLayout data={data}/> // Render the SeatingLayout component
           ) : link.label === 'Specification' ? (

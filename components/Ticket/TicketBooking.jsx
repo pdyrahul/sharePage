@@ -131,7 +131,7 @@ const TicketBooking = ({ event }) => {
               </div>
               </div>
               <div className="modal-body">
-                <form onSubmit={handleSubmit(onSubmit)} style={{ msFlexDirection: 'column' }}>
+                {/* <form onSubmit={handleSubmit(onSubmit)} style={{ msFlexDirection: 'column' }}> */}
                   <div className="in-1-col total" style={{ fontSize: '24px', fontWeight: '500' }}>
                     Total amount : ${calculateTotal()}
                   </div>
@@ -165,7 +165,7 @@ const TicketBooking = ({ event }) => {
                     </label>
                   </div>
                   <EventPayment />
-                </form>
+                {/* </form> */}
               </div>
             </div>
           </div>

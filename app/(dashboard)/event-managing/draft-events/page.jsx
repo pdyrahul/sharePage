@@ -26,7 +26,8 @@ const Page = () => {
 
   // Fetching events from API
   const apiRequests = useMemo(() => [getDraftList], []);
-  const { data, error, isLoading } = useFetchData(apiRequests);
+  const { data, error, loading: isLoading } = useFetchData(apiRequests);
+  console.log('draft',data,isLoading,error);
   const events = data?.[0]?.data.map((event) => ({
     id: event.id || 'N/A',
     slug: event.slug || 'default-slug',
@@ -39,6 +40,8 @@ const Page = () => {
     ticketsSold: event.capacity || 'Not Available',
     image: event.poster || '/images/event-placeholder.svg',
   })) || [];
+
+  
   const filteredEvents = events.filter((event) =>
     event.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -174,10 +177,8 @@ const Page = () => {
               </Paper>
             )}
           </div>
-        ) : error ? (
-          <div>Error loading events.</div>
-        ) : filteredEvents.length === 0 ? (
-          <div>No draft events found.</div>
+        )  : filteredEvents.length === 0 ? (
+          <div style={{height:'40vh', width:'100%', display:'flex', justifyContent:'center', alignItems:'center'}}>No draft events found.</div>
         ) : (
           <>
             <div className="total-events">Total Draft Events: {filteredEvents.length}</div>

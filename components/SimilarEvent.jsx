@@ -1,5 +1,5 @@
-"use client";
-import React, { useMemo, useState, useEffect,use } from 'react';
+
+import React, { useMemo, useState, useEffect, use } from 'react';
 import useFetchData from 'app/hooks/useFetchData';
 import { getSmilarEvent } from 'app/services/api';
 import { Box, Skeleton, Typography, Card, CardContent } from '@mui/material';
@@ -11,11 +11,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const SimilarEvent = ({ params }) => {
-    const { id } = use(params); // Assuming 'use(params)' is a custom hook. If not, adjust this.
-    const apiRequests = useMemo(() => [
-        () => getSmilarEvent(id)
-    ], [id]);
-    const { data, isLoading, error } = useFetchData(apiRequests);
+    const { id } = params;
+    const apiRequests = useMemo(() => [() => getSmilarEvent(id)], [id]);
+    const { data,  loading: isLoading, error } = useFetchData(apiRequests);
     if (isLoading) {
         return (
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-evenly', flexWrap: 'wrap', gap: '5px' }}>
@@ -31,9 +29,8 @@ const SimilarEvent = ({ params }) => {
 
     // No data state
     if (!data || !data[0] || !data[0].data) return <div>No data available</div>;
-
-    const events = data[0].data|| [];
-
+    const events = data[0].data || [];
+console.log("Eventse",events)
     return (
         <Box sx={{ mt: 2 }}>
             <Swiper
@@ -62,18 +59,18 @@ const SimilarEvent = ({ params }) => {
                                                     alt={event.title || 'Event Image'}
                                                     layout="fill"
                                                     objectFit="cover"
-                                                    style={{ zIndex: 1 , padding:'10px'}}
+                                                    style={{ zIndex: 1, padding: '10px' }}
                                                 />
                                             </div>
-                                            <div className="title" style={{fontSize:'1.5em', padding: '10px', fontWeight: 'bold' }}>
+                                            <div className="title" style={{ fontSize: '1.5em', padding: '10px', fontWeight: 'bold' }}>
                                                 {event.slug || 'Event Title'}
                                             </div>
-                                            <div className="date" style={{ padding: '0 10px', fontSize: '1.3em', color:'#c11' }}>
+                                            <div className="date" style={{ padding: '0 10px', fontSize: '1.3em', color: '#c11' }}>
                                                 {event.start_date || 'Mar-16-2024'}
-                                                <span style={{ margin:'5px', fontSize: '0.8em', color:'#7649B3', fontWeight:'700' }}>Started at {event.start_time || 'Started at 07 : 00 AM'}</span>
+                                                <span style={{ margin: '5px', fontSize: '0.8em', color: '#7649B3', fontWeight: '700' }}>Started at {event.startTime || 'Started at 07 : 00 AM'}</span>
                                             </div>
-                                            <div className="hosted" style={{ padding: '0 10px', fontSize: '1.1em',color:'#7649B3', }}>
-                                                Hosted by <span style={{color:'#000', fontSize: '0.8em', textDecoration:'underline'}}>{event?.sponsor?.sponsorName || 'Aneema Agarwal'}</span>
+                                            <div className="hosted" style={{ padding: '0 10px', fontSize: '1.1em', color: '#7649B3', }}>
+                                                Hosted by <span style={{ color: '#000', fontSize: '0.8em', textDecoration: 'underline' }}>{event?.sponsor?.sponsorName || 'Aneema Agarwal'}</span>
                                             </div>
                                             <div className="location" style={{ padding: '0 10px', display: 'flex', alignItems: 'center', fontSize: '0.9em' }}>
                                                 <Image src="/images/location.svg" alt="Location Icon" width={16} height={16} />

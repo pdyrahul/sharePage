@@ -42,10 +42,9 @@ const Event = () => {
     return [() => publicEvent(apiParameter)];
   }, [apiParameter]);
 
-  const { data, isLoading, error } = useFetchData(apiRequests);
+  const { data,  loading: isLoading, error } = useFetchData(apiRequests);
 
   useEffect(() => {
-    console.log("Loading state:", isLoading); // Debugging to check loading state
 
     if (isLoading) {
       setErrorMessage(""); // Clear any previous error while loading

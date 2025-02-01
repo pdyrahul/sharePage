@@ -66,7 +66,7 @@ const EventDetail = ({ slug }) => {
     }
 
     if (error) return <div>Error: {error.message || "An error occurred while fetching the event."}</div>;
-    if (!event) return <div>Event Detail Loading for this event...</div>;
+  
 
     return (
         <div className="body-wrapper">
@@ -74,11 +74,11 @@ const EventDetail = ({ slug }) => {
                 <div className="event-body">
                     <div className="banner-img">
                         <img
-                            src={event.poster}
+                            src={event?.poster}
                             style={{ height: "500px" }}
                             alt=""
                             className='potraitImg' />
-                        <img src={event.poster} alt="" className='verticleImg d-none' />
+                        <img src={event?.poster} alt="" className='verticleImg d-none' />
                     </div>
                     <div className="event-detail">
                         <div className="detail-wrapper">
@@ -87,27 +87,27 @@ const EventDetail = ({ slug }) => {
                                 <span>Return To Home</span>
                                 </Link>
                             </div>
-                            <div className="date">{formatDateTime(event.startDate, event.startTime, event.endDate, event.endTime, event.place)}</div>
-                            <div className="event-title">{event.eventTitle}</div>
-                            <div className="text" dangerouslySetInnerHTML={{ __html: event.description }}></div>
+                            <div className="date">{formatDateTime(event?.startDate, event?.startTime, event?.endDate, event?.endTime, event?.place)}</div>
+                            <div className="event-title">{event?.eventTitle}</div>
+                            <div className="text" dangerouslySetInnerHTML={{ __html: event?.description }}></div>
                             <div className="heading" style={{ padding: "none", textAlign: "left" }}>Event Detail</div>
                             <div className="title">Description</div>
-                            <div className="text" dangerouslySetInnerHTML={{ __html: event.description }}></div>
+                            <div className="text" dangerouslySetInnerHTML={{ __html: event?.description }}></div>
                             <div className="title">Amenities</div>
-                            <div className="text" dangerouslySetInnerHTML={{ __html: event.amenities }}></div>
+                            <div className="text" dangerouslySetInnerHTML={{ __html: event?.amenities }}></div>
                             <div className="title">Location</div>
                             <div className="text">
                                 <img src="./images/location.svg" alt="" />
-                                <span>{event.address}</span>
+                                <span>{event?.address}</span>
                             </div>
                             <div className="title">Venue</div>
-                            <div className="text">{event.address.split(',')[0]}</div>
+                            <div className="text">{event?.address.split(',')[0]}</div>
                             <div className="title">Refund Policy</div>
-                            <div className="text" dangerouslySetInnerHTML={{ __html: event.refundPolicy }}></div>
+                            <div className="text" dangerouslySetInnerHTML={{ __html: event?.refundPolicy }}></div>
                         </div>
                         <div className="ticket-detail">
                             <div className="more-links">
-                                <ActionButtons pageType="event" eventId={event.id} />
+                                <ActionButtons pageType="event" eventId={event?.id} />
                             </div>
                             <div className="ticket-wrapper">
                                 <TicketBooking event={event} />
@@ -119,13 +119,13 @@ const EventDetail = ({ slug }) => {
                             </div>
                             <div className="vertical-banner">
                                 <img
-                                    src={event.poster}
+                                    src={event?.poster}
                                     aspect-ratio="16/9"
                                     alt="" />
                             </div>
                             <div className="map-wrapper">
                                 <iframe
-                                    src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAPpH4FGQaj_JIJOViHAeHGAjl7RDeW8OQ&q=${encodeURIComponent(event.address)}`}
+                                    src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAPpH4FGQaj_JIJOViHAeHGAjl7RDeW8OQ&q=${encodeURIComponent(event?.address)}`}
                                     height={350}
                                     style={{ border: 0 }}
                                     allowFullScreen=""
@@ -142,7 +142,8 @@ const EventDetail = ({ slug }) => {
                         <div className="main-heading">
                             <div className="heading" style={{ textAlign: "left", padding: "0", borderBottom:'4px solid #c11' }}>Similar Events</div>
                         </div>
-                        <SimilarEvent params={Promise.resolve({ id:9})} />
+                        <SimilarEvent params={{ id: event?.category?.idspevent }} />
+
                     </div>
                 </div>
             </div>

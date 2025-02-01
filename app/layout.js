@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import 'bootstrap/dist/css/bootstrap.css';
 import { SidebarProvider } from '../Context/SidebarContext';
 import { Suspense } from 'react';
-import Loading from './loading';
+// import loading from './loading';
 import { ProfileProvider } from '../Context/ProfileContext'; // Adjust the path
 
 const queryClient = new QueryClient();
@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
             <body>
                 <QueryClientProvider client={queryClient}>
                     <ReactQueryDevtools initialIsOpen={false} />
-                    <Suspense fallback={<Loading />}>
+                    {/* <Suspense fallback={<loading />}> */}
                         <ProfileProvider> 
                             <SidebarProvider>
                                 <div className="body-wrapper">
@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
                                 </div>
                             </SidebarProvider>
                         </ProfileProvider>
-                    </Suspense>
+                    {/* </Suspense> */}
                 </QueryClientProvider>
             </body>
         </html>

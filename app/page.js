@@ -22,7 +22,7 @@ const EventsPage = () => {
     return [getCategory]; // Assuming getCategory doesn't require any arguments
   }, []);
 
-  const { data, isLoading, error } = useFetchData(apiRequests);
+  const { data, loading: isLoading, error } = useFetchData(apiRequests);
 
   // State to hold processed data
   const [processedData, setProcessedData] = useState([]);
@@ -31,27 +31,19 @@ const EventsPage = () => {
     if (data && data.length > 0 && data[0].data && data[0].data.length > 0) {
       const processed = data[0].data.map(item => ({
         id: item.idspevent,
-        name: item.speventTitle, 
-        title: item.speventTitle, 
+        name: item.speventTitle,
+        title: item.speventTitle,
         categoryImages: item.image_url,
       }));
       setProcessedData(processed);
     }
-  }, [data]); // Effect runs whenever 'data' changes
+  }, [data]);
 
-  // Render loading skeleton
-  const renderSkeleton = () => (
-    <div className="menu-filter">
-      {Array(5).fill(0).map((_, index) => (
-        <div className="item" key={index}>
-          <div className="img-wrapper" style={{position: "relative", width: '120px', height: '120px'}}>
-            <Skeleton height={'120px'} width={'120px'} />
-          </div>
-          <Skeleton width={'80%'} />
-        </div>
-      ))}
-    </div>
-  );
+  // Determine the skeleton count:
+  // Use the length from the raw API data if available, otherwise fallback to a default number.
+  const skeletonCount = data && data.length > 0 && data[0].data && data[0].data.length
+    ? data[0].data.length
+    : 36;
 
   return (
     <div className="event-wrapper">
@@ -76,14 +68,24 @@ const EventsPage = () => {
           </Link>
 
           {/* Render loading skeleton or actual categories */}
-          {isLoading ? renderSkeleton() : 
+          {isLoading ? (
+            // Render skeleton items based on skeletonCount
+            [...Array(skeletonCount)].map((_, index) => (
+              <div className="item" key={index}>
+                <div
+                  className="img-wrapper"
+                  style={{ position: "relative", width: "120px", height: "120px" }}
+                >
+                  <Skeleton height="120px" width="120px" />
+                </div>
+                <Skeleton width="80%" />
+              </div>
+            ))
+          ) : (
+            // Render the processed categories when not loading
             processedData.map((category) => (
-              <Link
-                href={`/category/${category.id}`}
-                className="item"
-                key={category.id}
-              >
-                <div className="img-wrapper" style={{position:"relative"}}>
+              <Link href={`/category/${category.id}`} className="item" key={category.id}>
+                <div className="img-wrapper" style={{ position: "relative" }}>
                   <Image
                     src={category.categoryImages}
                     alt={category.name}
@@ -94,7 +96,8 @@ const EventsPage = () => {
                 <span>{category.name}</span>
               </Link>
             ))
-          }
+          )}
+
         </div>
         <div className="filters">
           <div className="search-box">

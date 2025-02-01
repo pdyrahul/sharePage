@@ -28,10 +28,11 @@ const CategoryDetails = ({ params }) => {
 
     const events = data[0].data|| [];
     const paginationInfo = data[0].data;
-console.log("Events",events);
+    console.log('paginationInfo', paginationInfo.currentPage, paginationInfo.last_page) //console undefined
     // if (events.length === 0) {
     //     return <div>Data Coming Soon</div>;
     // }
+    console.log('category', events)
 
     const handleNextPage = () => {
         if (paginationInfo.current_page < paginationInfo.last_page) {
