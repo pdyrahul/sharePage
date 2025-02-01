@@ -139,7 +139,7 @@ const Event = () => {
         ))}
       </Tabs>
 
-      <Box className="event-wrapper" sx={{ position: "relative", paddingTop: "40px" }}>
+      <Box  sx={{ position: "relative", paddingTop: "40px" }}>
         <h3 style={{ display: "inline-block", borderBottom: "3px solid #c11", padding: "0 4px" }}>
           {selectedFilter}
         </h3>

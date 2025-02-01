@@ -163,7 +163,7 @@ const Page = () => {
                           <TableCell>
                             <Skeleton width="60%" />
                           </TableCell>
-                          <TableCell>
+                          <TableCell> 
                             <Skeleton width="40%" />
                           </TableCell>
                           <TableCell>
