@@ -15,13 +15,10 @@ const ImageUpload = ({ name, setFieldValue, width, multiple = true }) => {
 
     if (multiple) {
       setFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
-      setFieldValue(name, [...files, ...acceptedFiles].map(f => {
-        const { preview, ...fileWithoutPreview } = f;
-        return fileWithoutPreview;
-      })); // Only send file data, not preview
+      setFieldValue(name, [...files, ...acceptedFiles]); // Update Formik state with all files
     } else {
       setFiles(updatedFiles);
-      setFieldValue(name, acceptedFiles[0]); // Send single file without preview
+      setFieldValue(name, acceptedFiles); // Update Formik state with single file
     }
   };
 
@@ -39,10 +36,7 @@ const ImageUpload = ({ name, setFieldValue, width, multiple = true }) => {
   const removeFile = (file) => {
     setFiles((prevFiles) => {
       const updatedFiles = prevFiles.filter((f) => f !== file);
-      setFieldValue(name, updatedFiles.map(f => {
-        const { preview, ...fileWithoutPreview } = f;
-        return fileWithoutPreview;
-      })); // Update Formik state without previews
+      setFieldValue(name, updatedFiles); // Update Formik state
       return updatedFiles;
     });
   };
@@ -50,11 +44,11 @@ const ImageUpload = ({ name, setFieldValue, width, multiple = true }) => {
   // Remove all files
   const removeAllFiles = () => {
     setFiles([]);
-    setFieldValue(name, []); // Clear Formik state, no need to handle previews here
+    setFieldValue(name, []); // Clear Formik state
   };
 
   return (
-    <div style={{ textAlign: "center", display: "flex", flexDirection: "column", width: width }}>
+    <div style={{ textAlign: "center", display: "flex", flexDirection: "column",  width: width, }}>
       <div
         {...getRootProps()}
         style={{
