@@ -64,7 +64,16 @@ const CategoryDetails = ({ params }) => {
                         return (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={event.id || index}>
                                 <Link href={`/events/${event.slug}`} style={{ textDecoration: "none" }}>
-                                    <Card sx={{ width: "300px", borderColor: 'transparent', boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px', border: '1px solid #ececec', aspectRatio:'3/4' }}>
+                                    <Card 
+                                    sx={{ width: "300px",
+                                     borderColor: 'transparent',
+                                      boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px',
+                                       border: '1px solid #ececec', aspectRatio:'3/4',
+                                        '&:hover': {
+                                                boxShadow: 'rgba(0, 0, 0, 0.24) 0px 8px 16px', // box-shadow on hover
+                                                filter: 'none' // remove blur on hover
+                                            },
+                                        }}>
                                         <CardContent sx={{ padding: 0 }}>
                                             <div className="img-wrapper" style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', overflow: 'hidden' }}>
                                                 <Image

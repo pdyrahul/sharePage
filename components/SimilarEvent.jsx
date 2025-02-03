@@ -51,7 +51,10 @@ console.log("Eventse",events)
                         <SwiperSlide key={event.id || index}>
                             <Box className="event" sx={{ padding: 0 }}>
                                 <Link href={`/events/${event.slug}`} style={{ textDecoration: "none" }}>
-                                    <Card sx={{ minWidth: 275, height: '100%', borderColor: 'transparent', boxShadow: 'none', border: '2px solid #ececec' }}>
+                                    <Card sx={{ minWidth: 275, height: '100%', borderColor: 'transparent',  boxShadow: ' rgba(0, 0, 0, 0.16) 0px 1px 4px', aspectRatio:'3/4', '&:hover': {
+                                                boxShadow: 'rgba(0, 0, 0, 0.24) 0px 8px 16px', // box-shadow on hover
+                                                filter: 'none' // remove blur on hover
+                                            }, }}>
                                         <CardContent sx={{ padding: 0 }}>
                                             <div className="img-wrapper" style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', overflow: 'hidden' }}>
                                                 <Image
@@ -72,9 +75,9 @@ console.log("Eventse",events)
                                             <div className="hosted" style={{ padding: '0 10px', fontSize: '1.1em', color: '#7649B3', }}>
                                                 Hosted by <span style={{ color: '#000', fontSize: '0.8em', textDecoration: 'underline' }}>{event?.sponsor?.sponsorName || 'Aneema Agarwal'}</span>
                                             </div>
-                                            <div className="location" style={{ padding: '0 10px', display: 'flex', alignItems: 'center', fontSize: '0.9em' }}>
+                                            <div className="location" style={{ padding: '10px 5px', display: 'flex', alignItems: 'center', fontSize: '0.9em' }}>
                                                 <Image src="/images/location.svg" alt="Location Icon" width={16} height={16} />
-                                                <span style={{ marginLeft: '5px' }}>{event.address || 'Rawalpindi, Pakistan'}</span>
+                                                <span style={{ marginLeft: '5px', lineHeight:'11px' }}>{event.address || 'Rawalpindi, Pakistan'}</span>
                                             </div>
                                             <div className="from" style={{ padding: '10px', fontWeight: 'bold' }}>
                                                 For ${event.event_type || '109.5'}
