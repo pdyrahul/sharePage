@@ -13,7 +13,7 @@ const CategoryDetails = ({ params }) => {
     const apiRequests = useMemo(() => [
         () => getCategoryWise(id, currentPage)
     ], [id, currentPage]);
-    const { data, isLoading, error } = useFetchData(apiRequests);
+    const { data, loading: isLoading, error } = useFetchData(apiRequests);
     if (isLoading) {
         return (
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-evenly', flexWrap: 'wrap', gap: '5px' }}>
@@ -27,12 +27,9 @@ const CategoryDetails = ({ params }) => {
     if (!data || !data[0] || !data[0].data) return <div>No data available</div>;
 
     const events = data[0].data|| [];
+    console.log(events);
     const paginationInfo = data[0].data;
     console.log('paginationInfo', paginationInfo.currentPage, paginationInfo.last_page) //console undefined
-    // if (events.length === 0) {
-    //     return <div>Data Coming Soon</div>;
-    // }
-    console.log('category', events)
 
     const handleNextPage = () => {
         if (paginationInfo.current_page < paginationInfo.last_page) {
