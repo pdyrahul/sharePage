@@ -24,7 +24,7 @@ export const getEventBySlug = (slug) => api.get(`/event/${slug}`);
 export const updateEvent = (slug, data) => api.put(`/event/${slug}`, data);
 export const deletegalleryImage = (galleryId) => api.delete(`/event/delete-gallery-image/${galleryId}`);
 export const getCategory = () => api.get("/event/category");
-export const getCategoryWise = (id, pageNumber = 1) => 
+export const getCategoryWise = (id, pageNumber) => 
 api.get(`/event/event-category-wise/${id}?page=${pageNumber}&perPage=4`);
 export const getSmilarEvent = (id) => api.get(`/event/event-category-wise/${id}`);
 export const publicEvent = (filter) => {

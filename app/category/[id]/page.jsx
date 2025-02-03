@@ -25,8 +25,8 @@ const CategoryDetails = ({ params }) => {
     }
     if (error) return <div>Error: {error.message}</div>;
     if (!data || !data[0] || !data[0].data) return <div>No data available</div>;
-
     const events = data[0].data|| [];
+    if(events.length==0){return <div>No Category Details available</div>;}
     console.log(events);
     const paginationInfo = data[0].data;
     console.log('paginationInfo', paginationInfo.currentPage, paginationInfo.last_page) //console undefined
@@ -36,7 +36,7 @@ const CategoryDetails = ({ params }) => {
             setCurrentPage(currentPage + 1);
         }
     };
-
+    console.log( "Pagination",currentPage);
     const handlePrevPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);

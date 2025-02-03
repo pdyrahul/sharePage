@@ -148,6 +148,7 @@ const handleSaveAsDraft = (values, formikBag) => {
 
 // Function for final submission
 const handleFinalSubmit = (values, formikBag) => {
+   event.preventDefault();
   handleFormSubmit(false, values, formikBag);
 };
 
