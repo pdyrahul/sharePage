@@ -3,8 +3,7 @@ import { useDropzone } from "react-dropzone";
 import { MdOutlineFileUpload } from "react-icons/md";
 
 const ImageUpload = ({ name, setFieldValue, width, multiple = true }) => {
-  const [files, setFiles] = useState([]); // Store file objects for preview
-  const [fileNames, setFileNames] = useState([]); // Store file names for Formik
+  const [files, setFiles] = useState([]);
 
   // Handle files drop
   const onDrop = (acceptedFiles) => {
@@ -15,19 +14,14 @@ const ImageUpload = ({ name, setFieldValue, width, multiple = true }) => {
       })
     );
 
-    // Extract file names
-    const newFileNames = acceptedFiles.map((file) => file.name);
-
+    // If multiple files are allowed, append new files
     if (multiple) {
-      // If multiple files are allowed, append new files and file names
       setFiles((prev) => [...prev, ...filesWithPreview]);
-      setFileNames((prev) => [...prev, ...newFileNames]);
-      setFieldValue(name, [...fileNames, ...newFileNames]); // Update Formik state
+      setFieldValue(name, [...prev, ...filesWithPreview]); // Update Formik state with file objects
     } else {
-      // If single file upload, replace existing files and file names
+      // If single file upload, replace existing files
       setFiles(filesWithPreview);
-      setFileNames(newFileNames);
-      setFieldValue(name, newFileNames); // Update Formik state
+      setFieldValue(name, filesWithPreview[0]); // Update Formik state with single file object
     }
   };
 
@@ -45,22 +39,16 @@ const ImageUpload = ({ name, setFieldValue, width, multiple = true }) => {
   // Remove a single file by index
   const removeFile = (index) => {
     setFiles((prev) => {
-      const updatedFiles = prev.filter((_, i) => i !== index); // Remove file from preview
+      const updatedFiles = prev.filter((_, i) => i !== index);
+      setFieldValue(name, multiple ? updatedFiles : updatedFiles[0] || null); // Update Formik state
       return updatedFiles;
-    });
-
-    setFileNames((prev) => {
-      const updatedFileNames = prev.filter((_, i) => i !== index); // Remove file name
-      setFieldValue(name, updatedFileNames); // Update Formik state
-      return updatedFileNames;
     });
   };
 
   // Remove all files
   const removeAllFiles = () => {
-    setFiles([]); // Clear previews
-    setFileNames([]); // Clear file names
-    setFieldValue(name, []); // Clear Formik state
+    setFiles([]);
+    setFieldValue(name, multiple ? [] : null); // Clear Formik state
   };
 
   return (
@@ -108,7 +96,7 @@ const ImageUpload = ({ name, setFieldValue, width, multiple = true }) => {
           >
             <img
               src={file.preview}
-              alt="preview"
+              alt={file.name}
               style={{
                 width: "100%",
                 height: "100%",

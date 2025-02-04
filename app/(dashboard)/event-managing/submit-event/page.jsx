@@ -90,7 +90,7 @@ const Page = () => {
     if (values.poster && values.poster[0]) {
       formData.append("poster", values.poster[0]); // Assuming it's a file array
     }
-
+console.log(values.poster);
     if (values.seatingLayout && values.seatingLayout[0]) {
       formData.append("seatingLayout", values.seatingLayout[0]); // File array
     }

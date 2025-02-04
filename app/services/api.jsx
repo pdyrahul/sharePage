@@ -4,7 +4,7 @@ const api = axios.create({
   headers: {
     Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_TOKEN}`,
     "Content-Type": "multipart/form-data",
-    'Content-Type': 'application/json',
+    // 'Content-Type': 'application/json',
   },
 });
 // export const userLogin = axios.post("/login");
