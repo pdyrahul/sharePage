@@ -16,6 +16,7 @@ h6,
     font-style: normal;
     scroll-behavior: smooth;
 }
+.StripeElement{width: 100% !important;}
 
 .css-kygdfq-MuiCardMedia-root {
     object-fit: inherit !important;
