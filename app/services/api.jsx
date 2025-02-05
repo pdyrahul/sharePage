@@ -20,7 +20,7 @@ export const getEventList = () => api.get("/event");
 export const getDraftList = () => api.get("/event?status=1");
 export const getActiveList = () => api.get("/event?status=2");
 export const postAction = (payload) => api.post("/event/favorite", payload);
-export const getEventBySlug = (slug) => api.get(`/event/${slug}`);
+export const getEventBySlug = (slug) => api.get(`/event/show-event/${slug}`);
 export const updateEvent = (slug, data) => api.put(`/event/${slug}`, data);
 export const deletegalleryImage = (galleryId) => api.delete(`/event/delete-gallery-image/${galleryId}`);
 export const getCategory = () => api.get("/event/category");

@@ -16,7 +16,7 @@ const ticketPrices = {
   senior: 5,
 };
 
-const TicketBooking = ({ event }) => {
+const TicketBooking = ({ tickets }) => {
   const [ticketCounts, setTicketCounts] = useState({ adult: 0, child: 0, senior: 0 });
   const [modalOpen, setModalOpen] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
@@ -68,7 +68,7 @@ setAuthToken(process.env.NEXT_PUBLIC_API_TOKEN);
         disabled={calculateTotal() === 0} 
         style={{ opacity: calculateTotal() === 0 ? 0.5 : 1 }}
       >
-        Get Ticket
+        Buy Tickets
       </button>
 
       <Modal isOpen={modalOpen} onClose={handleCloseModal} title={event?.eventTitle}>

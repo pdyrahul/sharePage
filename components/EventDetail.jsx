@@ -109,9 +109,21 @@ const EventDetail = ({ slug }) => {
                             <div className="more-links">
                                 <ActionButtons pageType="event" eventId={event?.id} />
                             </div>
-                            <div className="ticket-wrapper">
-                                <TicketBooking event={event} />
-                            </div>
+
+                             
+                                {event?.ticketLinkType === "sharePage" && event?.tickets.length > 0 && (
+                                    <div className="ticket-wrapper">  
+                                        <TicketBooking tickets={event?.tickets} />
+                                    </div>
+                                )}
+                                {event?.ticketLinkType === "external" && (
+                                    <div className="become-sponsor " >
+                                        <a href={event?.ticketLink} target="_blank" rel="noopener noreferrer">
+                                            <button style={{ backgroundColor: "#c11", color: "white"}}>Buy Tickets</button>
+                                        </a>
+                                    </div>
+                                )}
+                        
                             <div className="become-sponsor">
                                 <button data-bs-toggle="modal" data-bs-target="#become-sponsor-vender">
                                     Become a Sponsors
